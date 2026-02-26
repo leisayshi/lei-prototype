@@ -1,0 +1,1632 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Waffo Dashboard - Discounts & Marketing</title>
+<style>
+/* ===== RESET & BASE ===== */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; font-size: 14px; color: #262626; background: #f5f6fa; }
+a { text-decoration: none; color: inherit; }
+input, select, button, textarea { font-family: inherit; font-size: 14px; }
+table { border-collapse: collapse; width: 100%; }
+
+/* ===== LAYOUT ===== */
+.layout { display: flex; min-height: 100vh; }
+
+/* ===== SIDEBAR ===== */
+.sidebar { width: 200px; min-width: 200px; background: #fff; border-right: 1px solid #e8e8e8; position: fixed; top: 0; left: 0; bottom: 0; overflow-y: auto; z-index: 100; }
+.sidebar-logo { height: 48px; display: flex; align-items: center; padding: 0 16px; border-bottom: 1px solid #f0f0f0; }
+.sidebar-logo span { font-size: 22px; font-weight: 700; color: #1677ff; letter-spacing: -0.5px; }
+.sidebar-nav { padding: 8px 0; }
+.nav-group-title { font-size: 11px; color: #8c8c8c; text-transform: uppercase; padding: 16px 16px 6px 16px; font-weight: 500; letter-spacing: 0.5px; }
+.nav-item { height: 36px; display: flex; align-items: center; padding: 0 16px; font-size: 13px; color: #595959; cursor: pointer; transition: background 0.15s; position: relative; gap: 8px; }
+.nav-item:hover { background: #f5f5f5; }
+.nav-item.active { color: #1677ff; background: #e6f4ff; font-weight: 500; }
+.nav-item.active::before { content: ''; position: absolute; left: 0; top: 4px; bottom: 4px; width: 3px; background: #1677ff; border-radius: 0 2px 2px 0; }
+.nav-icon { font-size: 14px; width: 18px; text-align: center; flex-shrink: 0; }
+
+/* ===== TOPBAR ===== */
+.main-area { margin-left: 200px; flex: 1; display: flex; flex-direction: column; min-height: 100vh; }
+.topbar { height: 48px; background: #fff; border-bottom: 1px solid #e8e8e8; display: flex; align-items: center; justify-content: space-between; padding: 0 24px; position: sticky; top: 0; z-index: 90; flex-shrink: 0; }
+.topbar-left { display: flex; align-items: center; gap: 12px; }
+.merchant-select { background: #f5f5f5; border: 1px solid #e8e8e8; border-radius: 6px; padding: 4px 12px; font-size: 13px; color: #595959; height: 30px; cursor: pointer; }
+.topbar-right { display: flex; align-items: center; gap: 20px; font-size: 13px; color: #595959; }
+.topbar-right a { color: #595959; cursor: pointer; }
+.topbar-right a:hover { color: #1677ff; }
+.user-info { display: flex; align-items: center; gap: 8px; }
+.user-avatar { width: 28px; height: 28px; border-radius: 50%; background: #1677ff; color: #fff; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 600; }
+
+/* ===== CONTENT ===== */
+.content { padding: 24px; flex: 1; }
+.page { display: none; }
+.page.active { display: block; }
+.page-title { font-size: 20px; font-weight: 600; color: #262626; margin-bottom: 20px; }
+
+/* ===== CARDS ===== */
+.card { background: #fff; border-radius: 8px; box-shadow: 0 1px 4px rgba(0,0,0,0.08); padding: 24px; margin-bottom: 20px; }
+.card-title { font-size: 15px; font-weight: 600; color: #262626; margin-bottom: 16px; }
+
+/* ===== KPI CARDS ===== */
+.kpi-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 20px; }
+.kpi-card { background: #fff; border-radius: 8px; box-shadow: 0 1px 4px rgba(0,0,0,0.08); padding: 20px; }
+.kpi-label { font-size: 13px; color: #8c8c8c; margin-bottom: 8px; }
+.kpi-value { font-size: 28px; font-weight: 700; color: #262626; margin-bottom: 6px; }
+.kpi-change { font-size: 12px; }
+.kpi-change.up { color: #52c41a; }
+.kpi-change.down { color: #cf1322; }
+.kpi-change.neutral { color: #8c8c8c; }
+
+/* ===== CHARTS ROW ===== */
+.charts-row { display: flex; gap: 20px; margin-bottom: 20px; }
+.chart-left { flex: 6; }
+.chart-right { flex: 4; }
+
+/* ===== TABLES ===== */
+.table-wrapper { overflow-x: auto; }
+table th { background: #fafafa; font-size: 13px; color: #8c8c8c; font-weight: 500; text-align: left; padding: 10px 12px; border-bottom: 1px solid #f0f0f0; white-space: nowrap; }
+table td { padding: 10px 12px; border-bottom: 1px solid #f0f0f0; font-size: 13px; color: #262626; vertical-align: middle; }
+table tbody tr { height: 52px; transition: background 0.15s; }
+table tbody tr:hover { background: #fafafa; }
+
+/* ===== BADGES ===== */
+.badge { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 12px; font-weight: 500; border: 1px solid; line-height: 1.6; white-space: nowrap; }
+.badge-active { background: #f6ffed; color: #52c41a; border-color: #b7eb8f; }
+.badge-inactive, .badge-archived, .badge-ended { background: #f5f5f5; color: #8c8c8c; border-color: #d9d9d9; }
+.badge-pending { background: #fffbe6; color: #d46b08; border-color: #ffe58f; }
+.badge-paused { background: #fff7e6; color: #d46b08; border-color: #ffd591; }
+.badge-expired { background: #fff1f0; color: #cf1322; border-color: #ffa39e; }
+.badge-draft { background: #f0f5ff; color: #1677ff; border-color: #adc6ff; }
+/* Type badges */
+.badge-pct { background: #e6f4ff; color: #1677ff; border-color: #91caff; }
+.badge-amt { background: #f9f0ff; color: #722ed1; border-color: #d3adf7; }
+.badge-flash { background: #fff1f0; color: #cf1322; border-color: #ffa39e; }
+.badge-firstcharge { background: #e6f4ff; color: #1677ff; border-color: #91caff; }
+.badge-threshold { background: #f6ffed; color: #52c41a; border-color: #b7eb8f; }
+.badge-rebate { background: #f9f0ff; color: #722ed1; border-color: #d3adf7; }
+
+/* ===== PROGRESS BAR ===== */
+.progress-bar { background: #f0f0f0; border-radius: 4px; height: 6px; width: 100px; display: inline-block; vertical-align: middle; overflow: hidden; }
+.progress-bar .fill { height: 100%; border-radius: 4px; transition: width 0.3s; }
+.progress-bar .fill.blue { background: #1677ff; }
+.progress-bar .fill.orange { background: #faad14; }
+.progress-bar .fill.red { background: #ff4d4f; }
+
+/* ===== BUTTONS ===== */
+.btn { display: inline-flex; align-items: center; gap: 6px; padding: 6px 16px; border-radius: 6px; font-size: 13px; cursor: pointer; transition: all 0.2s; border: none; font-weight: 500; white-space: nowrap; }
+.btn-primary { background: #1677ff; color: #fff; }
+.btn-primary:hover { background: #4096ff; }
+.btn-default { background: #fff; color: #595959; border: 1px solid #d9d9d9; }
+.btn-default:hover { color: #1677ff; border-color: #1677ff; }
+.btn-danger { background: #fff; color: #ff4d4f; border: 1px solid #ff4d4f; }
+.btn-danger:hover { background: #fff1f0; }
+.btn-link { background: none; border: none; color: #1677ff; padding: 0; cursor: pointer; font-size: 13px; }
+.btn-link:hover { color: #4096ff; }
+.btn-link-gray { background: none; border: none; color: #8c8c8c; padding: 0; cursor: pointer; font-size: 13px; }
+.btn-link-gray:hover { color: #595959; }
+.btn-sm { padding: 4px 10px; font-size: 12px; }
+
+/* ===== FORM ELEMENTS ===== */
+.form-input, .form-select { border: 1px solid #d9d9d9; border-radius: 6px; height: 32px; padding: 4px 12px; font-size: 13px; color: #262626; outline: none; transition: all 0.2s; background: #fff; }
+.form-input:focus, .form-select:focus { border-color: #1677ff; box-shadow: 0 0 0 2px rgba(22,119,255,0.1); }
+.form-input::placeholder { color: #bfbfbf; }
+.form-select { cursor: pointer; appearance: auto; }
+
+/* ===== FILTER ROW ===== */
+.filter-row { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+.filter-row .form-input, .filter-row .form-select { min-width: 140px; }
+.action-bar { display: flex; align-items: center; justify-content: space-between; margin: 16px 0; }
+.action-bar-left { font-size: 13px; color: #8c8c8c; }
+.action-bar-right { display: flex; gap: 8px; }
+
+/* ===== MODAL ===== */
+.modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.45); z-index: 1000; display: none; align-items: center; justify-content: center; animation: fadeIn 0.2s; }
+.modal-overlay.show { display: flex; }
+.modal { background: #fff; border-radius: 12px; box-shadow: 0 6px 30px rgba(0,0,0,0.15); max-height: 85vh; overflow-y: auto; animation: slideUp 0.25s; }
+.modal-header { display: flex; align-items: center; justify-content: space-between; padding: 20px 24px 16px; border-bottom: 1px solid #f0f0f0; position: sticky; top: 0; background: #fff; border-radius: 12px 12px 0 0; z-index: 1; }
+.modal-header h3 { font-size: 17px; font-weight: 600; }
+.modal-close { width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; cursor: pointer; border-radius: 4px; color: #8c8c8c; font-size: 18px; border: none; background: none; }
+.modal-close:hover { background: #f5f5f5; color: #262626; }
+.modal-body { padding: 20px 24px; }
+.modal-footer { padding: 16px 24px; border-top: 1px solid #f0f0f0; display: flex; justify-content: flex-end; gap: 8px; position: sticky; bottom: 0; background: #fff; border-radius: 0 0 12px 12px; }
+
+/* ===== DRAWER ===== */
+.drawer-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.45); z-index: 1000; display: none; }
+.drawer-overlay.show { display: block; }
+.drawer { position: fixed; top: 0; right: 0; bottom: 0; width: 480px; background: #fff; z-index: 1001; transform: translateX(100%); transition: transform 0.3s ease; box-shadow: -4px 0 20px rgba(0,0,0,0.1); overflow-y: auto; }
+.drawer.open { transform: translateX(0); }
+.drawer-header { display: flex; align-items: center; justify-content: space-between; padding: 20px 24px 16px; border-bottom: 1px solid #f0f0f0; position: sticky; top: 0; background: #fff; z-index: 1; }
+.drawer-header h3 { font-size: 17px; font-weight: 600; }
+.drawer-body { padding: 20px 24px; }
+
+/* ===== STEPPER ===== */
+.stepper { display: flex; align-items: center; justify-content: center; margin-bottom: 24px; gap: 0; }
+.step { display: flex; align-items: center; gap: 8px; }
+.step-num { width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 600; background: #f0f0f0; color: #8c8c8c; transition: all 0.2s; }
+.step.active .step-num { background: #1677ff; color: #fff; }
+.step.done .step-num { background: #52c41a; color: #fff; }
+.step-label { font-size: 13px; color: #8c8c8c; }
+.step.active .step-label { color: #262626; font-weight: 500; }
+.step.done .step-label { color: #52c41a; }
+.step-connector { width: 40px; height: 2px; background: #f0f0f0; margin: 0 8px; }
+.step-connector.done { background: #52c41a; }
+
+/* ===== INFO BOX ===== */
+.info-box { padding: 12px 16px; border-radius: 6px; font-size: 13px; line-height: 1.5; margin: 12px 0; }
+.info-box.blue { background: #e6f4ff; color: #1677ff; border: 1px solid #91caff; }
+.info-box.orange { background: #fff7e6; color: #d46b08; border: 1px solid #ffd591; }
+.info-box.red { background: #fff1f0; color: #cf1322; border: 1px solid #ffa39e; }
+
+/* ===== LABEL-VALUE ===== */
+.lv-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.lv-item { }
+.lv-label { font-size: 12px; color: #8c8c8c; margin-bottom: 4px; }
+.lv-value { font-size: 14px; color: #262626; font-weight: 500; }
+
+/* ===== RADIO CARDS ===== */
+.radio-cards { display: flex; gap: 12px; }
+.radio-card { flex: 1; border: 2px solid #e8e8e8; border-radius: 8px; padding: 16px; cursor: pointer; transition: all 0.2s; text-align: center; }
+.radio-card:hover { border-color: #91caff; }
+.radio-card.selected { border-color: #1677ff; background: #f0f5ff; }
+.radio-card-icon { font-size: 24px; margin-bottom: 8px; }
+.radio-card-title { font-size: 14px; font-weight: 600; margin-bottom: 4px; }
+.radio-card-desc { font-size: 12px; color: #8c8c8c; }
+
+/* ===== TYPE CARDS 2x2 ===== */
+.type-cards-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+
+/* ===== TOGGLE ===== */
+.toggle { width: 40px; height: 22px; border-radius: 11px; background: #d9d9d9; cursor: pointer; position: relative; transition: background 0.2s; display: inline-block; vertical-align: middle; }
+.toggle.on { background: #1677ff; }
+.toggle::after { content: ''; position: absolute; width: 18px; height: 18px; border-radius: 50%; background: #fff; top: 2px; left: 2px; transition: left 0.2s; box-shadow: 0 1px 3px rgba(0,0,0,0.2); }
+.toggle.on::after { left: 20px; }
+
+/* ===== TAG ===== */
+.tag { display: inline-flex; align-items: center; gap: 4px; padding: 2px 8px; background: #f5f5f5; border-radius: 4px; font-size: 12px; color: #595959; border: 1px solid #e8e8e8; margin: 2px; white-space: nowrap; }
+.tag-remove { cursor: pointer; color: #8c8c8c; font-size: 14px; line-height: 1; }
+.tag-remove:hover { color: #ff4d4f; }
+.tag-channel { background: #f5f5f5; border: 1px solid #e8e8e8; color: #8c8c8c; padding: 1px 6px; border-radius: 3px; font-size: 11px; }
+
+/* ===== BREADCRUMB ===== */
+.breadcrumb { display: flex; align-items: center; gap: 8px; font-size: 13px; color: #8c8c8c; margin-bottom: 16px; }
+.breadcrumb a { color: #1677ff; cursor: pointer; }
+.breadcrumb a:hover { text-decoration: underline; }
+.breadcrumb span { color: #8c8c8c; }
+
+/* ===== JSON DISPLAY ===== */
+.json-display { background: #fafafa; border: 1px solid #f0f0f0; border-radius: 8px; padding: 16px; font-family: 'SF Mono', Monaco, Consolas, monospace; font-size: 13px; line-height: 1.7; overflow-x: auto; }
+.json-key { color: #1677ff; }
+.json-string { color: #52c41a; }
+.json-number { color: #d46b08; }
+.json-bool { color: #722ed1; }
+
+/* ===== TIMELINE ===== */
+.timeline-item { display: flex; gap: 12px; padding: 12px 0; position: relative; }
+.timeline-item::before { content: ''; position: absolute; left: 7px; top: 32px; bottom: -12px; width: 2px; background: #f0f0f0; }
+.timeline-item:last-child::before { display: none; }
+.timeline-dot { width: 16px; height: 16px; border-radius: 50%; background: #e6f4ff; border: 2px solid #1677ff; flex-shrink: 0; margin-top: 2px; }
+.timeline-content { flex: 1; }
+.timeline-time { font-size: 12px; color: #8c8c8c; margin-bottom: 2px; }
+.timeline-text { font-size: 13px; color: #262626; }
+.timeline-quote { font-size: 12px; color: #8c8c8c; font-style: italic; margin-top: 4px; }
+
+/* ===== ROI BAR ===== */
+.roi-item { margin-bottom: 16px; }
+.roi-header { display: flex; justify-content: space-between; margin-bottom: 6px; }
+.roi-channel { font-size: 13px; color: #262626; font-weight: 500; }
+.roi-values { font-size: 12px; color: #8c8c8c; }
+.roi-bar { background: #f0f0f0; border-radius: 4px; height: 8px; overflow: hidden; }
+.roi-bar .fill { height: 100%; background: #1677ff; border-radius: 4px; transition: width 0.5s; }
+
+/* ===== SVG CHART ===== */
+.chart-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
+.chart-tabs { display: flex; gap: 0; }
+.chart-tab { padding: 4px 12px; font-size: 12px; color: #8c8c8c; cursor: pointer; border: 1px solid #d9d9d9; background: #fff; }
+.chart-tab:first-child { border-radius: 4px 0 0 4px; }
+.chart-tab:last-child { border-radius: 0 4px 4px 0; }
+.chart-tab.active { background: #1677ff; color: #fff; border-color: #1677ff; }
+.chart-legend { display: flex; gap: 16px; margin-top: 12px; justify-content: center; }
+.legend-item { display: flex; align-items: center; gap: 6px; font-size: 12px; color: #8c8c8c; }
+.legend-dot { width: 10px; height: 3px; border-radius: 2px; }
+
+/* ===== CIRCULAR PROGRESS ===== */
+.circular-progress { position: relative; width: 100px; height: 100px; margin: 0 auto 12px; }
+.circular-progress svg { transform: rotate(-90deg); }
+.circular-progress-text { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 18px; font-weight: 700; }
+
+/* ===== CONFIRM DIALOG ===== */
+.confirm-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.45); z-index: 2000; display: none; align-items: center; justify-content: center; }
+.confirm-overlay.show { display: flex; }
+.confirm-box { background: #fff; border-radius: 8px; padding: 24px; width: 380px; box-shadow: 0 6px 30px rgba(0,0,0,0.15); }
+.confirm-box h4 { font-size: 15px; margin-bottom: 12px; }
+.confirm-box p { font-size: 13px; color: #595959; margin-bottom: 20px; line-height: 1.5; }
+.confirm-btns { display: flex; justify-content: flex-end; gap: 8px; }
+
+/* ===== FORM GROUP ===== */
+.form-group { margin-bottom: 20px; }
+.form-label { font-size: 13px; font-weight: 500; color: #262626; margin-bottom: 6px; display: block; }
+.form-hint { font-size: 12px; color: #8c8c8c; margin-top: 4px; }
+.char-count { font-size: 11px; color: #8c8c8c; text-align: right; margin-top: 2px; }
+.form-row { display: flex; gap: 12px; }
+.form-row > * { flex: 1; }
+
+/* ===== COLLAPSIBLE ===== */
+.collapse-header { cursor: pointer; display: flex; align-items: center; gap: 6px; font-size: 13px; color: #1677ff; padding: 8px 0; }
+.collapse-header:hover { text-decoration: underline; }
+.collapse-body { display: none; padding: 12px 0; }
+.collapse-body.open { display: block; }
+.collapse-arrow { transition: transform 0.2s; display: inline-block; }
+.collapse-arrow.open { transform: rotate(90deg); }
+
+/* ===== MULTI-CURRENCY ROW ===== */
+.currency-row { display: flex; gap: 8px; align-items: center; margin-bottom: 8px; }
+.currency-row .form-select { width: 100px; }
+.currency-row .form-input { flex: 1; }
+
+/* ===== MONOSPACE ===== */
+.mono { font-family: 'SF Mono', Monaco, Consolas, monospace; }
+
+/* ===== RULE BUILDER ===== */
+.rule-row { display: flex; gap: 8px; align-items: center; margin-bottom: 8px; }
+.rule-row .form-select { width: 200px; }
+.rule-row .form-input { width: 120px; }
+
+/* ===== CONFIRM SUMMARY ===== */
+.summary-section { margin-bottom: 16px; }
+.summary-section h4 { font-size: 14px; font-weight: 600; margin-bottom: 10px; color: #262626; padding-bottom: 6px; border-bottom: 1px solid #f0f0f0; }
+
+/* ===== ANIMATIONS ===== */
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+@keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+/* ===== MISC ===== */
+.text-muted { color: #8c8c8c; }
+.text-blue { color: #1677ff; }
+.text-sm { font-size: 12px; }
+.mt-8 { margin-top: 8px; }
+.mt-12 { margin-top: 12px; }
+.mt-16 { margin-top: 16px; }
+.mt-20 { margin-top: 20px; }
+.mb-8 { margin-bottom: 8px; }
+.mb-12 { margin-bottom: 12px; }
+.mb-16 { margin-bottom: 16px; }
+.gap-8 { gap: 8px; }
+.flex { display: flex; }
+.items-center { align-items: center; }
+.justify-between { justify-content: space-between; }
+.w-full { width: 100%; }
+
+/* Section title in drawer/detail */
+.section-title { font-size: 14px; font-weight: 600; color: #262626; margin: 20px 0 12px; padding-bottom: 8px; border-bottom: 1px solid #f0f0f0; }
+.section-title:first-child { margin-top: 0; }
+
+/* Detail stat cards */
+.stat-cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 20px; }
+.stat-card { background: #fff; border-radius: 8px; box-shadow: 0 1px 4px rgba(0,0,0,0.08); padding: 20px; text-align: center; }
+.stat-card .stat-value { font-size: 28px; font-weight: 700; color: #262626; }
+.stat-card .stat-sub { font-size: 12px; color: #8c8c8c; margin-top: 6px; }
+.stat-card .stat-label { font-size: 13px; color: #8c8c8c; margin-bottom: 12px; }
+
+/* Tags in filter */
+.tags-input { display: flex; flex-wrap: wrap; align-items: center; border: 1px solid #d9d9d9; border-radius: 6px; min-height: 32px; padding: 2px 8px; gap: 4px; cursor: text; }
+.tags-input:focus-within { border-color: #1677ff; box-shadow: 0 0 0 2px rgba(22,119,255,0.1); }
+.tags-input input { border: none; outline: none; flex: 1; min-width: 120px; height: 26px; font-size: 13px; }
+
+/* Scrollbar */
+.sidebar::-webkit-scrollbar, .drawer::-webkit-scrollbar, .modal::-webkit-scrollbar { width: 4px; }
+.sidebar::-webkit-scrollbar-thumb, .drawer::-webkit-scrollbar-thumb, .modal::-webkit-scrollbar-thumb { background: #d9d9d9; border-radius: 2px; }
+</style>
+</head>
+<body>
+<div class="layout">
+  <!-- ===== SIDEBAR ===== -->
+  <aside class="sidebar">
+    <div class="sidebar-logo"><span>waffo</span></div>
+    <nav class="sidebar-nav">
+      <!-- Transaction -->
+      <div class="nav-group-title">Transaction</div>
+      <div class="nav-item" data-page=""><span class="nav-icon">📋</span>Transactions</div>
+      <div class="nav-item" data-page=""><span class="nav-icon">⚠️</span>Disputes</div>
+      <div class="nav-item" data-page=""><span class="nav-icon">📊</span>Payments Analytics</div>
+      <div class="nav-item" data-page=""><span class="nav-icon">🔗</span>Payment Link</div>
+      <!-- Subscription -->
+      <div class="nav-group-title">Subscription</div>
+      <div class="nav-item" data-page=""><span class="nav-icon">🔄</span>Subscriptions</div>
+      <!-- Discounts (NEW) -->
+      <div class="nav-group-title">Discounts</div>
+      <div class="nav-item active" data-page="overview"><span class="nav-icon">📈</span>Overview</div>
+      <div class="nav-item" data-page="coupons"><span class="nav-icon">🎫</span>Coupons</div>
+      <div class="nav-item" data-page="promo-codes"><span class="nav-icon">🏷️</span>Promotion Codes</div>
+      <div class="nav-item" data-page="campaigns"><span class="nav-icon">🚀</span>Campaigns</div>
+      <!-- Settlement -->
+      <div class="nav-group-title">Settlement</div>
+      <div class="nav-item" data-page=""><span class="nav-icon">💳</span>Settleable Transactions</div>
+      <div class="nav-item" data-page=""><span class="nav-icon">📦</span>Settlement Batch</div>
+      <div class="nav-item" data-page=""><span class="nav-icon">📐</span>Settlement Estimation</div>
+      <div class="nav-item" data-page=""><span class="nav-icon">📅</span>Settlement Calendar</div>
+      <!-- Payout -->
+      <div class="nav-group-title">Payout</div>
+      <div class="nav-item" data-page=""><span class="nav-icon">💸</span>Create Payouts</div>
+      <div class="nav-item" data-page=""><span class="nav-icon">📜</span>Payout History</div>
+      <!-- Account -->
+      <div class="nav-group-title">Account</div>
+      <div class="nav-item" data-page=""><span class="nav-icon">🏦</span>Settlement Account</div>
+      <div class="nav-item" data-page=""><span class="nav-icon">🔒</span>Reserve Account</div>
+      <div class="nav-item" data-page=""><span class="nav-icon">📤</span>Withdrawal History</div>
+      <!-- Service -->
+      <div class="nav-group-title">Service</div>
+      <div class="nav-item" data-page=""><span class="nav-icon">📥</span>Payin</div>
+      <div class="nav-item" data-page=""><span class="nav-icon">📤</span>Payout</div>
+      <!-- Checkout -->
+      <div class="nav-group-title">Checkout</div>
+      <div class="nav-item" data-page=""><span class="nav-icon">🎨</span>Cashier Customization</div>
+      <!-- Settings -->
+      <div class="nav-group-title">Settings</div>
+      <div class="nav-item" data-page=""><span class="nav-icon">👥</span>Operators</div>
+      <div class="nav-item" data-page=""><span class="nav-icon">🏦</span>Bank Accounts</div>
+      <div class="nav-item" data-page=""><span class="nav-icon">⚙️</span>Integration</div>
+    </nav>
+  </aside>
+
+  <!-- ===== MAIN AREA ===== -->
+  <div class="main-area">
+    <!-- TOPBAR -->
+    <div class="topbar">
+      <div class="topbar-left">
+        <select class="merchant-select">
+          <option>Merchant ID: M_1029384756</option>
+          <option>Merchant ID: M_5678901234</option>
+        </select>
+      </div>
+      <div class="topbar-right">
+        <a href="#">FAQ</a>
+        <a href="#">API Docs</a>
+        <div class="user-info">
+          <div class="user-avatar">JD</div>
+          <span>John Doe</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- CONTENT -->
+    <div class="content">
+
+      <!-- ==================== PAGE: OVERVIEW ==================== -->
+      <div id="page-overview" class="page active">
+        <div class="page-title">Discount Overview</div>
+
+        <!-- KPI Cards -->
+        <div class="kpi-row">
+          <div class="kpi-card">
+            <div class="kpi-label">Active Coupons</div>
+            <div class="kpi-value">24</div>
+            <div class="kpi-change up">↑ 8% vs last month</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-label">Discount Amount This Month</div>
+            <div class="kpi-value">$12,480.00</div>
+            <div class="kpi-change up">↑ 15% vs last month</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-label">Redemption Rate</div>
+            <div class="kpi-value">68.3%</div>
+            <div class="kpi-change down">↓ 2.1% vs last month</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-label">Active Campaigns</div>
+            <div class="kpi-value">3</div>
+            <div class="kpi-change neutral">1 pending review</div>
+          </div>
+        </div>
+
+        <!-- Charts Row -->
+        <div class="charts-row">
+          <!-- Discount Usage Trend -->
+          <div class="card chart-left">
+            <div class="chart-header">
+              <div class="card-title" style="margin-bottom:0">Discount Usage Trend</div>
+              <div class="chart-tabs">
+                <div class="chart-tab active" onclick="selectChartTab(this)">7D</div>
+                <div class="chart-tab" onclick="selectChartTab(this)">30D</div>
+                <div class="chart-tab" onclick="selectChartTab(this)">90D</div>
+              </div>
+            </div>
+            <div id="trend-chart" style="width:100%;overflow:hidden;"></div>
+            <div class="chart-legend">
+              <div class="legend-item"><div class="legend-dot" style="background:#1677ff"></div>Discount Amount</div>
+              <div class="legend-item"><div class="legend-dot" style="background:#faad14"></div>Redemptions</div>
+            </div>
+          </div>
+
+          <!-- Channel ROI -->
+          <div class="card chart-right">
+            <div class="card-title">Channel ROI</div>
+            <div class="roi-item">
+              <div class="roi-header"><span class="roi-channel">facebook</span><span class="roi-values">$3,240 · 284%</span></div>
+              <div class="roi-bar"><div class="fill" style="width:100%"></div></div>
+            </div>
+            <div class="roi-item">
+              <div class="roi-header"><span class="roi-channel">email_campaign</span><span class="roi-values">$2,180 · 195%</span></div>
+              <div class="roi-bar"><div class="fill" style="width:69%"></div></div>
+            </div>
+            <div class="roi-item">
+              <div class="roi-header"><span class="roi-channel">partner_xyz</span><span class="roi-values">$1,890 · 167%</span></div>
+              <div class="roi-bar"><div class="fill" style="width:59%"></div></div>
+            </div>
+            <div class="roi-item">
+              <div class="roi-header"><span class="roi-channel">google_ads</span><span class="roi-values">$1,420 · 128%</span></div>
+              <div class="roi-bar"><div class="fill" style="width:45%"></div></div>
+            </div>
+            <div class="roi-item">
+              <div class="roi-header"><span class="roi-channel">referral</span><span class="roi-values">$980 · 89%</span></div>
+              <div class="roi-bar"><div class="fill" style="width:31%"></div></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Recent Discount Activity -->
+        <div class="card">
+          <div class="card-title">Recent Discount Activity</div>
+          <div class="table-wrapper">
+            <table>
+              <thead><tr>
+                <th>Discount ID</th><th>Promotion Code</th><th>Customer ID</th><th>Original Amount</th><th>Discount Amount</th><th>Payment Type</th><th>Status</th><th>Time</th>
+              </tr></thead>
+              <tbody>
+                <tr><td class="mono text-sm">DSC_8a3f21</td><td class="mono text-sm">BLACKFRI01</td><td class="text-sm">cus_M3k9x</td><td>$128.00</td><td>$25.60</td><td><span class="tag-channel">one_time</span></td><td><span class="badge badge-active">COMPLETED</span></td><td class="text-muted text-sm">2026-02-26 17:32</td></tr>
+                <tr><td class="mono text-sm">DSC_7b2e10</td><td class="mono text-sm">NEWUSER2026</td><td class="text-sm">cus_P8n2a</td><td>$45.00</td><td>$5.00</td><td><span class="tag-channel">one_time</span></td><td><span class="badge badge-active">COMPLETED</span></td><td class="text-muted text-sm">2026-02-26 16:45</td></tr>
+                <tr><td class="mono text-sm">DSC_6c1d09</td><td class="mono text-sm">BLACKFRI02</td><td class="text-sm">cus_K5j8r</td><td>$200.00</td><td>$40.00</td><td><span class="tag-channel">subscription</span></td><td><span class="badge badge-active">COMPLETED</span></td><td class="text-muted text-sm">2026-02-26 15:18</td></tr>
+                <tr><td class="mono text-sm">DSC_5d0c08</td><td class="mono text-sm">EARLYBIRD10</td><td class="text-sm">cus_R2m4b</td><td>$95.00</td><td>$10.00</td><td><span class="tag-channel">one_time</span></td><td><span class="badge badge-pending">PENDING</span></td><td class="text-muted text-sm">2026-02-26 14:52</td></tr>
+                <tr><td class="mono text-sm">DSC_4e9b07</td><td class="mono text-sm">VIP_ALICE</td><td class="text-sm">cus_A1c3e</td><td>$350.00</td><td>$35.00</td><td><span class="tag-channel">subscription</span></td><td><span class="badge badge-active">COMPLETED</span></td><td class="text-muted text-sm">2026-02-26 13:20</td></tr>
+                <tr><td class="mono text-sm">DSC_3f8a06</td><td class="mono text-sm">PARTNER_A_Q1</td><td class="text-sm">cus_T7p1d</td><td>$180.00</td><td>$27.00</td><td><span class="tag-channel">one_time</span></td><td><span class="badge badge-active">COMPLETED</span></td><td class="text-muted text-sm">2026-02-26 12:05</td></tr>
+                <tr><td class="mono text-sm">DSC_2g7905</td><td class="mono text-sm">GAME_TOP5</td><td class="text-sm">cus_W9s6f</td><td>$50.00</td><td>$2.50</td><td><span class="tag-channel">one_time</span></td><td><span class="badge badge-active">COMPLETED</span></td><td class="text-muted text-sm">2026-02-26 11:33</td></tr>
+                <tr><td class="mono text-sm">DSC_1h6804</td><td class="mono text-sm">BF2026_XXXXX</td><td class="text-sm">cus_Y4u8g</td><td>$275.00</td><td>$55.00</td><td><span class="tag-channel">subscription</span></td><td><span class="badge badge-pending">PENDING</span></td><td class="text-muted text-sm">2026-02-26 10:47</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- ==================== PAGE: COUPONS ==================== -->
+      <div id="page-coupons" class="page">
+        <div class="page-title">Coupons</div>
+
+        <!-- Filter -->
+        <div class="card">
+          <div class="filter-row">
+            <select class="form-select"><option>All Status</option><option>Active</option><option>Expired</option><option>Archived</option></select>
+            <select class="form-select"><option>All Types</option><option>Percent Off</option><option>Amount Off</option></select>
+            <input class="form-input" style="flex:1;min-width:200px;" placeholder="Search Coupon ID or Name...">
+            <input class="form-input" type="date" style="width:140px;">
+            <span class="text-muted">→</span>
+            <input class="form-input" type="date" style="width:140px;">
+            <button class="btn btn-default btn-sm">Reset</button>
+            <button class="btn btn-primary btn-sm">Search</button>
+          </div>
+        </div>
+
+        <!-- Action Bar -->
+        <div class="action-bar">
+          <div class="action-bar-left">Total <b>8</b> coupons</div>
+          <div class="action-bar-right">
+            <button class="btn btn-primary" onclick="openModal('createCouponModal')">+ Create Coupon</button>
+          </div>
+        </div>
+
+        <!-- Table -->
+        <div class="card" style="padding:0;">
+          <div class="table-wrapper">
+            <table>
+              <thead><tr>
+                <th>Coupon ID</th><th>Name</th><th>Type</th><th>Value</th><th>Duration</th><th>Redemptions</th><th>Redeem By</th><th>Status</th><th>Actions</th>
+              </tr></thead>
+              <tbody>
+                <tr><td class="mono text-sm">CPN001</td><td>Black Friday 20%</td><td><span class="badge badge-pct">% Off</span></td><td>20%</td><td>once</td><td>1,243 / 2,000 <div class="progress-bar"><div class="fill blue" style="width:62%"></div></div></td><td>2026-11-30</td><td><span class="badge badge-active">ACTIVE</span></td><td><button class="btn-link" onclick="openCouponDetail('CPN001')">Detail</button> <button class="btn-link-gray" onclick="showConfirm('archive')">Archive</button></td></tr>
+                <tr><td class="mono text-sm">CPN002</td><td>SaaS Annual 15%</td><td><span class="badge badge-pct">% Off</span></td><td>15%</td><td>repeating 12mo</td><td>89 / 500 <div class="progress-bar"><div class="fill blue" style="width:18%"></div></div></td><td>—</td><td><span class="badge badge-active">ACTIVE</span></td><td><button class="btn-link" onclick="openCouponDetail('CPN002')">Detail</button> <button class="btn-link-gray" onclick="showConfirm('archive')">Archive</button></td></tr>
+                <tr><td class="mono text-sm">CPN003</td><td>New User $5 Off</td><td><span class="badge badge-amt">$ Off</span></td><td>$5.00 USD</td><td>once</td><td>2,891 / 5,000 <div class="progress-bar"><div class="fill blue" style="width:58%"></div></div></td><td>2026-06-30</td><td><span class="badge badge-active">ACTIVE</span></td><td><button class="btn-link" onclick="openCouponDetail('CPN003')">Detail</button> <button class="btn-link-gray" onclick="showConfirm('archive')">Archive</button></td></tr>
+                <tr><td class="mono text-sm">CPN004</td><td>VIP Forever</td><td><span class="badge badge-pct">% Off</span></td><td>10%</td><td>forever</td><td>45</td><td>—</td><td><span class="badge badge-active">ACTIVE</span></td><td><button class="btn-link" onclick="openCouponDetail('CPN004')">Detail</button> <button class="btn-link-gray" onclick="showConfirm('archive')">Archive</button></td></tr>
+                <tr><td class="mono text-sm">CPN005</td><td>Summer Sale</td><td><span class="badge badge-pct">% Off</span></td><td>25%</td><td>once</td><td>500 / 500 <div class="progress-bar"><div class="fill blue" style="width:100%"></div></div></td><td>2026-08-31</td><td><span class="badge badge-expired">EXPIRED</span></td><td><button class="btn-link" onclick="openCouponDetail('CPN005')">Detail</button></td></tr>
+                <tr><td class="mono text-sm">CPN006</td><td>Early Bird</td><td><span class="badge badge-amt">$ Off</span></td><td>$10.00 USD</td><td>once</td><td>120 / 200 <div class="progress-bar"><div class="fill blue" style="width:60%"></div></div></td><td>2026-03-31</td><td><span class="badge badge-active">ACTIVE</span></td><td><button class="btn-link" onclick="openCouponDetail('CPN006')">Detail</button> <button class="btn-link-gray" onclick="showConfirm('archive')">Archive</button></td></tr>
+                <tr><td class="mono text-sm">CPN007</td><td>Legacy Promo</td><td><span class="badge badge-pct">% Off</span></td><td>30%</td><td>once</td><td>300 / 300 <div class="progress-bar"><div class="fill blue" style="width:100%"></div></div></td><td>2025-12-31</td><td><span class="badge badge-archived">ARCHIVED</span></td><td><button class="btn-link" onclick="openCouponDetail('CPN007')">Detail</button></td></tr>
+                <tr><td class="mono text-sm">CPN008</td><td>Game TopUp 5%</td><td><span class="badge badge-pct">% Off</span></td><td>5%</td><td>forever</td><td>1,205</td><td>—</td><td><span class="badge badge-active">ACTIVE</span></td><td><button class="btn-link" onclick="openCouponDetail('CPN008')">Detail</button> <button class="btn-link-gray" onclick="showConfirm('archive')">Archive</button></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- ==================== PAGE: PROMOTION CODES ==================== -->
+      <div id="page-promo-codes" class="page">
+        <div class="page-title">Promotion Codes</div>
+
+        <!-- Filter -->
+        <div class="card">
+          <div class="filter-row">
+            <input class="form-input" placeholder="Search by Coupon ID..." style="width:180px;">
+            <select class="form-select"><option>All Status</option><option>Active</option><option>Inactive</option></select>
+            <select class="form-select"><option>All Channels</option><option>facebook</option><option>email_campaign</option><option>partner_xyz</option><option>google_ads</option><option>referral</option></select>
+            <select class="form-select"><option>First Time: All</option><option>Yes</option><option>No</option></select>
+            <button class="btn btn-default btn-sm">Reset</button>
+            <button class="btn btn-primary btn-sm">Search</button>
+          </div>
+        </div>
+
+        <!-- Action Bar -->
+        <div class="action-bar">
+          <div class="action-bar-left">Total <b>12</b> promotion codes</div>
+          <div class="action-bar-right">
+            <button class="btn btn-default" onclick="openModal('bulkCreateModal')">Bulk Create</button>
+            <button class="btn btn-primary" onclick="openModal('createPromoModal')">+ Create Promotion Code</button>
+          </div>
+        </div>
+
+        <!-- Table -->
+        <div class="card" style="padding:0;">
+          <div class="table-wrapper">
+            <table>
+              <thead><tr>
+                <th>Code</th><th>Coupon</th><th>Status</th><th>Redemptions</th><th>Expires At</th><th>Min Amount</th><th>Regions</th><th>Channel</th><th>First Time</th><th>Actions</th>
+              </tr></thead>
+              <tbody>
+                <tr><td><button class="btn-link mono" onclick="openPromoDetail('BLACKFRI01')">BLACKFRI01</button></td><td class="mono text-sm">CPN001</td><td><span class="badge badge-active">ACTIVE</span></td><td>412 / 1,000 <div class="progress-bar"><div class="fill blue" style="width:41%"></div></div></td><td>2026-11-30</td><td>$50.00</td><td><span class="tag">US</span><span class="tag">CA</span><span class="tag">GB</span></td><td><span class="tag-channel">facebook</span></td><td>No</td><td><button class="btn-link" onclick="openPromoDetail('BLACKFRI01')">Detail</button> <button class="btn-link-gray" onclick="showConfirm('deactivate')">Deactivate</button></td></tr>
+                <tr><td><button class="btn-link mono" onclick="openPromoDetail('BLACKFRI02')">BLACKFRI02</button></td><td class="mono text-sm">CPN001</td><td><span class="badge badge-active">ACTIVE</span></td><td>389 / 1,000 <div class="progress-bar"><div class="fill blue" style="width:39%"></div></div></td><td>2026-11-30</td><td>$50.00</td><td><span class="tag">US</span><span class="tag">CA</span><span class="tag">GB</span></td><td><span class="tag-channel">email_campaign</span></td><td>No</td><td><button class="btn-link" onclick="openPromoDetail('BLACKFRI02')">Detail</button> <button class="btn-link-gray" onclick="showConfirm('deactivate')">Deactivate</button></td></tr>
+                <tr><td><button class="btn-link mono" onclick="openPromoDetail('NEWUSER2026')">NEWUSER2026</button></td><td class="mono text-sm">CPN003</td><td><span class="badge badge-active">ACTIVE</span></td><td>891 / 2,000 <div class="progress-bar"><div class="fill blue" style="width:45%"></div></div></td><td>2026-06-30</td><td>$30.00</td><td><span class="tag">All</span></td><td><span class="tag-channel">google_ads</span></td><td>Yes</td><td><button class="btn-link" onclick="openPromoDetail('NEWUSER2026')">Detail</button> <button class="btn-link-gray" onclick="showConfirm('deactivate')">Deactivate</button></td></tr>
+                <tr><td><button class="btn-link mono" onclick="openPromoDetail('VIP_ALICE')">VIP_ALICE</button></td><td class="mono text-sm">CPN004</td><td><span class="badge badge-active">ACTIVE</span></td><td>3</td><td>—</td><td>—</td><td><span class="tag">All</span></td><td>—</td><td>No</td><td><button class="btn-link" onclick="openPromoDetail('VIP_ALICE')">Detail</button> <button class="btn-link-gray" onclick="showConfirm('deactivate')">Deactivate</button></td></tr>
+                <tr><td><button class="btn-link mono" onclick="openPromoDetail('PARTNER_A_Q1')">PARTNER_A_Q1</button></td><td class="mono text-sm">CPN002</td><td><span class="badge badge-active">ACTIVE</span></td><td>23 / 100 <div class="progress-bar"><div class="fill blue" style="width:23%"></div></div></td><td>2026-03-31</td><td>—</td><td><span class="tag">All</span></td><td><span class="tag-channel">partner_xyz</span></td><td>Yes</td><td><button class="btn-link" onclick="openPromoDetail('PARTNER_A_Q1')">Detail</button> <button class="btn-link-gray" onclick="showConfirm('deactivate')">Deactivate</button></td></tr>
+                <tr><td><button class="btn-link mono" onclick="openPromoDetail('SUMMER25')">SUMMER25</button></td><td class="mono text-sm">CPN005</td><td><span class="badge badge-inactive">INACTIVE</span></td><td>500 / 500 <div class="progress-bar"><div class="fill blue" style="width:100%"></div></div></td><td>2026-08-31</td><td>—</td><td><span class="tag">All</span></td><td><span class="tag-channel">email_campaign</span></td><td>No</td><td><button class="btn-link" onclick="openPromoDetail('SUMMER25')">Detail</button></td></tr>
+                <tr><td><button class="btn-link mono" onclick="openPromoDetail('EARLYBIRD10')">EARLYBIRD10</button></td><td class="mono text-sm">CPN006</td><td><span class="badge badge-active">ACTIVE</span></td><td>45 / 100 <div class="progress-bar"><div class="fill blue" style="width:45%"></div></div></td><td>2026-03-31</td><td>$80.00</td><td><span class="tag">US</span><span class="tag">GB</span></td><td><span class="tag-channel">referral</span></td><td>Yes</td><td><button class="btn-link" onclick="openPromoDetail('EARLYBIRD10')">Detail</button> <button class="btn-link-gray" onclick="showConfirm('deactivate')">Deactivate</button></td></tr>
+                <tr><td><button class="btn-link mono" onclick="openPromoDetail('GAME_TOP5')">GAME_TOP5</button></td><td class="mono text-sm">CPN008</td><td><span class="badge badge-active">ACTIVE</span></td><td>205 / 500 <div class="progress-bar"><div class="fill blue" style="width:41%"></div></div></td><td>—</td><td>$10.00</td><td><span class="tag">SG</span><span class="tag">MY</span><span class="tag">TH</span></td><td>—</td><td>No</td><td><button class="btn-link" onclick="openPromoDetail('GAME_TOP5')">Detail</button> <button class="btn-link-gray" onclick="showConfirm('deactivate')">Deactivate</button></td></tr>
+                <tr><td><button class="btn-link mono" onclick="openPromoDetail('BF2026_XXXXX')">BF2026_XXXXX</button></td><td class="mono text-sm">CPN001</td><td><span class="badge badge-active">ACTIVE</span></td><td>42 / 100 <div class="progress-bar"><div class="fill blue" style="width:42%"></div></div></td><td>2026-11-30</td><td>$50.00</td><td><span class="tag">US</span></td><td><span class="tag-channel">facebook</span></td><td>No</td><td><button class="btn-link" onclick="openPromoDetail('BF2026_XXXXX')">Detail</button> <button class="btn-link-gray" onclick="showConfirm('deactivate')">Deactivate</button></td></tr>
+                <tr><td><button class="btn-link mono" onclick="openPromoDetail('REFERRAL_VIP')">REFERRAL_VIP</button></td><td class="mono text-sm">CPN004</td><td><span class="badge badge-inactive">INACTIVE</span></td><td>12 / 50 <div class="progress-bar"><div class="fill blue" style="width:24%"></div></div></td><td>2026-01-01</td><td>—</td><td><span class="tag">All</span></td><td><span class="tag-channel">referral</span></td><td>No</td><td><button class="btn-link" onclick="openPromoDetail('REFERRAL_VIP')">Detail</button></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- ==================== PAGE: CAMPAIGNS (LIST) ==================== -->
+      <div id="page-campaigns" class="page">
+        <div id="campaigns-list">
+          <div class="page-title">Campaigns</div>
+
+          <!-- Filter -->
+          <div class="card">
+            <div class="filter-row">
+              <select class="form-select"><option>All Status</option><option>Draft</option><option>Pending Review</option><option>Active</option><option>Paused</option><option>Ended</option><option>Archived</option></select>
+              <select class="form-select"><option>All Types</option><option>First Charge</option><option>Threshold</option><option>Rebate</option><option>Flash Sale</option></select>
+              <input class="form-input" placeholder="Search campaigns..." style="flex:1;min-width:180px;">
+              <input class="form-input" type="date" style="width:140px;">
+              <span class="text-muted">→</span>
+              <input class="form-input" type="date" style="width:140px;">
+              <button class="btn btn-default btn-sm">Reset</button>
+              <button class="btn btn-primary btn-sm">Search</button>
+            </div>
+          </div>
+
+          <!-- Action Bar -->
+          <div class="action-bar">
+            <div class="action-bar-left">Total <b>6</b> campaigns</div>
+            <div class="action-bar-right">
+              <button class="btn btn-primary" onclick="openModal('createCampaignModal')">+ Create Campaign</button>
+            </div>
+          </div>
+
+          <!-- Table -->
+          <div class="card" style="padding:0;">
+            <div class="table-wrapper">
+              <table>
+                <thead><tr>
+                  <th>Campaign ID</th><th>Name</th><th>Type</th><th>Status</th><th>Period</th><th>Budget</th><th>Redemptions</th><th>Actions</th>
+                </tr></thead>
+                <tbody>
+                  <tr>
+                    <td class="mono text-sm">CAM001</td><td>BF2026 Flash Sale</td><td><span class="badge badge-flash">Flash Sale</span></td><td><span class="badge badge-active">ACTIVE</span></td><td class="text-sm">2026-11-29 ~ 2026-11-29</td>
+                    <td>$4,230 / $5,000 <span style="color:#d46b08">⚠</span><div class="progress-bar"><div class="fill orange" style="width:85%"></div></div></td>
+                    <td>1,243</td>
+                    <td><button class="btn-link" onclick="showCampaignDetail()">Detail</button> <button class="btn-link-gray" onclick="showConfirm('pause')">Pause</button></td>
+                  </tr>
+                  <tr>
+                    <td class="mono text-sm">CAM002</td><td>New User Welcome</td><td><span class="badge badge-firstcharge">First Charge</span></td><td><span class="badge badge-active">ACTIVE</span></td><td class="text-sm">2026-01-01 ~ 2026-12-31</td>
+                    <td>$1,890 / $10,000 <div class="progress-bar"><div class="fill blue" style="width:19%"></div></div></td>
+                    <td>378</td>
+                    <td><button class="btn-link" onclick="showCampaignDetail()">Detail</button> <button class="btn-link-gray" onclick="showConfirm('pause')">Pause</button></td>
+                  </tr>
+                  <tr>
+                    <td class="mono text-sm">CAM003</td><td>SaaS Annual Promo</td><td><span class="badge badge-threshold">Threshold</span></td><td><span class="badge badge-paused">PAUSED</span></td><td class="text-sm">2026-02-01 ~ 2026-04-30</td>
+                    <td>$2,100 / $5,000 <div class="progress-bar"><div class="fill blue" style="width:42%"></div></div></td>
+                    <td>210</td>
+                    <td><button class="btn-link" onclick="showCampaignDetail()">Detail</button> <button class="btn-link-gray" onclick="showConfirm('resume')">Resume</button></td>
+                  </tr>
+                  <tr>
+                    <td class="mono text-sm">CAM004</td><td>Game TopUp Rebate</td><td><span class="badge badge-rebate">Rebate</span></td><td><span class="badge badge-pending">PENDING REVIEW</span></td><td class="text-sm">2026-03-01 ~ 2026-05-31</td>
+                    <td>— / $15,000 <div class="progress-bar"><div class="fill blue" style="width:0%"></div></div></td>
+                    <td>0</td>
+                    <td><button class="btn-link" onclick="showCampaignDetail()">Detail</button></td>
+                  </tr>
+                  <tr>
+                    <td class="mono text-sm">CAM005</td><td>Summer Clearance</td><td><span class="badge badge-flash">Flash Sale</span></td><td><span class="badge badge-ended">ENDED</span></td><td class="text-sm">2025-07-01 ~ 2025-07-31</td>
+                    <td>$8,920 / $9,000 <div class="progress-bar"><div class="fill red" style="width:99%"></div></div></td>
+                    <td>2,891</td>
+                    <td><button class="btn-link" onclick="showCampaignDetail()">Detail</button></td>
+                  </tr>
+                  <tr>
+                    <td class="mono text-sm">CAM006</td><td>Early Bird 2026</td><td><span class="badge badge-firstcharge">First Charge</span></td><td><span class="badge badge-draft">DRAFT</span></td><td class="text-sm">2026-04-01 ~ 2026-06-30</td>
+                    <td>— / $3,000 <div class="progress-bar"><div class="fill blue" style="width:0%"></div></div></td>
+                    <td>0</td>
+                    <td><button class="btn-link" onclick="showCampaignDetail()">Detail</button> <button class="btn-link-gray">Edit</button></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- Campaign Detail (hidden by default) -->
+        <div id="campaign-detail" style="display:none;">
+          <div class="breadcrumb">
+            <a onclick="backToCampaigns()">Campaigns</a>
+            <span>›</span>
+            <span>CAM001 BF2026 Flash Sale</span>
+          </div>
+
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
+            <div style="display:flex;align-items:center;gap:12px;">
+              <h1 style="font-size:22px;font-weight:700;color:#262626;">BF2026 Flash Sale</h1>
+              <span class="badge badge-active">ACTIVE</span>
+            </div>
+            <div style="display:flex;gap:8px;">
+              <button class="btn btn-default" onclick="showConfirm('pause')">⏸ Pause</button>
+              <button class="btn btn-danger" onclick="showConfirm('end')">End Campaign</button>
+            </div>
+          </div>
+
+          <!-- Stat Cards -->
+          <div class="stat-cards">
+            <div class="stat-card">
+              <div class="stat-label">Budget Usage</div>
+              <div class="circular-progress">
+                <svg width="100" height="100" viewBox="0 0 100 100">
+                  <circle cx="50" cy="50" r="42" fill="none" stroke="#f0f0f0" stroke-width="8"/>
+                  <circle cx="50" cy="50" r="42" fill="none" stroke="#faad14" stroke-width="8" stroke-dasharray="264" stroke-dashoffset="40" stroke-linecap="round"/>
+                </svg>
+                <div class="circular-progress-text" style="color:#d46b08;">85%</div>
+              </div>
+              <div style="text-align:center;font-size:14px;color:#262626;font-weight:500;">$4,230 / $5,000</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-label">Total Redemptions</div>
+              <div class="stat-value">1,243</div>
+              <div class="stat-sub up" style="color:#52c41a;">↑ 89 today</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-label">Total Discount</div>
+              <div class="stat-value">$4,230.00</div>
+              <div class="stat-sub">Avg $3.40 per redemption</div>
+            </div>
+          </div>
+
+          <!-- Basic Info -->
+          <div class="card">
+            <div class="card-title">Basic Information</div>
+            <div class="lv-grid">
+              <div class="lv-item"><div class="lv-label">Campaign ID</div><div class="lv-value mono">CAM001</div></div>
+              <div class="lv-item"><div class="lv-label">Type</div><div class="lv-value"><span class="badge badge-flash">Flash Sale</span></div></div>
+              <div class="lv-item"><div class="lv-label">Status</div><div class="lv-value"><span class="badge badge-active">ACTIVE</span></div></div>
+              <div class="lv-item"><div class="lv-label">Start Time</div><div class="lv-value">2026-11-29 00:00:00</div></div>
+              <div class="lv-item"><div class="lv-label">End Time</div><div class="lv-value">2026-11-29 23:59:59</div></div>
+              <div class="lv-item"><div class="lv-label">Budget Exhausted Action</div><div class="lv-value">Pause Campaign</div></div>
+              <div class="lv-item"><div class="lv-label">Created By</div><div class="lv-value">operator@waffo.com</div></div>
+              <div class="lv-item"><div class="lv-label">Created At</div><div class="lv-value">2026-02-20 10:30:00</div></div>
+              <div class="lv-item"><div class="lv-label">Approved By</div><div class="lv-value">admin@waffo.com</div></div>
+            </div>
+          </div>
+
+          <!-- Rules -->
+          <div class="card">
+            <div class="card-title">Campaign Rules</div>
+            <div class="json-display"><pre>{
+  <span class="json-key">"condition"</span>: <span class="json-string">"AND"</span>,
+  <span class="json-key">"rules"</span>: [
+    {
+      <span class="json-key">"field"</span>: <span class="json-string">"payment.amount"</span>,
+      <span class="json-key">"operator"</span>: <span class="json-string">">="</span>,
+      <span class="json-key">"value"</span>: <span class="json-number">5000</span>,
+      <span class="json-key">"currency"</span>: <span class="json-string">"USD"</span>
+    },
+    {
+      <span class="json-key">"field"</span>: <span class="json-string">"customer.first_time_transaction"</span>,
+      <span class="json-key">"operator"</span>: <span class="json-string">"=="</span>,
+      <span class="json-key">"value"</span>: <span class="json-bool">true</span>
+    }
+  ]
+}</pre></div>
+          </div>
+
+          <!-- Associated Coupons -->
+          <div class="card">
+            <div class="card-title">Associated Coupons (1)</div>
+            <table>
+              <thead><tr><th>Coupon ID</th><th>Name</th><th>Type</th><th>Value</th><th>Status</th></tr></thead>
+              <tbody>
+                <tr><td class="mono text-sm">CPN001</td><td>Black Friday 20%</td><td><span class="badge badge-pct">% Off</span></td><td>20%</td><td><span class="badge badge-active">ACTIVE</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Approval History -->
+          <div class="card">
+            <div class="card-title">Approval History</div>
+            <div class="timeline-item">
+              <div class="timeline-dot"></div>
+              <div class="timeline-content">
+                <div class="timeline-time">2026-02-20 10:30</div>
+                <div class="timeline-text">Submitted by operator@waffo.com</div>
+              </div>
+            </div>
+            <div class="timeline-item">
+              <div class="timeline-dot"></div>
+              <div class="timeline-content">
+                <div class="timeline-time">2026-02-20 14:15</div>
+                <div class="timeline-text">Approved by admin@waffo.com</div>
+                <div class="timeline-quote">"Looks good, approved."</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- end .content -->
+  </div><!-- end .main-area -->
+</div><!-- end .layout -->
+
+<!-- ==================== COUPON DETAIL DRAWER ==================== -->
+<div id="couponDrawerOverlay" class="drawer-overlay" onclick="closeCouponDrawer()"></div>
+<div id="couponDrawer" class="drawer">
+  <div class="drawer-header">
+    <h3>Coupon Detail</h3>
+    <button class="modal-close" onclick="closeCouponDrawer()">✕</button>
+  </div>
+  <div class="drawer-body" id="couponDrawerBody">
+    <!-- Dynamic content -->
+  </div>
+</div>
+
+<!-- ==================== PROMO CODE DETAIL DRAWER ==================== -->
+<div id="promoDrawerOverlay" class="drawer-overlay" onclick="closePromoDrawer()"></div>
+<div id="promoDrawer" class="drawer">
+  <div class="drawer-header">
+    <h3>Promotion Code Detail</h3>
+    <button class="modal-close" onclick="closePromoDrawer()">✕</button>
+  </div>
+  <div class="drawer-body" id="promoDrawerBody">
+    <!-- Dynamic content -->
+  </div>
+</div>
+
+<!-- ==================== CREATE COUPON MODAL ==================== -->
+<div id="createCouponModal" class="modal-overlay" onclick="if(event.target===this)closeModal('createCouponModal')">
+  <div class="modal" style="width:560px;">
+    <div class="modal-header">
+      <h3>Create Coupon</h3>
+      <button class="modal-close" onclick="closeModal('createCouponModal')">✕</button>
+    </div>
+    <div class="modal-body">
+      <!-- Stepper -->
+      <div class="stepper" id="couponStepper">
+        <div class="step active" data-step="1"><div class="step-num">1</div><span class="step-label">Basic Setup</span></div>
+        <div class="step-connector"></div>
+        <div class="step" data-step="2"><div class="step-num">2</div><span class="step-label">Restrictions</span></div>
+        <div class="step-connector"></div>
+        <div class="step" data-step="3"><div class="step-num">3</div><span class="step-label">Confirm</span></div>
+      </div>
+
+      <!-- Step 1 -->
+      <div id="couponStep1" class="coupon-step">
+        <div class="form-group">
+          <label class="form-label">Name</label>
+          <input class="form-input w-full" id="couponName" maxlength="40" placeholder="Enter coupon name" oninput="updateCharCount()">
+          <div class="char-count" id="couponCharCount">0 / 40</div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Discount Type</label>
+          <div class="radio-cards">
+            <div class="radio-card selected" onclick="selectDiscountType('pct')">
+              <div class="radio-card-icon">%</div>
+              <div class="radio-card-title">Percentage Off</div>
+              <div class="radio-card-desc">Discount by a percentage</div>
+            </div>
+            <div class="radio-card" onclick="selectDiscountType('amt')">
+              <div class="radio-card-icon">$</div>
+              <div class="radio-card-title">Fixed Amount</div>
+              <div class="radio-card-desc">Discount by a fixed amount</div>
+            </div>
+          </div>
+        </div>
+        <!-- Percentage fields -->
+        <div id="pctFields">
+          <div class="form-group">
+            <label class="form-label">Percent Off</label>
+            <div style="display:flex;align-items:center;gap:6px;">
+              <input class="form-input" type="number" min="1" max="100" placeholder="1-100" style="width:120px;">
+              <span class="text-muted">%</span>
+            </div>
+          </div>
+        </div>
+        <!-- Amount fields -->
+        <div id="amtFields" style="display:none;">
+          <div class="form-group">
+            <label class="form-label">Amount Off</label>
+            <div class="form-row">
+              <input class="form-input" type="number" placeholder="0.00" style="flex:2;">
+              <select class="form-select" style="flex:1;"><option>USD</option><option>EUR</option><option>GBP</option><option>JPY</option><option>SGD</option></select>
+            </div>
+          </div>
+          <div class="form-group">
+            <div class="collapse-header" onclick="toggleCollapse('multiCurrency')">
+              <span class="collapse-arrow" id="multiCurrencyArrow">▶</span>
+              Multi-Currency Configuration
+            </div>
+            <div class="collapse-body" id="multiCurrencyBody">
+              <div id="currencyRows">
+                <div class="currency-row">
+                  <select class="form-select"><option>EUR</option><option>GBP</option><option>JPY</option><option>SGD</option></select>
+                  <input class="form-input" type="number" placeholder="Amount">
+                  <button class="btn-link-gray" onclick="this.parentElement.remove()">✕</button>
+                </div>
+              </div>
+              <button class="btn btn-default btn-sm mt-8" onclick="addCurrencyRow()">+ Add Currency</button>
+            </div>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Duration</label>
+          <div style="display:flex;gap:12px;">
+            <label style="display:flex;align-items:center;gap:4px;cursor:pointer;"><input type="radio" name="duration" value="once" checked onchange="toggleDurationMonths()"> Once</label>
+            <label style="display:flex;align-items:center;gap:4px;cursor:pointer;"><input type="radio" name="duration" value="repeating" onchange="toggleDurationMonths()"> Repeating</label>
+            <label style="display:flex;align-items:center;gap:4px;cursor:pointer;"><input type="radio" name="duration" value="forever" onchange="toggleDurationMonths()"> Forever</label>
+          </div>
+        </div>
+        <div class="form-group" id="durationMonths" style="display:none;">
+          <label class="form-label">Duration in Months</label>
+          <input class="form-input" type="number" min="1" placeholder="e.g. 12" style="width:160px;">
+        </div>
+      </div>
+
+      <!-- Step 2 -->
+      <div id="couponStep2" class="coupon-step" style="display:none;">
+        <div class="form-group">
+          <label class="form-label">Max Redemptions</label>
+          <input class="form-input w-full" type="number" placeholder="No limit">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Redeem By</label>
+          <input class="form-input w-full" type="date">
+          <div class="form-hint">Leave empty for no expiration</div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Applies To</label>
+          <div class="tags-input" id="appliesTo" onclick="this.querySelector('input').focus()">
+            <input placeholder="Add product ID or category..." onkeydown="if(event.key==='Enter'){addTag('appliesTo',this.value);this.value='';event.preventDefault();}">
+          </div>
+          <div class="form-hint">Press Enter to add</div>
+        </div>
+      </div>
+
+      <!-- Step 3 -->
+      <div id="couponStep3" class="coupon-step" style="display:none;">
+        <div class="card" style="background:#fafafa;box-shadow:none;">
+          <div class="lv-grid">
+            <div class="lv-item"><div class="lv-label">Name</div><div class="lv-value" id="summaryName">—</div></div>
+            <div class="lv-item"><div class="lv-label">Discount Type</div><div class="lv-value" id="summaryType">Percentage Off</div></div>
+            <div class="lv-item"><div class="lv-label">Value</div><div class="lv-value" id="summaryValue">—</div></div>
+            <div class="lv-item"><div class="lv-label">Duration</div><div class="lv-value" id="summaryDuration">Once</div></div>
+            <div class="lv-item"><div class="lv-label">Max Redemptions</div><div class="lv-value" id="summaryMaxRedemptions">No limit</div></div>
+            <div class="lv-item"><div class="lv-label">Redeem By</div><div class="lv-value" id="summaryRedeemBy">No expiration</div></div>
+          </div>
+        </div>
+        <div class="info-box blue mt-16">⚠ Once created, discount type, value, and duration cannot be modified.</div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-default" id="couponBackBtn" style="display:none;" onclick="couponPrev()">Back</button>
+      <button class="btn btn-primary" id="couponNextBtn" onclick="couponNext()">Next</button>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== CREATE PROMOTION CODE MODAL ==================== -->
+<div id="createPromoModal" class="modal-overlay" onclick="if(event.target===this)closeModal('createPromoModal')">
+  <div class="modal" style="width:520px;">
+    <div class="modal-header">
+      <h3>Create Promotion Code</h3>
+      <button class="modal-close" onclick="closeModal('createPromoModal')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-group">
+        <label class="form-label">Code</label>
+        <div style="display:flex;gap:8px;">
+          <input class="form-input" id="promoCodeInput" style="flex:1;text-transform:uppercase;font-family:'SF Mono',Monaco,Consolas,monospace;" placeholder="Enter promotion code">
+          <button class="btn btn-default" onclick="generateRandomCode()">🎲 Generate Random</button>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Coupon</label>
+        <select class="form-select w-full">
+          <option value="">Search and select coupon...</option>
+          <option>CPN001 - Black Friday 20%</option>
+          <option>CPN002 - SaaS Annual 15%</option>
+          <option>CPN003 - New User $5 Off</option>
+          <option>CPN004 - VIP Forever</option>
+          <option>CPN006 - Early Bird</option>
+          <option>CPN008 - Game TopUp 5%</option>
+        </select>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Max Redemptions</label>
+          <input class="form-input w-full" type="number" placeholder="No limit">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Expires At</label>
+          <input class="form-input w-full" type="date">
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Min Amount</label>
+          <input class="form-input" type="number" placeholder="0.00" style="width:100%;">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Currency</label>
+          <select class="form-select w-full"><option>USD</option><option>EUR</option><option>GBP</option><option>SGD</option></select>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Allowed Regions</label>
+        <div class="tags-input" id="promoRegions" onclick="this.querySelector('input')&&this.querySelector('input').focus()">
+          <span class="tag">US <span class="tag-remove" onclick="this.parentElement.remove()">×</span></span>
+          <span class="tag">EU <span class="tag-remove" onclick="this.parentElement.remove()">×</span></span>
+          <span class="tag">GB <span class="tag-remove" onclick="this.parentElement.remove()">×</span></span>
+          <input placeholder="Add region..." onkeydown="if(event.key==='Enter'){addTag('promoRegions',this.value);this.value='';event.preventDefault();}">
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Channel</label>
+        <input class="form-input w-full" placeholder="e.g. facebook, email_q1">
+      </div>
+      <div class="form-group">
+        <label class="form-label">First Time Transaction</label>
+        <div class="toggle" id="firstTimeToggle" onclick="this.classList.toggle('on')"></div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Customer ID</label>
+        <input class="form-input w-full" placeholder="Optional - bind to specific customer">
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-default" onclick="closeModal('createPromoModal')">Cancel</button>
+      <button class="btn btn-primary">Create</button>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== BULK CREATE MODAL ==================== -->
+<div id="bulkCreateModal" class="modal-overlay" onclick="if(event.target===this)closeModal('bulkCreateModal')">
+  <div class="modal" style="width:480px;">
+    <div class="modal-header">
+      <h3>Bulk Create Promotion Codes</h3>
+      <button class="modal-close" onclick="closeModal('bulkCreateModal')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-group">
+        <label class="form-label">Coupon</label>
+        <select class="form-select w-full">
+          <option value="">Select coupon...</option>
+          <option>CPN001 - Black Friday 20%</option>
+          <option>CPN002 - SaaS Annual 15%</option>
+          <option>CPN003 - New User $5 Off</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Code Prefix</label>
+        <input class="form-input w-full" id="bulkPrefix" placeholder="e.g. BF2026" oninput="updateBulkPreview()">
+        <div class="form-hint" id="bulkPreview">Generated codes will look like: <b>PREFIX_A3X7K</b></div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Quantity</label>
+        <input class="form-input w-full" type="number" min="1" max="10000" id="bulkQty" placeholder="1 - 10,000" oninput="updateBulkQty()">
+        <div class="form-hint" id="bulkQtyHint"></div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Max Redemptions per Code</label>
+        <input class="form-input w-full" type="number" placeholder="No limit">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Expires At</label>
+        <input class="form-input w-full" type="date">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Channel</label>
+        <input class="form-input w-full" placeholder="e.g. facebook, email_q1">
+      </div>
+      <div class="info-box orange">Bulk creation is an async task. You will be notified via Webhook (<code>promotion_code.bulk_created</code>) when completed.</div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-default" onclick="closeModal('bulkCreateModal')">Cancel</button>
+      <button class="btn btn-primary">Start Bulk Create</button>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== CREATE CAMPAIGN MODAL ==================== -->
+<div id="createCampaignModal" class="modal-overlay" onclick="if(event.target===this)closeModal('createCampaignModal')">
+  <div class="modal" style="width:640px;">
+    <div class="modal-header">
+      <h3>Create Campaign</h3>
+      <button class="modal-close" onclick="closeModal('createCampaignModal')">✕</button>
+    </div>
+    <div class="modal-body">
+      <!-- Stepper -->
+      <div class="stepper" id="campaignStepper">
+        <div class="step active" data-step="1"><div class="step-num">1</div><span class="step-label">Basic Info</span></div>
+        <div class="step-connector"></div>
+        <div class="step" data-step="2"><div class="step-num">2</div><span class="step-label">Rules</span></div>
+        <div class="step-connector"></div>
+        <div class="step" data-step="3"><div class="step-num">3</div><span class="step-label">Budget</span></div>
+        <div class="step-connector"></div>
+        <div class="step" data-step="4"><div class="step-num">4</div><span class="step-label">Confirm</span></div>
+      </div>
+
+      <!-- Step 1: Basic Info -->
+      <div id="campStep1" class="camp-step">
+        <div class="form-group">
+          <label class="form-label">Campaign Name</label>
+          <input class="form-input w-full" id="campName" placeholder="Enter campaign name">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Campaign Type</label>
+          <div class="type-cards-grid">
+            <div class="radio-card selected" onclick="selectCampType(this,'first_charge')">
+              <div class="radio-card-icon">🎯</div>
+              <div class="radio-card-title">First Charge</div>
+              <div class="radio-card-desc">Reward users on their first payment</div>
+            </div>
+            <div class="radio-card" onclick="selectCampType(this,'threshold')">
+              <div class="radio-card-icon">💰</div>
+              <div class="radio-card-title">Threshold</div>
+              <div class="radio-card-desc">Discount when order meets minimum amount</div>
+            </div>
+            <div class="radio-card" onclick="selectCampType(this,'rebate')">
+              <div class="radio-card-icon">🔄</div>
+              <div class="radio-card-title">Rebate</div>
+              <div class="radio-card-desc">Cashback or rebate for qualifying payments</div>
+            </div>
+            <div class="radio-card" onclick="selectCampType(this,'flash_sale')">
+              <div class="radio-card-icon">⚡</div>
+              <div class="radio-card-title">Flash Sale</div>
+              <div class="radio-card-desc">Limited-time high-discount promotion</div>
+            </div>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Start Time</label>
+            <input class="form-input w-full" type="datetime-local">
+          </div>
+          <div class="form-group">
+            <label class="form-label">End Time</label>
+            <input class="form-input w-full" type="datetime-local">
+          </div>
+        </div>
+      </div>
+
+      <!-- Step 2: Rules -->
+      <div id="campStep2" class="camp-step" style="display:none;">
+        <div class="form-group">
+          <label class="form-label">Target Audience</label>
+          <select class="form-select w-full">
+            <option>All Users</option><option>New Users Only</option><option>High Value Customers</option><option>Custom Segment</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Conditions</label>
+          <div class="text-sm text-muted mb-8">Match <b>ALL</b> of the following conditions (AND)</div>
+          <div id="ruleRows">
+            <div class="rule-row">
+              <select class="form-select" style="width:200px;">
+                <option>payment.amount</option>
+                <option>customer.first_time_transaction</option>
+                <option>payment.region</option>
+                <option>customer.risk_score</option>
+              </select>
+              <select class="form-select" style="width:80px;">
+                <option>>=</option><option><=</option><option>==</option><option>!=</option><option>></option><option><</option>
+              </select>
+              <input class="form-input" style="width:120px;" placeholder="Value">
+              <button class="btn-link-gray" onclick="this.parentElement.remove()">✕</button>
+            </div>
+          </div>
+          <button class="btn btn-default btn-sm mt-8" onclick="addRuleRow()">+ Add Condition</button>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Associated Coupon</label>
+          <select class="form-select w-full">
+            <option value="">Search and select coupon...</option>
+            <option>CPN001 - Black Friday 20%</option>
+            <option>CPN002 - SaaS Annual 15%</option>
+            <option>CPN003 - New User $5 Off</option>
+            <option>CPN004 - VIP Forever</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Step 3: Budget -->
+      <div id="campStep3" class="camp-step" style="display:none;">
+        <div class="form-row">
+          <div class="form-group" style="flex:2;">
+            <label class="form-label">Budget Total</label>
+            <input class="form-input w-full" id="campBudget" type="number" placeholder="0.00" oninput="updateCampSubmitBtn()">
+          </div>
+          <div class="form-group" style="flex:1;">
+            <label class="form-label">Currency</label>
+            <select class="form-select w-full"><option>USD</option><option>EUR</option><option>GBP</option></select>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Budget Exhausted Action</label>
+          <div class="radio-cards">
+            <div class="radio-card selected" onclick="selectExhausted(this)">
+              <div class="radio-card-icon">⏸</div>
+              <div class="radio-card-title">Pause Campaign</div>
+              <div class="radio-card-desc">Pause and allow budget top-up to resume</div>
+            </div>
+            <div class="radio-card" onclick="selectExhausted(this)">
+              <div class="radio-card-icon">🚫</div>
+              <div class="radio-card-title">Reject New Discounts</div>
+              <div class="radio-card-desc">Keep running but reject new discount requests</div>
+            </div>
+          </div>
+        </div>
+        <div class="info-box blue">You will be notified when budget reaches 80%.</div>
+      </div>
+
+      <!-- Step 4: Confirm -->
+      <div id="campStep4" class="camp-step" style="display:none;">
+        <div class="summary-section">
+          <h4>Basic Information</h4>
+          <div class="lv-grid">
+            <div class="lv-item"><div class="lv-label">Name</div><div class="lv-value" id="campSumName">—</div></div>
+            <div class="lv-item"><div class="lv-label">Type</div><div class="lv-value" id="campSumType">First Charge</div></div>
+            <div class="lv-item"><div class="lv-label">Start Time</div><div class="lv-value" id="campSumStart">—</div></div>
+            <div class="lv-item"><div class="lv-label">End Time</div><div class="lv-value" id="campSumEnd">—</div></div>
+          </div>
+        </div>
+        <div class="summary-section">
+          <h4>Budget</h4>
+          <div class="lv-grid">
+            <div class="lv-item"><div class="lv-label">Total Budget</div><div class="lv-value" id="campSumBudget">—</div></div>
+            <div class="lv-item"><div class="lv-label">Exhausted Action</div><div class="lv-value" id="campSumAction">Pause Campaign</div></div>
+          </div>
+        </div>
+        <div id="campBudgetWarning" class="info-box orange" style="display:none;">⚠ Budget exceeds $10,000. This campaign requires admin approval before it can be activated.</div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-default" id="campBackBtn" style="display:none;" onclick="campPrev()">Back</button>
+      <button class="btn btn-primary" id="campNextBtn" onclick="campNext()">Next</button>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== CONFIRM DIALOG ==================== -->
+<div id="confirmDialog" class="confirm-overlay" onclick="if(event.target===this)closeConfirm()">
+  <div class="confirm-box">
+    <h4 id="confirmTitle">Confirm</h4>
+    <p id="confirmMessage">Are you sure?</p>
+    <div class="confirm-btns">
+      <button class="btn btn-default" onclick="closeConfirm()">Cancel</button>
+      <button class="btn btn-primary" id="confirmOkBtn" onclick="closeConfirm()">OK</button>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== JAVASCRIPT ==================== -->
+<script>
+/* ===== NAVIGATION ===== */
+const navItems = document.querySelectorAll('.nav-item[data-page]');
+const pages = document.querySelectorAll('.page');
+
+navItems.forEach(item => {
+  item.addEventListener('click', () => {
+    const page = item.dataset.page;
+    if (!page) return; // non-discount pages are stubs
+    // Update nav
+    navItems.forEach(n => n.classList.remove('active'));
+    item.classList.add('active');
+    // Show page
+    pages.forEach(p => p.classList.remove('active'));
+    const target = document.getElementById('page-' + page);
+    if (target) target.classList.add('active');
+    // Reset campaign detail
+    if (page === 'campaigns') {
+      document.getElementById('campaigns-list').style.display = '';
+      document.getElementById('campaign-detail').style.display = 'none';
+    }
+  });
+});
+
+/* ===== CHART TAB ===== */
+function selectChartTab(el) {
+  el.parentElement.querySelectorAll('.chart-tab').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+}
+
+/* ===== SVG TREND CHART ===== */
+function renderTrendChart() {
+  const container = document.getElementById('trend-chart');
+  const W = container.offsetWidth || 500;
+  const H = 220;
+  const pad = { top: 20, right: 20, bottom: 40, left: 50 };
+  const chartW = W - pad.left - pad.right;
+  const chartH = H - pad.top - pad.bottom;
+
+  // Data: 14 days
+  const dates = [];
+  const now = new Date(2026, 1, 26);
+  for (let i = 13; i >= 0; i--) {
+    const d = new Date(now);
+    d.setDate(d.getDate() - i);
+    dates.push((d.getMonth()+1) + '/' + d.getDate());
+  }
+  const amounts = [680,820,950,1100,890,1250,1400,1180,960,1320,1500,1380,1650,1480];
+  const redemptions = [42,55,62,78,51,82,95,74,58,88,105,92,112,98];
+
+  const maxA = Math.max(...amounts) * 1.15;
+  const maxR = Math.max(...redemptions) * 1.15;
+
+  function toX(i) { return pad.left + (i / (dates.length - 1)) * chartW; }
+  function toYA(v) { return pad.top + chartH - (v / maxA) * chartH; }
+  function toYR(v) { return pad.top + chartH - (v / maxR) * chartH; }
+
+  const pathA = amounts.map((v, i) => `${i === 0 ? 'M' : 'L'}${toX(i).toFixed(1)},${toYA(v).toFixed(1)}`).join(' ');
+  const pathR = redemptions.map((v, i) => `${i === 0 ? 'M' : 'L'}${toX(i).toFixed(1)},${toYR(v).toFixed(1)}`).join(' ');
+
+  // Grid lines (Y axis for amounts)
+  let gridLines = '';
+  const yTicks = 5;
+  for (let i = 0; i <= yTicks; i++) {
+    const y = pad.top + (i / yTicks) * chartH;
+    const val = Math.round(maxA - (i / yTicks) * maxA);
+    gridLines += `<line x1="${pad.left}" y1="${y}" x2="${W - pad.right}" y2="${y}" stroke="#f0f0f0" stroke-width="1"/>`;
+    gridLines += `<text x="${pad.left - 8}" y="${y + 4}" fill="#8c8c8c" font-size="11" text-anchor="end">$${val}</text>`;
+  }
+
+  // X labels
+  let xLabels = '';
+  dates.forEach((d, i) => {
+    if (i % 2 === 0) {
+      xLabels += `<text x="${toX(i)}" y="${H - 8}" fill="#8c8c8c" font-size="11" text-anchor="middle">${d}</text>`;
+    }
+  });
+
+  container.innerHTML = `<svg width="${W}" height="${H}" viewBox="0 0 ${W} ${H}">
+    ${gridLines}${xLabels}
+    <path d="${pathA}" fill="none" stroke="#1677ff" stroke-width="2.5" stroke-linejoin="round"/>
+    <path d="${pathR}" fill="none" stroke="#faad14" stroke-width="2.5" stroke-linejoin="round" stroke-dasharray="6,3"/>
+    ${amounts.map((v, i) => `<circle cx="${toX(i).toFixed(1)}" cy="${toYA(v).toFixed(1)}" r="3" fill="#1677ff"/>`).join('')}
+    ${redemptions.map((v, i) => `<circle cx="${toX(i).toFixed(1)}" cy="${toYR(v).toFixed(1)}" r="3" fill="#faad14"/>`).join('')}
+  </svg>`;
+}
+// Render on load + resize
+renderTrendChart();
+window.addEventListener('resize', renderTrendChart);
+
+/* ===== MODAL ===== */
+function openModal(id) {
+  document.getElementById(id).classList.add('show');
+  // Reset coupon stepper
+  if (id === 'createCouponModal') setCouponStep(1);
+  if (id === 'createCampaignModal') setCampStep(1);
+}
+function closeModal(id) {
+  document.getElementById(id).classList.remove('show');
+}
+
+/* ===== COUPON DRAWER ===== */
+const couponData = {
+  CPN001: { name:'Black Friday 20%', type:'% Off', value:'20%', duration:'once', max:'2,000', redeemed:'1,243', redeemBy:'2026-11-30', created:'2026-10-01 09:00', valid:'Yes', status:'ACTIVE', statusClass:'badge-active', isAmt:false, promos:[{code:'BLACKFRI01',status:'ACTIVE',r:'412'},{code:'BLACKFRI02',status:'ACTIVE',r:'389'},{code:'BLACKFRI03',status:'INACTIVE',r:'442'}] },
+  CPN002: { name:'SaaS Annual 15%', type:'% Off', value:'15%', duration:'repeating 12mo', max:'500', redeemed:'89', redeemBy:'—', created:'2025-11-15 14:00', valid:'Yes', status:'ACTIVE', statusClass:'badge-active', isAmt:false, promos:[{code:'PARTNER_A_Q1',status:'ACTIVE',r:'23'}] },
+  CPN003: { name:'New User $5 Off', type:'$ Off', value:'$5.00 USD', duration:'once', max:'5,000', redeemed:'2,891', redeemBy:'2026-06-30', created:'2026-01-01 00:00', valid:'Yes', status:'ACTIVE', statusClass:'badge-active', isAmt:true, promos:[{code:'NEWUSER2026',status:'ACTIVE',r:'891'}] },
+  CPN004: { name:'VIP Forever', type:'% Off', value:'10%', duration:'forever', max:'—', redeemed:'45', redeemBy:'—', created:'2025-06-01 10:00', valid:'Yes', status:'ACTIVE', statusClass:'badge-active', isAmt:false, promos:[{code:'VIP_ALICE',status:'ACTIVE',r:'3'},{code:'REFERRAL_VIP',status:'INACTIVE',r:'12'}] },
+  CPN005: { name:'Summer Sale', type:'% Off', value:'25%', duration:'once', max:'500', redeemed:'500', redeemBy:'2026-08-31', created:'2025-05-01 08:00', valid:'No (expired)', status:'EXPIRED', statusClass:'badge-expired', isAmt:false, promos:[{code:'SUMMER25',status:'INACTIVE',r:'500'}] },
+  CPN006: { name:'Early Bird', type:'$ Off', value:'$10.00 USD', duration:'once', max:'200', redeemed:'120', redeemBy:'2026-03-31', created:'2025-12-01 12:00', valid:'Yes', status:'ACTIVE', statusClass:'badge-active', isAmt:true, promos:[{code:'EARLYBIRD10',status:'ACTIVE',r:'45'}] },
+  CPN007: { name:'Legacy Promo', type:'% Off', value:'30%', duration:'once', max:'300', redeemed:'300', redeemBy:'2025-12-31', created:'2025-01-01 00:00', valid:'No (archived)', status:'ARCHIVED', statusClass:'badge-archived', isAmt:false, promos:[] },
+  CPN008: { name:'Game TopUp 5%', type:'% Off', value:'5%', duration:'forever', max:'—', redeemed:'1,205', redeemBy:'—', created:'2025-08-15 16:00', valid:'Yes', status:'ACTIVE', statusClass:'badge-active', isAmt:false, promos:[{code:'GAME_TOP5',status:'ACTIVE',r:'205'}] },
+};
+
+function openCouponDetail(id) {
+  const d = couponData[id];
+  if (!d) return;
+  let html = `
+    <div style="display:flex;align-items:center;gap:8px;margin-bottom:16px;">
+      <span class="badge ${d.statusClass}">${d.status}</span>
+      <span class="mono text-muted">${id}</span>
+    </div>
+    <div class="lv-grid">
+      <div class="lv-item"><div class="lv-label">Name</div><div class="lv-value">${d.name}</div></div>
+      <div class="lv-item"><div class="lv-label">Type</div><div class="lv-value">${d.type}</div></div>
+      <div class="lv-item"><div class="lv-label">Value</div><div class="lv-value">${d.value}</div></div>
+      <div class="lv-item"><div class="lv-label">Duration</div><div class="lv-value">${d.duration}</div></div>
+      <div class="lv-item"><div class="lv-label">Max Redemptions</div><div class="lv-value">${d.max}</div></div>
+      <div class="lv-item"><div class="lv-label">Times Redeemed</div><div class="lv-value">${d.redeemed}</div></div>
+      <div class="lv-item"><div class="lv-label">Redeem By</div><div class="lv-value">${d.redeemBy}</div></div>
+      <div class="lv-item"><div class="lv-label">Created At</div><div class="lv-value">${d.created}</div></div>
+      <div class="lv-item"><div class="lv-label">Valid</div><div class="lv-value">${d.valid}</div></div>
+    </div>`;
+
+  if (d.isAmt) {
+    html += `
+    <div class="section-title">Multi-Currency Configuration</div>
+    <table>
+      <thead><tr><th>Currency</th><th>Amount Off</th></tr></thead>
+      <tbody>
+        <tr><td>EUR</td><td>€4.50</td></tr>
+        <tr><td>GBP</td><td>£3.90</td></tr>
+        <tr><td>JPY</td><td>¥700</td></tr>
+      </tbody>
+    </table>`;
+  }
+
+  if (d.promos.length) {
+    html += `<div class="section-title">Promotion Codes (${d.promos.length})</div>
+    <table>
+      <thead><tr><th>Code</th><th>Status</th><th>Redemptions</th></tr></thead>
+      <tbody>${d.promos.map(p => `<tr><td class="mono text-sm">${p.code}</td><td><span class="badge ${p.status==='ACTIVE'?'badge-active':'badge-inactive'}">${p.status}</span></td><td>${p.r}</td></tr>`).join('')}</tbody>
+    </table>`;
+  }
+
+  html += `<div class="info-box blue mt-20">Core discount rules are immutable after creation. To modify discount value or type, archive this coupon and create a new one.</div>`;
+
+  document.getElementById('couponDrawerBody').innerHTML = html;
+  document.getElementById('couponDrawerOverlay').classList.add('show');
+  document.getElementById('couponDrawer').classList.add('open');
+}
+function closeCouponDrawer() {
+  document.getElementById('couponDrawerOverlay').classList.remove('show');
+  document.getElementById('couponDrawer').classList.remove('open');
+}
+
+/* ===== PROMO CODE DRAWER ===== */
+function openPromoDetail(code) {
+  let html = `
+    <div style="display:flex;align-items:center;gap:8px;margin-bottom:16px;">
+      <span class="badge badge-active">ACTIVE</span>
+      <span class="mono" style="font-size:16px;font-weight:600;">${code}</span>
+    </div>
+    <div class="lv-grid">
+      <div class="lv-item"><div class="lv-label">Coupon</div><div class="lv-value mono">CPN001</div></div>
+      <div class="lv-item"><div class="lv-label">Status</div><div class="lv-value">Active</div></div>
+      <div class="lv-item"><div class="lv-label">Max Redemptions</div><div class="lv-value">1,000</div></div>
+      <div class="lv-item"><div class="lv-label">Times Redeemed</div><div class="lv-value">412</div></div>
+      <div class="lv-item"><div class="lv-label">Expires At</div><div class="lv-value">2026-11-30</div></div>
+      <div class="lv-item"><div class="lv-label">Min Amount</div><div class="lv-value">$50.00</div></div>
+      <div class="lv-item"><div class="lv-label">Regions</div><div class="lv-value">US, CA, GB</div></div>
+      <div class="lv-item"><div class="lv-label">Channel</div><div class="lv-value"><span class="tag-channel">facebook</span></div></div>
+      <div class="lv-item"><div class="lv-label">First Time Only</div><div class="lv-value">No</div></div>
+      <div class="lv-item"><div class="lv-label">Customer</div><div class="lv-value">—</div></div>
+    </div>
+    <div class="section-title">Redemption History</div>
+    <table>
+      <thead><tr><th>Discount ID</th><th>Customer ID</th><th>Amount</th><th>Discount</th><th>Time</th></tr></thead>
+      <tbody>
+        <tr><td class="mono text-sm">DSC_8a3f21</td><td class="text-sm">cus_M3k9x</td><td>$128.00</td><td>$25.60</td><td class="text-muted text-sm">2026-02-26 17:32</td></tr>
+        <tr><td class="mono text-sm">DSC_7c4e32</td><td class="text-sm">cus_N2l8v</td><td>$95.50</td><td>$19.10</td><td class="text-muted text-sm">2026-02-26 14:18</td></tr>
+        <tr><td class="mono text-sm">DSC_6b3d21</td><td class="text-sm">cus_Q1j7u</td><td>$210.00</td><td>$42.00</td><td class="text-muted text-sm">2026-02-25 22:05</td></tr>
+        <tr><td class="mono text-sm">DSC_5a2c10</td><td class="text-sm">cus_S4h6t</td><td>$67.00</td><td>$13.40</td><td class="text-muted text-sm">2026-02-25 19:42</td></tr>
+        <tr><td class="mono text-sm">DSC_4z1b09</td><td class="text-sm">cus_U3g5s</td><td>$150.00</td><td>$30.00</td><td class="text-muted text-sm">2026-02-25 16:30</td></tr>
+      </tbody>
+    </table>
+    <div class="section-title">Channel Attribution</div>
+    <div style="display:flex;align-items:center;gap:12px;">
+      <span class="tag-channel">facebook</span>
+      <span class="text-sm">Total: <b>412</b> redemptions · <b>$8,240.00</b> discount</span>
+    </div>`;
+  document.getElementById('promoDrawerBody').innerHTML = html;
+  document.getElementById('promoDrawerOverlay').classList.add('show');
+  document.getElementById('promoDrawer').classList.add('open');
+}
+function closePromoDrawer() {
+  document.getElementById('promoDrawerOverlay').classList.remove('show');
+  document.getElementById('promoDrawer').classList.remove('open');
+}
+
+/* ===== CAMPAIGN DETAIL ===== */
+function showCampaignDetail() {
+  document.getElementById('campaigns-list').style.display = 'none';
+  document.getElementById('campaign-detail').style.display = 'block';
+}
+function backToCampaigns() {
+  document.getElementById('campaigns-list').style.display = '';
+  document.getElementById('campaign-detail').style.display = 'none';
+}
+
+/* ===== CONFIRM DIALOG ===== */
+const confirmMessages = {
+  archive: { title: 'Archive Coupon', msg: 'Archive this coupon? All associated promotion codes will be deactivated.', btn: 'Archive' },
+  deactivate: { title: 'Deactivate Promotion Code', msg: 'Deactivate this promotion code? It will no longer be redeemable.', btn: 'Deactivate' },
+  pause: { title: 'Pause Campaign', msg: 'Pause this campaign? No new discounts will be applied until resumed.', btn: 'Pause' },
+  resume: { title: 'Resume Campaign', msg: 'Resume this campaign? Discounts will start being applied again.', btn: 'Resume' },
+  end: { title: 'End Campaign', msg: 'End this campaign? This action cannot be undone.', btn: 'End Campaign' },
+};
+
+function showConfirm(type) {
+  const c = confirmMessages[type] || { title: 'Confirm', msg: 'Are you sure?', btn: 'OK' };
+  document.getElementById('confirmTitle').textContent = c.title;
+  document.getElementById('confirmMessage').textContent = c.msg;
+  const okBtn = document.getElementById('confirmOkBtn');
+  okBtn.textContent = c.btn;
+  if (type === 'end') { okBtn.className = 'btn btn-danger'; } else { okBtn.className = 'btn btn-primary'; }
+  document.getElementById('confirmDialog').classList.add('show');
+}
+function closeConfirm() {
+  document.getElementById('confirmDialog').classList.remove('show');
+}
+
+/* ===== COUPON STEPPER ===== */
+let couponStep = 1;
+function setCouponStep(n) {
+  couponStep = n;
+  document.querySelectorAll('.coupon-step').forEach((el, i) => el.style.display = (i + 1 === n) ? '' : 'none');
+  const steps = document.querySelectorAll('#couponStepper .step');
+  const connectors = document.querySelectorAll('#couponStepper .step-connector');
+  steps.forEach((s, i) => {
+    s.classList.remove('active', 'done');
+    if (i + 1 === n) s.classList.add('active');
+    else if (i + 1 < n) s.classList.add('done');
+  });
+  connectors.forEach((c, i) => { c.classList.toggle('done', i + 1 < n); });
+  document.getElementById('couponBackBtn').style.display = n > 1 ? '' : 'none';
+  document.getElementById('couponNextBtn').textContent = n === 3 ? 'Create Coupon' : 'Next';
+  if (n === 3) updateCouponSummary();
+}
+function couponNext() {
+  if (couponStep < 3) setCouponStep(couponStep + 1);
+  else closeModal('createCouponModal');
+}
+function couponPrev() {
+  if (couponStep > 1) setCouponStep(couponStep - 1);
+}
+function updateCouponSummary() {
+  const name = document.getElementById('couponName').value || '—';
+  document.getElementById('summaryName').textContent = name;
+}
+
+/* ===== CAMPAIGN STEPPER ===== */
+let campStep = 1;
+function setCampStep(n) {
+  campStep = n;
+  document.querySelectorAll('.camp-step').forEach((el, i) => el.style.display = (i + 1 === n) ? '' : 'none');
+  const steps = document.querySelectorAll('#campaignStepper .step');
+  const connectors = document.querySelectorAll('#campaignStepper .step-connector');
+  steps.forEach((s, i) => {
+    s.classList.remove('active', 'done');
+    if (i + 1 === n) s.classList.add('active');
+    else if (i + 1 < n) s.classList.add('done');
+  });
+  connectors.forEach((c, i) => { c.classList.toggle('done', i + 1 < n); });
+  document.getElementById('campBackBtn').style.display = n > 1 ? '' : 'none';
+  if (n === 4) {
+    updateCampSummary();
+    document.getElementById('campNextBtn').textContent = getBudgetVal() > 10000 ? 'Submit for Approval' : 'Create & Activate';
+  } else {
+    document.getElementById('campNextBtn').textContent = 'Next';
+  }
+}
+function campNext() {
+  if (campStep < 4) setCampStep(campStep + 1);
+  else closeModal('createCampaignModal');
+}
+function campPrev() {
+  if (campStep > 1) setCampStep(campStep - 1);
+}
+function getBudgetVal() {
+  return parseFloat(document.getElementById('campBudget').value) || 0;
+}
+function updateCampSubmitBtn() {
+  // dynamic update if on step 4
+}
+function updateCampSummary() {
+  document.getElementById('campSumName').textContent = document.getElementById('campName').value || '—';
+  const b = getBudgetVal();
+  document.getElementById('campSumBudget').textContent = b ? '$' + b.toLocaleString() : '—';
+  document.getElementById('campBudgetWarning').style.display = b > 10000 ? '' : 'none';
+}
+
+/* ===== DISCOUNT TYPE ===== */
+function selectDiscountType(type) {
+  document.querySelectorAll('#createCouponModal .radio-cards .radio-card').forEach(c => c.classList.remove('selected'));
+  event.currentTarget.classList.add('selected');
+  document.getElementById('pctFields').style.display = type === 'pct' ? '' : 'none';
+  document.getElementById('amtFields').style.display = type === 'amt' ? '' : 'none';
+}
+
+/* ===== CAMPAIGN TYPE ===== */
+function selectCampType(el, type) {
+  el.closest('.type-cards-grid').querySelectorAll('.radio-card').forEach(c => c.classList.remove('selected'));
+  el.classList.add('selected');
+}
+
+/* ===== EXHAUSTED ACTION ===== */
+function selectExhausted(el) {
+  el.parentElement.querySelectorAll('.radio-card').forEach(c => c.classList.remove('selected'));
+  el.classList.add('selected');
+}
+
+/* ===== DURATION TOGGLE ===== */
+function toggleDurationMonths() {
+  const val = document.querySelector('input[name="duration"]:checked').value;
+  document.getElementById('durationMonths').style.display = val === 'repeating' ? '' : 'none';
+}
+
+/* ===== CHAR COUNT ===== */
+function updateCharCount() {
+  const len = document.getElementById('couponName').value.length;
+  document.getElementById('couponCharCount').textContent = len + ' / 40';
+}
+
+/* ===== COLLAPSE ===== */
+function toggleCollapse(id) {
+  const body = document.getElementById(id + 'Body');
+  const arrow = document.getElementById(id + 'Arrow');
+  body.classList.toggle('open');
+  arrow.classList.toggle('open');
+}
+
+/* ===== ADD CURRENCY ROW ===== */
+function addCurrencyRow() {
+  const row = document.createElement('div');
+  row.className = 'currency-row';
+  row.innerHTML = '<select class="form-select"><option>EUR</option><option>GBP</option><option>JPY</option><option>SGD</option></select><input class="form-input" type="number" placeholder="Amount"><button class="btn-link-gray" onclick="this.parentElement.remove()">✕</button>';
+  document.getElementById('currencyRows').appendChild(row);
+}
+
+/* ===== ADD RULE ROW ===== */
+function addRuleRow() {
+  const row = document.createElement('div');
+  row.className = 'rule-row';
+  row.innerHTML = '<select class="form-select" style="width:200px;"><option>payment.amount</option><option>customer.first_time_transaction</option><option>payment.region</option><option>customer.risk_score</option></select><select class="form-select" style="width:80px;"><option>>=</option><option><=</option><option>==</option><option>!=</option><option>></option><option><</option></select><input class="form-input" style="width:120px;" placeholder="Value"><button class="btn-link-gray" onclick="this.parentElement.remove()">✕</button>';
+  document.getElementById('ruleRows').appendChild(row);
+}
+
+/* ===== TAGS ===== */
+function addTag(containerId, value) {
+  if (!value.trim()) return;
+  const container = document.getElementById(containerId);
+  const input = container.querySelector('input');
+  const tag = document.createElement('span');
+  tag.className = 'tag';
+  tag.innerHTML = value.trim().toUpperCase() + ' <span class="tag-remove" onclick="this.parentElement.remove()">×</span>';
+  container.insertBefore(tag, input);
+}
+
+/* ===== RANDOM CODE ===== */
+function generateRandomCode() {
+  const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+  let code = '';
+  for (let i = 0; i < 6; i++) code += chars[Math.floor(Math.random() * chars.length)];
+  document.getElementById('promoCodeInput').value = code;
+}
+
+/* ===== BULK CREATE HELPERS ===== */
+function updateBulkPreview() {
+  const prefix = document.getElementById('bulkPrefix').value || 'PREFIX';
+  document.getElementById('bulkPreview').innerHTML = 'Generated codes will look like: <b>' + prefix.toUpperCase() + '_A3X7K</b>';
+}
+function updateBulkQty() {
+  const qty = parseInt(document.getElementById('bulkQty').value) || 0;
+  document.getElementById('bulkQtyHint').textContent = qty > 0 ? qty + ' codes will be generated' : '';
+}
+</script>
+</body>
+</html>
