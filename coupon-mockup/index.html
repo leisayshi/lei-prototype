@@ -1224,13 +1224,13 @@
         <!-- Steps -->
         <div class="steps">
           <div class="step-item">
-            <div class="step-circle done" id="circle-1">✓</div>
+            <div class="step-circle active" id="circle-1">1</div>
             <div class="step-info active" id="info-1"><div class="step-title">Select Coupon</div><div class="step-desc">Choose base coupon</div></div>
           </div>
-          <div class="step-line done" id="line-1"></div>
+          <div class="step-line" id="line-1"></div>
           <div class="step-item">
-            <div class="step-circle active" id="circle-2">2</div>
-            <div class="step-info active" id="info-2"><div class="step-title">Configure Codes</div><div class="step-desc">Prefix, quantity & channel</div></div>
+            <div class="step-circle" id="circle-2">2</div>
+            <div class="step-info" id="info-2"><div class="step-title">Configure Codes</div><div class="step-desc">Prefix, quantity & channel</div></div>
           </div>
           <div class="step-line" id="line-2"></div>
           <div class="step-item">
@@ -1247,7 +1247,7 @@
         <div style="max-width:760px;">
 
           <!-- Step 1: Select Coupon -->
-          <div class="form-card step-content" id="step-1" style="display:none;">
+          <div class="form-card step-content active" id="step-1">
             <div class="form-card-title">🎫 Step 1: Select Coupon</div>
             <div class="form-row">
               <div class="form-label"><span class="required">*</span> Coupon</div>
@@ -1266,7 +1266,7 @@
           </div>
 
           <!-- Step 2: Configure -->
-          <div class="form-card step-content active" id="step-2">
+          <div class="form-card step-content" id="step-2">
             <div class="form-card-title">⚙️ Step 2: Configure Codes</div>
             <div class="form-row">
               <div class="form-label"><span class="required">*</span> Code Prefix</div>
@@ -1762,7 +1762,7 @@
 <script>
 // ===== PAGE NAVIGATION =====
 var currentPage = 'p1';
-var batchStep = 2; // current step for batch create (1-4)
+var batchStep = 1; // current step for batch create (1-4)
 
 function showPage(pageId) {
   // Hide all pages
