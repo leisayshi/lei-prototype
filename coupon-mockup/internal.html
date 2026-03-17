@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Internal Portal - Merchant Coupon Config</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; background: #f0f2f5; color: #333; font-size: 14px; }
+
+  .layout { display: flex; min-height: 100vh; }
+
+  /* Sidebar */
+  .sidebar { width: 220px; background: #fff; border-right: 1px solid #e8e8e8; padding-top: 16px; flex-shrink: 0; }
+  .sidebar .logo { padding: 0 20px 20px; display: flex; align-items: center; gap: 10px; font-size: 18px; font-weight: 700; color: #1a56db; }
+  .sidebar .logo img { width: 28px; height: 28px; }
+  .sidebar .menu-group { padding: 8px 0; }
+  .sidebar .menu-group-title { padding: 8px 20px; font-size: 12px; color: #999; text-transform: uppercase; letter-spacing: 0.5px; }
+  .sidebar .menu-item { padding: 10px 20px 10px 28px; cursor: pointer; color: #555; display: flex; align-items: center; gap: 8px; transition: all 0.2s; }
+  .sidebar .menu-item:hover { background: #f5f5f5; color: #1a56db; }
+  .sidebar .menu-item.active { background: #e6f0ff; color: #1a56db; font-weight: 500; border-right: 3px solid #1a56db; }
+  .sidebar .menu-item .icon { width: 16px; text-align: center; }
+
+  /* Main */
+  .main { flex: 1; display: flex; flex-direction: column; }
+
+  /* Header */
+  .header { background: #fff; padding: 0 24px; height: 48px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #e8e8e8; }
+  .breadcrumb { font-size: 13px; color: #999; }
+  .breadcrumb a { color: #1a56db; text-decoration: none; }
+  .header-right { display: flex; align-items: center; gap: 16px; color: #666; }
+
+  /* Content */
+  .content { padding: 24px; flex: 1; }
+  .page-title { font-size: 20px; font-weight: 600; margin-bottom: 4px; }
+  .page-subtitle { font-size: 13px; color: #888; margin-bottom: 24px; }
+
+  /* Card */
+  .card { background: #fff; border-radius: 8px; padding: 24px; margin-bottom: 20px; box-shadow: 0 1px 2px rgba(0,0,0,0.06); }
+  .card-title { font-size: 16px; font-weight: 600; margin-bottom: 16px; display: flex; align-items: center; gap: 8px; }
+  .card-title .badge { font-size: 11px; background: #1a56db; color: #fff; padding: 2px 8px; border-radius: 10px; font-weight: 400; }
+  .card-title .badge-gray { font-size: 11px; background: #e8e8e8; color: #666; padding: 2px 8px; border-radius: 10px; font-weight: 400; }
+
+  /* Merchant Selector */
+  .merchant-selector { background: #fff; border-radius: 8px; padding: 16px 24px; margin-bottom: 20px; box-shadow: 0 1px 2px rgba(0,0,0,0.06); display: flex; align-items: center; gap: 16px; }
+  .merchant-selector label { font-weight: 500; white-space: nowrap; }
+  .merchant-selector select { flex: 1; max-width: 400px; padding: 6px 12px; border: 1px solid #d9d9d9; border-radius: 4px; font-size: 14px; }
+
+  /* Form */
+  .form-row { display: flex; align-items: flex-start; margin-bottom: 20px; }
+  .form-label { width: 180px; padding-top: 6px; font-weight: 500; color: #333; flex-shrink: 0; }
+  .form-label .required { color: #ff4d4f; margin-left: 2px; }
+  .form-control { flex: 1; max-width: 400px; }
+  .form-input { width: 100%; padding: 6px 12px; border: 1px solid #d9d9d9; border-radius: 4px; font-size: 14px; }
+  .form-input:focus { outline: none; border-color: #1a56db; box-shadow: 0 0 0 2px rgba(26,86,219,0.1); }
+  .form-select { width: 100%; padding: 6px 12px; border: 1px solid #d9d9d9; border-radius: 4px; font-size: 14px; background: #fff; }
+  .form-hint { font-size: 12px; color: #999; margin-top: 4px; }
+
+  /* Switch */
+  .switch { position: relative; width: 44px; height: 22px; background: #ccc; border-radius: 11px; cursor: pointer; transition: background 0.3s; }
+  .switch.on { background: #1a56db; }
+  .switch .knob { position: absolute; top: 2px; left: 2px; width: 18px; height: 18px; background: #fff; border-radius: 50%; transition: left 0.3s; box-shadow: 0 1px 3px rgba(0,0,0,0.2); }
+  .switch.on .knob { left: 24px; }
+
+  /* Collapse */
+  .collapse-header { display: flex; align-items: center; gap: 8px; cursor: pointer; padding: 12px 0; border-top: 1px solid #f0f0f0; margin-top: 8px; color: #666; }
+  .collapse-header:hover { color: #1a56db; }
+  .collapse-header .arrow { transition: transform 0.3s; }
+  .collapse-header .arrow.open { transform: rotate(90deg); }
+  .collapse-body { padding: 16px 0; }
+
+  /* Status */
+  .status-tag { display: inline-flex; align-items: center; gap: 4px; padding: 2px 10px; border-radius: 4px; font-size: 12px; }
+  .status-enabled { background: #e6f7e6; color: #389e0d; }
+  .status-disabled { background: #f5f5f5; color: #999; }
+
+  /* Buttons */
+  .btn { padding: 6px 20px; border-radius: 4px; cursor: pointer; font-size: 14px; border: none; transition: all 0.2s; }
+  .btn-primary { background: #1a56db; color: #fff; }
+  .btn-primary:hover { background: #1347b8; }
+  .btn-default { background: #fff; color: #333; border: 1px solid #d9d9d9; }
+  .btn-default:hover { border-color: #1a56db; color: #1a56db; }
+
+  .btn-group { display: flex; gap: 12px; margin-top: 24px; padding-top: 20px; border-top: 1px solid #f0f0f0; }
+
+  /* Tabs */
+  .tabs { display: flex; gap: 0; border-bottom: 1px solid #e8e8e8; margin-bottom: 20px; }
+  .tab { padding: 10px 20px; cursor: pointer; color: #666; border-bottom: 2px solid transparent; transition: all 0.2s; }
+  .tab.active { color: #1a56db; border-bottom-color: #1a56db; font-weight: 500; }
+
+  /* Audit log */
+  .audit-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  .audit-table th { text-align: left; padding: 10px 12px; background: #fafafa; border-bottom: 1px solid #e8e8e8; color: #666; font-weight: 500; }
+  .audit-table td { padding: 10px 12px; border-bottom: 1px solid #f0f0f0; }
+</style>
+</head>
+<body>
+<div class="layout">
+  <!-- Sidebar -->
+  <div class="sidebar">
+    <div class="logo">
+      <svg width="28" height="28" viewBox="0 0 28 28" fill="none"><rect width="28" height="28" rx="6" fill="#1a56db"/><text x="5" y="20" fill="#fff" font-size="14" font-weight="700">W</text></svg>
+      Waffo
+    </div>
+    <div class="menu-group">
+      <div class="menu-group-title">Merchant</div>
+      <div class="menu-item"><span class="icon">📋</span> Merchant List</div>
+      <div class="menu-item active"><span class="icon">⚙️</span> Merchant Config</div>
+      <div class="menu-item"><span class="icon">📄</span> Contracts</div>
+    </div>
+    <div class="menu-group">
+      <div class="menu-group-title">Transaction</div>
+      <div class="menu-item"><span class="icon">💳</span> Payments</div>
+      <div class="menu-item"><span class="icon">↩️</span> Refunds</div>
+    </div>
+    <div class="menu-group">
+      <div class="menu-group-title">Promo</div>
+      <div class="menu-item"><span class="icon">🎫</span> Coupons</div>
+      <div class="menu-item"><span class="icon">🏷️</span> Promotion Codes</div>
+    </div>
+    <div class="menu-group">
+      <div class="menu-group-title">Settlement</div>
+      <div class="menu-item"><span class="icon">🏦</span> Settlement</div>
+    </div>
+    <div class="menu-group">
+      <div class="menu-group-title">Risk</div>
+      <div class="menu-item"><span class="icon">🛡️</span> Risk Rules</div>
+    </div>
+  </div>
+
+  <!-- Main -->
+  <div class="main">
+    <div class="header">
+      <div class="breadcrumb">
+        <a href="#">Merchant</a> / <a href="#">Merchant Config</a> / Marketing Config
+      </div>
+      <div class="header-right">
+        <span>👤 Admin</span>
+      </div>
+    </div>
+
+    <div class="content">
+      <div class="page-title">Merchant Marketing Config</div>
+      <div class="page-subtitle">Configure coupon & promotion settings for the selected merchant</div>
+
+      <!-- Merchant Selector -->
+      <div class="merchant-selector">
+        <label>Merchant:</label>
+        <select>
+          <option>1000000001 - Test TT Merchant - Active</option>
+          <option>1000000023 - Lovart Games - Active</option>
+          <option>1000000045 - XTV Streaming - Active</option>
+        </select>
+        <span class="status-tag status-enabled">● Coupon Enabled</span>
+      </div>
+
+      <!-- Tabs -->
+      <div class="tabs">
+        <div class="tab active">Coupon Config</div>
+        <div class="tab">Audit Log</div>
+      </div>
+
+      <!-- Standard Config Card -->
+      <div class="card">
+        <div class="card-title">Standard Config <span class="badge">Required</span></div>
+
+        <div class="form-row">
+          <div class="form-label">Coupon Enabled<span class="required">*</span></div>
+          <div class="form-control">
+            <div class="switch on"><div class="knob"></div></div>
+            <div class="form-hint">Enable or disable coupon feature for this merchant</div>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-label">Coupon Scope<span class="required">*</span></div>
+          <div class="form-control">
+            <select class="form-select">
+              <option selected>SELF_ONLY — Coupons only apply to this merchant's own transactions</option>
+              <option>PLATFORM_WIDE — Coupons can be used across sub-merchants</option>
+            </select>
+            <div class="form-hint">For platform merchants with sub-merchants, choose PLATFORM_WIDE to allow coupon sharing</div>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-label">Refund Discount Policy<span class="required">*</span></div>
+          <div class="form-control">
+            <select class="form-select">
+              <option selected>FULL_REVERSAL — Full refund restores coupon usage (once type)</option>
+              <option>PRO_RATA — Discount reversed proportionally on partial refund</option>
+              <option>NO_REVERSAL — Refund processed, but coupon usage not restored</option>
+            </select>
+            <div class="form-hint">Determines how discount usage count is handled during refunds</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Advanced Config Card (Collapsible) -->
+      <div class="card">
+        <div class="card-title">Advanced Settings <span class="badge-gray">Optional</span></div>
+        <p style="font-size:13px; color:#888; margin-bottom:16px;">These settings use system defaults. Adjust only if needed for this merchant.</p>
+
+        <div class="form-row">
+          <div class="form-label">Max Active Coupons</div>
+          <div class="form-control">
+            <input class="form-input" type="number" value="100" />
+            <div class="form-hint">Maximum number of active coupons this merchant can have simultaneously. Default: 100</div>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-label">Anti-Fraud Level</div>
+          <div class="form-control">
+            <select class="form-select">
+              <option>LOW — Basic checks only</option>
+              <option selected>MEDIUM — Standard checks (recommended)</option>
+              <option>HIGH — Strict checks, may increase false positives</option>
+            </select>
+            <div class="form-hint">Controls the strictness of coupon redemption fraud detection. Default: MEDIUM</div>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-label">Max Discount Percent</div>
+          <div class="form-control">
+            <div style="display:flex; align-items:center; gap:8px;">
+              <input class="form-input" type="number" value="50" style="width:100px;" />
+              <span>%</span>
+            </div>
+            <div class="form-hint">Maximum discount percentage per single order. Safety cap to prevent config errors. Default: 50%</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="btn-group">
+        <button class="btn btn-primary">💾 Save Config</button>
+        <button class="btn btn-default">Reset to Defaults</button>
+      </div>
+
+    </div>
+  </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,2021 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Waffo - Coupon System Mockup (Full)</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; background: #f0f2f5; color: #333; font-size: 14px; }
+
+  /* ===== NAVIGATOR ===== */
+  .nav-bar { position: fixed; top: 0; left: 0; right: 0; z-index: 1000; background: #1a1a2e; padding: 8px 16px; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+  .nav-bar .nav-label { color: #aaa; font-size: 11px; margin-right: 4px; }
+  .nav-btn { padding: 4px 12px; border-radius: 4px; border: 1px solid #444; background: #2a2a3e; color: #ccc; cursor: pointer; font-size: 12px; white-space: nowrap; }
+  .nav-btn:hover { background: #3a3a5e; border-color: #1a56db; color: #fff; }
+  .nav-btn.current { background: #1a56db; border-color: #1a56db; color: #fff; }
+  .nav-divider { width: 1px; height: 20px; background: #444; margin: 0 4px; }
+
+  /* ===== LAYOUT ===== */
+  .page { display: none; min-height: 100vh; padding-top: 44px; }
+  .page.active { display: flex; }
+  .page-full { display: none; min-height: 100vh; padding-top: 44px; background: #f0f2f5; }
+  .page-full.active { display: block; }
+
+  .layout { display: flex; width: 100%; min-width: 1400px; }
+
+  /* Sidebar */
+  .sidebar { width: 200px; background: #fff; border-right: 1px solid #e8e8e8; flex-shrink: 0; min-height: calc(100vh - 44px); }
+  .sidebar .logo { padding: 14px 16px; display: flex; align-items: center; gap: 8px; font-size: 16px; font-weight: 700; color: #1a56db; border-bottom: 1px solid #f0f0f0; }
+  .sidebar .menu-group { padding: 6px 0; }
+  .sidebar .menu-group-title { padding: 6px 16px; font-size: 11px; color: #bbb; text-transform: uppercase; letter-spacing: 0.5px; }
+  .sidebar .menu-item { padding: 8px 16px 8px 24px; cursor: pointer; color: #555; display: flex; align-items: center; gap: 8px; font-size: 13px; transition: all 0.2s; }
+  .sidebar .menu-item:hover { background: #f5f5f5; color: #1a56db; }
+  .sidebar .menu-item.active { background: #e6f0ff; color: #1a56db; font-weight: 500; border-right: 3px solid #1a56db; }
+  .sidebar .menu-item .icon { width: 16px; font-size: 13px; }
+
+  /* Internal sidebar */
+  .sidebar-internal { width: 220px; background: #fff; border-right: 1px solid #e8e8e8; flex-shrink: 0; padding-top: 0; min-height: calc(100vh - 44px); }
+
+  /* Main */
+  .main { flex: 1; display: flex; flex-direction: column; min-width: 0; overflow: auto; }
+
+  /* Header */
+  .header { background: #fff; padding: 0 24px; height: 48px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #e8e8e8; flex-shrink: 0; }
+  .breadcrumb { font-size: 13px; color: #999; }
+  .breadcrumb a { color: #1a56db; text-decoration: none; cursor: pointer; }
+  .breadcrumb a:hover { text-decoration: underline; }
+  .header-merchant { font-size: 13px; color: #666; }
+  .header-merchant select { border: 1px solid #d9d9d9; border-radius: 4px; padding: 3px 8px; font-size: 13px; margin-left: 6px; }
+  .header-right { display: flex; align-items: center; gap: 16px; font-size: 13px; color: #666; }
+
+  /* Content */
+  .content { padding: 24px; flex: 1; }
+  .page-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; }
+  .page-title { font-size: 20px; font-weight: 600; }
+  .page-subtitle { font-size: 13px; color: #888; margin-top: 4px; }
+
+  /* Stats */
+  .stats-row { display: flex; gap: 16px; margin-bottom: 20px; }
+  .stat-card { background: #fff; border-radius: 8px; padding: 16px 20px; flex: 1; box-shadow: 0 1px 2px rgba(0,0,0,0.06); }
+  .stat-card .stat-label { font-size: 13px; color: #888; margin-bottom: 4px; }
+  .stat-card .stat-value { font-size: 24px; font-weight: 600; color: #333; }
+  .stat-card .stat-change { font-size: 12px; margin-top: 4px; color: #389e0d; }
+  .stat-card .stat-change.down { color: #cf1322; }
+
+  /* Tabs */
+  .tabs { display: flex; border-bottom: 1px solid #e8e8e8; margin-bottom: 20px; }
+  .tab { padding: 10px 20px; cursor: pointer; color: #666; border-bottom: 2px solid transparent; font-size: 14px; white-space: nowrap; }
+  .tab:hover { color: #1a56db; }
+  .tab.active { color: #1a56db; border-bottom-color: #1a56db; font-weight: 500; }
+
+  /* Filters */
+  .filters { display: flex; flex-wrap: wrap; gap: 12px; margin-bottom: 16px; align-items: center; }
+  .filter-input { padding: 6px 12px; border: 1px solid #d9d9d9; border-radius: 4px; font-size: 13px; min-width: 200px; }
+  .filter-select { padding: 6px 12px; border: 1px solid #d9d9d9; border-radius: 4px; font-size: 13px; background: #fff; min-width: 140px; }
+
+  /* Table */
+  .data-table { width: 100%; border-collapse: collapse; background: #fff; border-radius: 8px; overflow: hidden; box-shadow: 0 1px 2px rgba(0,0,0,0.06); }
+  .data-table th { text-align: left; padding: 12px 16px; background: #fafafa; border-bottom: 1px solid #e8e8e8; color: #666; font-weight: 500; font-size: 13px; white-space: nowrap; }
+  .data-table td { padding: 12px 16px; border-bottom: 1px solid #f0f0f0; font-size: 13px; }
+  .data-table tr:last-child td { border-bottom: none; }
+  .data-table tr:hover td { background: #fafafa; }
+  .action-link { color: #1a56db; text-decoration: none; cursor: pointer; }
+  .action-link:hover { text-decoration: underline; }
+
+  /* Tags */
+  .tag { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 12px; }
+  .tag-green { background: #e6f7e6; color: #389e0d; }
+  .tag-gray { background: #f5f5f5; color: #999; }
+  .tag-orange { background: #fff7e6; color: #d46b08; }
+  .tag-blue { background: #e6f0ff; color: #1a56db; }
+  .tag-red { background: #fff1f0; color: #cf1322; }
+  .tag-purple { background: #f5e6ff; color: #722ed1; }
+  .tag-cyan { background: #e6fffb; color: #08979c; }
+
+  /* Buttons */
+  .btn { padding: 6px 16px; border-radius: 4px; cursor: pointer; font-size: 13px; border: 1px solid transparent; transition: all 0.2s; display: inline-flex; align-items: center; gap: 4px; }
+  .btn-primary { background: #1a56db; color: #fff; border-color: #1a56db; }
+  .btn-primary:hover { background: #1347b8; border-color: #1347b8; }
+  .btn-default { background: #fff; color: #333; border: 1px solid #d9d9d9; }
+  .btn-default:hover { border-color: #1a56db; color: #1a56db; }
+  .btn-danger { background: #fff; color: #cf1322; border: 1px solid #cf1322; }
+  .btn-danger:hover { background: #fff1f0; }
+  .btn-sm { padding: 4px 12px; font-size: 12px; }
+  .btn-lg { padding: 8px 24px; font-size: 14px; }
+
+  /* Pagination */
+  .pagination { display: flex; justify-content: flex-end; align-items: center; padding: 16px; gap: 4px; font-size: 13px; color: #666; }
+  .page-btn { width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; border: 1px solid #d9d9d9; border-radius: 4px; cursor: pointer; background: #fff; }
+  .page-btn.active { background: #1a56db; color: #fff; border-color: #1a56db; }
+
+  /* Form */
+  .form-card { background: #fff; border-radius: 8px; padding: 24px; box-shadow: 0 1px 2px rgba(0,0,0,0.06); margin-bottom: 20px; }
+  .form-card-title { font-size: 16px; font-weight: 600; margin-bottom: 20px; padding-bottom: 12px; border-bottom: 1px solid #f0f0f0; }
+  .form-row { display: flex; margin-bottom: 20px; }
+  .form-label { width: 180px; padding-top: 7px; font-size: 13px; font-weight: 500; flex-shrink: 0; color: #333; }
+  .form-label .required { color: #ff4d4f; margin-left: 2px; }
+  .form-control { flex: 1; max-width: 520px; }
+  .form-input { width: 100%; padding: 7px 12px; border: 1px solid #d9d9d9; border-radius: 4px; font-size: 14px; }
+  .form-input:focus { outline: none; border-color: #1a56db; box-shadow: 0 0 0 2px rgba(26,86,219,0.1); }
+  .form-select { width: 100%; padding: 7px 12px; border: 1px solid #d9d9d9; border-radius: 4px; font-size: 14px; background: #fff; }
+  .form-hint { font-size: 12px; color: #999; margin-top: 4px; line-height: 1.5; }
+
+  .radio-group { display: flex; gap: 24px; padding-top: 4px; }
+  .radio-item { display: flex; align-items: center; gap: 8px; cursor: pointer; font-size: 14px; }
+  .radio-dot { width: 16px; height: 16px; border: 2px solid #d9d9d9; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .radio-dot.selected { border-color: #1a56db; }
+  .radio-dot.selected::after { content: ''; width: 8px; height: 8px; background: #1a56db; border-radius: 50%; }
+
+  .form-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+  .form-tag { background: #e6f0ff; color: #1a56db; padding: 3px 10px; border-radius: 4px; font-size: 12px; display: flex; align-items: center; gap: 4px; }
+  .form-tag .remove { cursor: pointer; font-size: 15px; line-height: 1; }
+
+  .currency-row { display: flex; gap: 8px; align-items: center; margin-bottom: 8px; }
+  .add-item { color: #1a56db; cursor: pointer; font-size: 13px; margin-top: 4px; display: inline-block; }
+  .add-item:hover { text-decoration: underline; }
+
+  /* Switch */
+  .switch-wrap { display: flex; align-items: center; gap: 10px; padding-top: 4px; }
+  .switch { position: relative; width: 44px; height: 22px; background: #ccc; border-radius: 11px; cursor: pointer; transition: background 0.3s; flex-shrink: 0; }
+  .switch.on { background: #1a56db; }
+  .switch .knob { position: absolute; top: 2px; left: 2px; width: 18px; height: 18px; background: #fff; border-radius: 50%; transition: left 0.3s; box-shadow: 0 1px 3px rgba(0,0,0,0.2); }
+  .switch.on .knob { left: 24px; }
+
+  /* KV editor */
+  .kv-row { display: flex; gap: 8px; margin-bottom: 8px; align-items: center; }
+  .kv-row .form-input { flex: 1; }
+
+  /* Preview card */
+  .preview-card { background: #f8faff; border: 1px dashed #c0d4f5; border-radius: 8px; padding: 20px 24px; margin-bottom: 20px; }
+  .preview-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px 40px; font-size: 13px; }
+  .preview-grid span { color: #888; }
+  .warning-box { margin-top: 12px; padding: 10px 14px; background: #fff7e6; border-radius: 4px; font-size: 12px; color: #d46b08; }
+
+  /* Info card */
+  .info-card { background: #fff; border-radius: 8px; padding: 20px 24px; box-shadow: 0 1px 2px rgba(0,0,0,0.06); margin-bottom: 20px; }
+  .info-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px 32px; }
+  .info-item .info-label { font-size: 12px; color: #888; margin-bottom: 4px; }
+  .info-item .info-value { font-size: 14px; font-weight: 500; }
+
+  /* Back link */
+  .back-link { font-size: 13px; color: #1a56db; cursor: pointer; margin-bottom: 16px; display: inline-flex; align-items: center; gap: 4px; }
+  .back-link:hover { text-decoration: underline; }
+
+  /* Chart placeholder */
+  .chart-placeholder { background: #fafafa; border: 1px dashed #e8e8e8; border-radius: 8px; height: 240px; display: flex; align-items: center; justify-content: center; color: #ccc; font-size: 13px; }
+
+  /* Steps */
+  .steps { display: flex; align-items: center; margin-bottom: 32px; }
+  .step-item { display: flex; align-items: center; gap: 12px; flex: 1; }
+  .step-item:last-child { flex: none; }
+  .step-circle { width: 32px; height: 32px; border-radius: 50%; border: 2px solid #d9d9d9; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 600; color: #999; background: #fff; flex-shrink: 0; }
+  .step-circle.active { border-color: #1a56db; color: #1a56db; }
+  .step-circle.done { border-color: #1a56db; background: #1a56db; color: #fff; }
+  .step-info .step-title { font-size: 14px; font-weight: 500; color: #333; }
+  .step-info .step-desc { font-size: 12px; color: #999; }
+  .step-info.active .step-title { color: #1a56db; }
+  .step-line { flex: 1; height: 1px; background: #e8e8e8; margin: 0 12px; }
+  .step-line.done { background: #1a56db; }
+
+  /* Coupon preview mini */
+  .coupon-preview { background: #f8faff; border: 1px solid #c0d4f5; border-radius: 8px; padding: 14px 16px; margin-top: 8px; font-size: 13px; }
+  .coupon-preview .cp-name { font-weight: 600; font-size: 15px; margin-bottom: 6px; }
+  .coupon-preview .cp-row { display: flex; gap: 20px; color: #666; }
+  .coupon-preview .cp-row span { color: #333; font-weight: 500; }
+
+  /* Analytics */
+  .analytics-card { background: #fff; border-radius: 8px; padding: 20px 24px; box-shadow: 0 1px 2px rgba(0,0,0,0.06); margin-bottom: 20px; }
+  .analytics-card .ac-title { font-size: 16px; font-weight: 600; margin-bottom: 16px; }
+
+  /* Internal portal styles */
+  .sidebar-internal .logo { padding: 14px 20px; display: flex; align-items: center; gap: 10px; font-size: 16px; font-weight: 700; color: #1a56db; border-bottom: 1px solid #f0f0f0; }
+  .sidebar-internal .menu-group { padding: 6px 0; }
+  .sidebar-internal .menu-group-title { padding: 6px 20px; font-size: 11px; color: #bbb; text-transform: uppercase; letter-spacing: 0.5px; }
+  .sidebar-internal .menu-item { padding: 9px 20px 9px 28px; cursor: pointer; color: #555; display: flex; align-items: center; gap: 8px; font-size: 13px; transition: all 0.2s; }
+  .sidebar-internal .menu-item:hover { background: #f5f5f5; color: #1a56db; }
+  .sidebar-internal .menu-item.active { background: #e6f0ff; color: #1a56db; font-weight: 500; border-right: 3px solid #1a56db; }
+
+  .card { background: #fff; border-radius: 8px; padding: 24px; margin-bottom: 20px; box-shadow: 0 1px 2px rgba(0,0,0,0.06); }
+  .card-title { font-size: 16px; font-weight: 600; margin-bottom: 16px; display: flex; align-items: center; gap: 8px; }
+  .badge { font-size: 11px; background: #1a56db; color: #fff; padding: 2px 8px; border-radius: 10px; font-weight: 400; }
+  .badge-gray { font-size: 11px; background: #e8e8e8; color: #666; padding: 2px 8px; border-radius: 10px; font-weight: 400; }
+
+  .merchant-selector { background: #fff; border-radius: 8px; padding: 14px 24px; margin-bottom: 20px; box-shadow: 0 1px 2px rgba(0,0,0,0.06); display: flex; align-items: center; gap: 16px; }
+  .merchant-selector label { font-weight: 500; white-space: nowrap; }
+  .merchant-selector select { flex: 1; max-width: 400px; padding: 6px 12px; border: 1px solid #d9d9d9; border-radius: 4px; font-size: 14px; }
+  .status-tag { display: inline-flex; align-items: center; gap: 4px; padding: 3px 10px; border-radius: 4px; font-size: 12px; }
+  .status-enabled { background: #e6f7e6; color: #389e0d; }
+
+  /* Collapse */
+  .collapse-header { display: flex; align-items: center; gap: 8px; cursor: pointer; padding: 10px 0; border-top: 1px solid #f0f0f0; margin-top: 4px; color: #555; font-size: 14px; font-weight: 500; }
+  .collapse-header:hover { color: #1a56db; }
+  .collapse-arrow { font-size: 12px; transition: transform 0.2s; }
+  .collapse-arrow.open { transform: rotate(90deg); }
+  .collapse-body { padding: 12px 0; }
+
+  /* Audit table */
+  .audit-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  .audit-table th { text-align: left; padding: 10px 12px; background: #fafafa; border-bottom: 1px solid #e8e8e8; color: #666; font-weight: 500; }
+  .audit-table td { padding: 10px 12px; border-bottom: 1px solid #f0f0f0; }
+
+  /* Stepper content */
+  .step-content { display: none; }
+  .step-content.active { display: block; }
+
+  /* Tab content */
+  .tab-content { display: none; }
+  .tab-content.active { display: block; }
+
+  /* Detail info */
+  .detail-row { display: flex; padding: 10px 0; border-bottom: 1px solid #f0f0f0; }
+  .detail-row:last-child { border-bottom: none; }
+  .detail-key { width: 180px; color: #888; font-size: 13px; flex-shrink: 0; }
+  .detail-value { font-size: 13px; font-weight: 500; }
+
+  /* ROI table */
+  .roi-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  .roi-table th { text-align: left; padding: 10px 16px; background: #fafafa; border-bottom: 1px solid #e8e8e8; color: #666; font-weight: 500; }
+  .roi-table td { padding: 10px 16px; border-bottom: 1px solid #f0f0f0; }
+
+  /* Action bar */
+  .action-bar { display: flex; gap: 12px; margin-top: 20px; }
+
+  /* Modal-like overlay (for edit) */
+  .inline-edit-notice { background: #fff7e6; border: 1px solid #ffd591; border-radius: 6px; padding: 10px 14px; font-size: 13px; color: #d46b08; margin-bottom: 16px; }
+
+  /* Empty state */
+  .empty-state { text-align: center; padding: 60px 0; color: #bbb; }
+  .empty-state .empty-icon { font-size: 40px; margin-bottom: 12px; }
+  .empty-state .empty-text { font-size: 14px; }
+
+  /* Responsive width */
+  body { min-width: 1400px; }
+
+  /* Form actions */
+  .form-actions { display: flex; gap: 12px; padding-top: 20px; border-top: 1px solid #f0f0f0; }
+
+  /* Regions multi-select */
+  .multi-select-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+  .region-tag { background: #f5f5f5; color: #555; padding: 3px 8px; border-radius: 4px; font-size: 12px; display: flex; align-items: center; gap: 4px; cursor: pointer; border: 1px solid #e8e8e8; }
+  .region-tag.selected { background: #e6f0ff; color: #1a56db; border-color: #c0d4f5; }
+
+  /* Step nav buttons */
+  .step-nav { display: flex; justify-content: space-between; margin-top: 32px; padding-top: 20px; border-top: 1px solid #f0f0f0; }
+
+  /* Internal breadcrumb / header */
+  .int-breadcrumb { font-size: 13px; color: #999; }
+  .int-breadcrumb a { color: #1a56db; text-decoration: none; cursor: pointer; }
+</style>
+</head>
+<body>
+
+<!-- ===== TOP NAVIGATOR ===== -->
+<div class="nav-bar">
+  <span class="nav-label">🗺️ Pages:</span>
+  <span class="nav-label" style="color:#7ab3ff; font-size:10px;">— External (Merchant) Portal —</span>
+  <button class="nav-btn current" id="nav-p1" onclick="showPage('p1')">1. Coupon List</button>
+  <button class="nav-btn" id="nav-p2" onclick="showPage('p2')">2. Create Coupon</button>
+  <button class="nav-btn" id="nav-p3" onclick="showPage('p3')">3. Coupon Detail</button>
+  <button class="nav-btn" id="nav-p4" onclick="showPage('p4')">4. Promo Code List</button>
+  <button class="nav-btn" id="nav-p5" onclick="showPage('p5')">5. Create Promo Code</button>
+  <button class="nav-btn" id="nav-p6" onclick="showPage('p6')">6. Batch Create</button>
+  <button class="nav-btn" id="nav-p7" onclick="showPage('p7')">7. Analytics</button>
+  <div class="nav-divider"></div>
+  <span class="nav-label" style="color:#ffb77a; font-size:10px;">— Internal (Ops) Portal —</span>
+  <button class="nav-btn" id="nav-p8" onclick="showPage('p8')">8. Merchant Config</button>
+</div>
+
+<!-- ====================================================== -->
+<!-- PAGE 1: COUPON LIST -->
+<!-- ====================================================== -->
+<div class="page active" id="p1">
+  <div class="layout">
+    <!-- Sidebar -->
+    <div class="sidebar">
+      <div class="logo">
+        <svg width="22" height="22" viewBox="0 0 28 28" fill="none"><rect width="28" height="28" rx="6" fill="#1a56db"/><text x="5" y="20" fill="#fff" font-size="14" font-weight="700">W</text></svg>
+        Waffo
+      </div>
+      <div class="menu-group">
+        <div class="menu-group-title">Transaction</div>
+        <div class="menu-item"><span class="icon">💳</span> Transactions</div>
+        <div class="menu-item"><span class="icon">⚡</span> Disputes</div>
+        <div class="menu-item"><span class="icon">📊</span> Payments Analytics</div>
+      </div>
+      <div class="menu-group">
+        <div class="menu-group-title">Subscription</div>
+        <div class="menu-item"><span class="icon">🔄</span> Subscriptions</div>
+      </div>
+      <div class="menu-group">
+        <div class="menu-group-title">Marketing</div>
+        <div class="menu-item active"><span class="icon">🎫</span> Coupons</div>
+        <div class="menu-item" onclick="showPage('p4')"><span class="icon">🏷️</span> Promotion Codes</div>
+        <div class="menu-item" onclick="showPage('p7')"><span class="icon">📈</span> Discount Analytics</div>
+      </div>
+      <div class="menu-group">
+        <div class="menu-group-title">Settlement</div>
+        <div class="menu-item"><span class="icon">🏦</span> Settlement Batch</div>
+        <div class="menu-item"><span class="icon">📅</span> Settlement Calendar</div>
+      </div>
+      <div class="menu-group">
+        <div class="menu-group-title">Payout</div>
+        <div class="menu-item"><span class="icon">📤</span> Create Payouts</div>
+        <div class="menu-item"><span class="icon">📋</span> Payout History</div>
+      </div>
+      <div class="menu-group">
+        <div class="menu-group-title">Settings</div>
+        <div class="menu-item"><span class="icon">👥</span> Operators</div>
+        <div class="menu-item"><span class="icon">🔑</span> Integration</div>
+      </div>
+    </div>
+
+    <div class="main">
+      <div class="header">
+        <div class="header-merchant">Merchant Id <select><option>1000000001 - Test TT Merchant - Active</option><option>1000000023 - Lovart Games - Active</option></select></div>
+        <div class="header-right"><span>❓ FAQ</span><span>👤 Lei Wang</span></div>
+      </div>
+      <div class="content">
+        <div class="page-header">
+          <div>
+            <div class="breadcrumb" style="margin-bottom:6px;"><a>Marketing</a> / Coupons</div>
+            <div class="page-title">Coupons</div>
+          </div>
+          <button class="btn btn-primary" onclick="showPage('p2')">+ Create Coupon</button>
+        </div>
+
+        <!-- Stats -->
+        <div class="stats-row">
+          <div class="stat-card"><div class="stat-label">Active Coupons</div><div class="stat-value">12</div><div class="stat-change">↑ 3 this month</div></div>
+          <div class="stat-card"><div class="stat-label">Total Redemptions</div><div class="stat-value">1,847</div><div class="stat-change">↑ 23% vs last month</div></div>
+          <div class="stat-card"><div class="stat-label">Total Discount Amount</div><div class="stat-value">$12,450</div><div class="stat-change">↑ 15% vs last month</div></div>
+          <div class="stat-card"><div class="stat-label">Redemption Rate</div><div class="stat-value">42.3%</div><div class="stat-change">↑ 5.2%</div></div>
+        </div>
+
+        <!-- Tabs -->
+        <div class="tabs" id="coupon-list-tabs">
+          <div class="tab active" onclick="setTab('coupon-list-tabs', this)">All</div>
+          <div class="tab" onclick="setTab('coupon-list-tabs', this)">Active</div>
+          <div class="tab" onclick="setTab('coupon-list-tabs', this)">Expired</div>
+          <div class="tab" onclick="setTab('coupon-list-tabs', this)">Archived</div>
+        </div>
+
+        <!-- Filters -->
+        <div class="filters">
+          <input class="filter-input" placeholder="🔍 Search by name or ID..." />
+          <select class="filter-select"><option>Discount Type</option><option>Percentage Off</option><option>Fixed Amount Off</option></select>
+          <select class="filter-select"><option>Duration</option><option>Once</option><option>Repeating</option><option>Forever</option></select>
+          <select class="filter-select"><option>Status</option><option>Active</option><option>Expired</option><option>Archived</option></select>
+          <button class="btn btn-default" style="margin-left:auto;">Export</button>
+        </div>
+
+        <!-- Table -->
+        <table class="data-table">
+          <thead>
+            <tr><th>Coupon ID</th><th>Name</th><th>Discount</th><th>Duration</th><th>Redeemed</th><th>Status</th><th>Created</th><th>Expires</th><th>Action</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td style="font-family:monospace;font-size:12px;color:#888;">coup_01HXYZ4A...</td>
+              <td><strong>Summer Sale 2026</strong></td>
+              <td><span class="tag tag-blue">20% off</span></td>
+              <td>Once</td><td>342 / 500</td>
+              <td><span class="tag tag-green">Active</span></td>
+              <td>2026-03-01</td><td>2026-06-30</td>
+              <td><a class="action-link" onclick="showPage('p3')">View</a></td>
+            </tr>
+            <tr>
+              <td style="font-family:monospace;font-size:12px;color:#888;">coup_01HABC9N...</td>
+              <td><strong>New User Welcome</strong></td>
+              <td><span class="tag tag-blue">$5.00 off</span></td>
+              <td>Once</td><td>89 / ∞</td>
+              <td><span class="tag tag-green">Active</span></td>
+              <td>2026-02-15</td><td>2026-12-31</td>
+              <td><a class="action-link" onclick="showPage('p3')">View</a></td>
+            </tr>
+            <tr>
+              <td style="font-family:monospace;font-size:12px;color:#888;">coup_01H9KDE7...</td>
+              <td><strong>VIP Loyalty Discount</strong></td>
+              <td><span class="tag tag-blue">15% off</span></td>
+              <td>Repeating (3mo)</td><td>27 / 100</td>
+              <td><span class="tag tag-green">Active</span></td>
+              <td>2026-01-10</td><td>—</td>
+              <td><a class="action-link" onclick="showPage('p3')">View</a></td>
+            </tr>
+            <tr>
+              <td style="font-family:monospace;font-size:12px;color:#888;">coup_01H7QPZ2...</td>
+              <td><strong>Black Friday 2025</strong></td>
+              <td><span class="tag tag-blue">30% off</span></td>
+              <td>Once</td><td>500 / 500</td>
+              <td><span class="tag tag-gray">Expired</span></td>
+              <td>2025-11-20</td><td>2025-12-01</td>
+              <td><a class="action-link" onclick="showPage('p3')">View</a></td>
+            </tr>
+            <tr>
+              <td style="font-family:monospace;font-size:12px;color:#888;">coup_01H5LMN8...</td>
+              <td><strong>Early Bird SaaS</strong></td>
+              <td><span class="tag tag-blue">$10.00 off</span></td>
+              <td>Forever</td><td>15 / 50</td>
+              <td><span class="tag tag-green">Active</span></td>
+              <td>2025-09-01</td><td>—</td>
+              <td><a class="action-link" onclick="showPage('p3')">View</a></td>
+            </tr>
+            <tr>
+              <td style="font-family:monospace;font-size:12px;color:#888;">coup_01H3ABC6...</td>
+              <td><strong>Deprecated Promo</strong></td>
+              <td><span class="tag tag-blue">10% off</span></td>
+              <td>Once</td><td>200 / 200</td>
+              <td><span class="tag tag-red">Archived</span></td>
+              <td>2025-06-01</td><td>2025-08-31</td>
+              <td><a class="action-link" onclick="showPage('p3')">View</a></td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="pagination">
+          <span>Total 12 items</span>
+          <span style="margin-left:16px; cursor:pointer;">‹</span>
+          <div class="page-btn active">1</div>
+          <div class="page-btn">2</div>
+          <span style="cursor:pointer;">›</span>
+          <span style="margin-left:8px;">10 / page</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ====================================================== -->
+<!-- PAGE 2: CREATE COUPON -->
+<!-- ====================================================== -->
+<div class="page-full" id="p2">
+  <div class="layout">
+    <div class="sidebar">
+      <div class="logo">
+        <svg width="22" height="22" viewBox="0 0 28 28" fill="none"><rect width="28" height="28" rx="6" fill="#1a56db"/><text x="5" y="20" fill="#fff" font-size="14" font-weight="700">W</text></svg>
+        Waffo
+      </div>
+      <div class="menu-group">
+        <div class="menu-group-title">Transaction</div>
+        <div class="menu-item"><span class="icon">💳</span> Transactions</div>
+        <div class="menu-item"><span class="icon">⚡</span> Disputes</div>
+        <div class="menu-item"><span class="icon">📊</span> Payments Analytics</div>
+      </div>
+      <div class="menu-group">
+        <div class="menu-group-title">Subscription</div>
+        <div class="menu-item"><span class="icon">🔄</span> Subscriptions</div>
+      </div>
+      <div class="menu-group">
+        <div class="menu-group-title">Marketing</div>
+        <div class="menu-item active"><span class="icon">🎫</span> Coupons</div>
+        <div class="menu-item" onclick="showPage('p4')"><span class="icon">🏷️</span> Promotion Codes</div>
+        <div class="menu-item" onclick="showPage('p7')"><span class="icon">📈</span> Discount Analytics</div>
+      </div>
+      <div class="menu-group">
+        <div class="menu-group-title">Settlement</div>
+        <div class="menu-item"><span class="icon">🏦</span> Settlement Batch</div>
+        <div class="menu-item"><span class="icon">📅</span> Settlement Calendar</div>
+      </div>
+      <div class="menu-group">
+        <div class="menu-group-title">Settings</div>
+        <div class="menu-item"><span class="icon">👥</span> Operators</div>
+        <div class="menu-item"><span class="icon">🔑</span> Integration</div>
+      </div>
+    </div>
+
+    <div class="main">
+      <div class="header">
+        <div class="breadcrumb"><a onclick="showPage('p1')">Marketing</a> / <a onclick="showPage('p1')">Coupons</a> / Create Coupon</div>
+        <div class="header-right"><span>❓ FAQ</span><span>👤 Lei Wang</span></div>
+      </div>
+      <div class="content">
+        <div style="margin-bottom:20px;">
+          <a class="back-link" onclick="showPage('p1')">← Back to Coupons</a>
+          <div class="page-title">Create Coupon</div>
+        </div>
+
+        <div style="max-width:760px;">
+          <!-- Basic Info -->
+          <div class="form-card">
+            <div class="form-card-title">📋 Basic Info</div>
+
+            <div class="form-row">
+              <div class="form-label"><span class="required">*</span> Name</div>
+              <div class="form-control">
+                <input class="form-input" placeholder="e.g. Summer Sale 20% Off" maxlength="40" />
+                <div class="form-hint">Customer-facing name shown on invoices/receipts. Max 40 characters.</div>
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-label"><span class="required">*</span> Discount Type</div>
+              <div class="form-control">
+                <div class="radio-group">
+                  <label class="radio-item" onclick="setDiscountType('percentage')">
+                    <div class="radio-dot selected" id="radio-percentage"></div>
+                    <span>Percentage Off</span>
+                  </label>
+                  <label class="radio-item" onclick="setDiscountType('fixed')">
+                    <div class="radio-dot" id="radio-fixed"></div>
+                    <span>Fixed Amount Off</span>
+                  </label>
+                </div>
+              </div>
+            </div>
+
+            <!-- Percentage field -->
+            <div class="form-row" id="field-percentage">
+              <div class="form-label"><span class="required">*</span> Percentage</div>
+              <div class="form-control">
+                <div style="display:flex;align-items:center;gap:8px;">
+                  <input class="form-input" type="number" placeholder="20" style="width:120px;" min="1" max="100" />
+                  <span style="font-size:16px;color:#666;">%</span>
+                </div>
+                <div class="form-hint">Enter a value between 1 and 100. 100% means the order is completely free.</div>
+              </div>
+            </div>
+
+            <!-- Fixed amount field (hidden initially) -->
+            <div class="form-row" id="field-fixed" style="display:none;">
+              <div class="form-label"><span class="required">*</span> Amount</div>
+              <div class="form-control">
+                <div class="currency-row">
+                  <select class="form-select" style="width:100px;"><option>USD</option><option>EUR</option><option>GBP</option><option>JPY</option><option>SGD</option></select>
+                  <input class="form-input" type="number" placeholder="5.00" />
+                </div>
+                <div class="currency-row">
+                  <select class="form-select" style="width:100px;"><option>SGD</option><option>USD</option><option>EUR</option></select>
+                  <input class="form-input" type="number" placeholder="7.00" />
+                </div>
+                <span class="add-item">+ Add currency</span>
+                <div class="form-hint">Specify the discount amount per currency. Leave currencies unconfigured to exclude them.</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Duration & Limits -->
+          <div class="form-card">
+            <div class="form-card-title">⏱️ Duration &amp; Limits</div>
+
+            <div class="form-row">
+              <div class="form-label"><span class="required">*</span> Duration</div>
+              <div class="form-control">
+                <select class="form-select" id="duration-select" onchange="handleDurationChange(this.value)">
+                  <option value="once">Once — Applies to a single payment only</option>
+                  <option value="repeating">Repeating — Applies for N billing cycles</option>
+                  <option value="forever">Forever — Applies indefinitely (subscriptions)</option>
+                </select>
+                <div class="form-hint">Determines how many billing cycles the discount applies to.</div>
+              </div>
+            </div>
+
+            <!-- Duration months (only for repeating) -->
+            <div class="form-row" id="field-duration-months" style="display:none;">
+              <div class="form-label"><span class="required">*</span> Duration Months</div>
+              <div class="form-control">
+                <input class="form-input" type="number" placeholder="3" style="width:120px;" min="1" />
+                <div class="form-hint">Number of billing cycles the discount will apply. Only relevant for subscriptions.</div>
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-label">Max Redemptions</div>
+              <div class="form-control">
+                <input class="form-input" type="number" placeholder="Leave empty for unlimited" />
+                <div class="form-hint">Total number of times this coupon can be redeemed across all promotion codes.</div>
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-label">Daily Redemption Limit</div>
+              <div class="form-control">
+                <input class="form-input" type="number" placeholder="e.g. 1 (per user per day)" />
+                <div class="form-hint">Optional. Limit how many times a single customer can redeem per day.</div>
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-label">Expiry Date</div>
+              <div class="form-control">
+                <input class="form-input" type="datetime-local" />
+                <div class="form-hint">Optional. After this datetime, the coupon cannot be redeemed.</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Applicable Scope -->
+          <div class="form-card">
+            <div class="form-card-title">🎯 Applicable Scope</div>
+
+            <div class="form-row">
+              <div class="form-label">Category Tags</div>
+              <div class="form-control">
+                <input class="form-input" placeholder="Type a category and press Enter (e.g. gaming)" id="tag-input" onkeydown="handleTagInput(event)" />
+                <div class="form-tags" id="tag-list">
+                  <span class="form-tag">gaming <span class="remove" onclick="removeTag(this)">×</span></span>
+                  <span class="form-tag">subscription <span class="remove" onclick="removeTag(this)">×</span></span>
+                </div>
+                <div class="form-hint">Only orders with matching goodsCategory will be eligible. Leave empty for all categories.</div>
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-label">Metadata</div>
+              <div class="form-control">
+                <div id="kv-container">
+                  <div class="kv-row">
+                    <input class="form-input" placeholder="Key" style="flex:1;" />
+                    <input class="form-input" placeholder="Value" style="flex:2;" />
+                    <button class="btn btn-sm btn-default">×</button>
+                  </div>
+                </div>
+                <span class="add-item" onclick="addKVRow()">+ Add field</span>
+                <div class="form-hint">Custom key-value pairs for your own tracking purposes.</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Preview -->
+          <div class="preview-card">
+            <div class="form-card-title" style="border:none;padding:0;margin-bottom:12px;">📋 Preview</div>
+            <div class="preview-grid">
+              <div><span>Name: </span>Summer Sale 20% Off</div>
+              <div><span>Discount: </span>20% off</div>
+              <div><span>Duration: </span>Once</div>
+              <div><span>Max Redemptions: </span>Unlimited</div>
+              <div><span>Expiry: </span>Not set</div>
+              <div><span>Categories: </span>gaming, subscription</div>
+            </div>
+            <div class="warning-box">⚠️ Once created, discount type, percentage/amount, currency, and duration <strong>cannot be modified</strong>. Please review carefully before submitting.</div>
+          </div>
+
+          <!-- Actions -->
+          <div class="form-actions">
+            <button class="btn btn-primary btn-lg" onclick="showPage('p3')">Create Coupon</button>
+            <button class="btn btn-default btn-lg" onclick="showPage('p1')">Cancel</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ====================================================== -->
+<!-- PAGE 3: COUPON DETAIL -->
+<!-- ====================================================== -->
+<div class="page-full" id="p3">
+  <div class="layout">
+    <div class="sidebar">
+      <div class="logo">
+        <svg width="22" height="22" viewBox="0 0 28 28" fill="none"><rect width="28" height="28" rx="6" fill="#1a56db"/><text x="5" y="20" fill="#fff" font-size="14" font-weight="700">W</text></svg>
+        Waffo
+      </div>
+      <div class="menu-group">
+        <div class="menu-group-title">Transaction</div>
+        <div class="menu-item"><span class="icon">💳</span> Transactions</div>
+        <div class="menu-item"><span class="icon">⚡</span> Disputes</div>
+      </div>
+      <div class="menu-group">
+        <div class="menu-group-title">Subscription</div>
+        <div class="menu-item"><span class="icon">🔄</span> Subscriptions</div>
+      </div>
+      <div class="menu-group">
+        <div class="menu-group-title">Marketing</div>
+        <div class="menu-item active"><span class="icon">🎫</span> Coupons</div>
+        <div class="menu-item" onclick="showPage('p4')"><span class="icon">🏷️</span> Promotion Codes</div>
+        <div class="menu-item" onclick="showPage('p7')"><span class="icon">📈</span> Discount Analytics</div>
+      </div>
+      <div class="menu-group">
+        <div class="menu-group-title">Settlement</div>
+        <div class="menu-item"><span class="icon">🏦</span> Settlement Batch</div>
+      </div>
+      <div class="menu-group">
+        <div class="menu-group-title">Settings</div>
+        <div class="menu-item"><span class="icon">👥</span> Operators</div>
+      </div>
+    </div>
+
+    <div class="main">
+      <div class="header">
+        <div class="breadcrumb"><a onclick="showPage('p1')">Marketing</a> / <a onclick="showPage('p1')">Coupons</a> / Summer Sale 2026</div>
+        <div class="header-right"><span>❓ FAQ</span><span>👤 Lei Wang</span></div>
+      </div>
+      <div class="content">
+        <div style="margin-bottom:16px;">
+          <a class="back-link" onclick="showPage('p1')">← Back to Coupons</a>
+          <div style="display:flex;align-items:center;justify-content:space-between;">
+            <div class="page-title">Summer Sale 2026 <span class="tag tag-green" style="font-size:14px;margin-left:8px;">Active</span></div>
+            <div style="display:flex;gap:10px;">
+              <button class="btn btn-default">✏️ Edit</button>
+              <button class="btn btn-danger">🗄️ Archive</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Info card -->
+        <div class="info-card">
+          <div class="info-grid">
+            <div class="info-item"><div class="info-label">Coupon ID</div><div class="info-value" style="font-family:monospace;font-size:13px;">coup_01HXYZ4A2BC3DE4FG5HI</div></div>
+            <div class="info-item"><div class="info-label">Discount</div><div class="info-value"><span class="tag tag-blue">20% off</span></div></div>
+            <div class="info-item"><div class="info-label">Duration</div><div class="info-value">Once</div></div>
+            <div class="info-item"><div class="info-label">Created</div><div class="info-value">2026-03-01 09:32:15</div></div>
+            <div class="info-item"><div class="info-label">Expires</div><div class="info-value">2026-06-30 23:59:59</div></div>
+            <div class="info-item"><div class="info-label">Max Redemptions</div><div class="info-value">500</div></div>
+            <div class="info-item"><div class="info-label">Redeemed</div><div class="info-value">342 <span style="color:#888;font-size:12px;font-weight:400;">(68.4%)</span></div></div>
+            <div class="info-item"><div class="info-label">Category Tags</div><div class="info-value"><span class="tag tag-blue" style="margin-right:4px;">gaming</span><span class="tag tag-blue">subscription</span></div></div>
+            <div class="info-item"><div class="info-label">Daily Limit</div><div class="info-value">—</div></div>
+          </div>
+
+          <div style="margin-top:16px;">
+            <div class="inline-edit-notice">📝 Only <strong>Name</strong> and <strong>Metadata</strong> can be modified after creation. Discount, duration, and currency are immutable.</div>
+          </div>
+        </div>
+
+        <!-- Tabs -->
+        <div class="tabs" id="coupon-detail-tabs">
+          <div class="tab active" onclick="setTab('coupon-detail-tabs', this); showTabContent('coupon-detail-content', 'tab-overview')">Overview</div>
+          <div class="tab" onclick="setTab('coupon-detail-tabs', this); showTabContent('coupon-detail-content', 'tab-promo-codes')">Promotion Codes <span style="background:#e8e8e8;border-radius:10px;padding:1px 7px;font-size:11px;margin-left:4px;">5</span></div>
+          <div class="tab" onclick="setTab('coupon-detail-tabs', this); showTabContent('coupon-detail-content', 'tab-history')">Redemption History <span style="background:#e8e8e8;border-radius:10px;padding:1px 7px;font-size:11px;margin-left:4px;">342</span></div>
+        </div>
+
+        <div id="coupon-detail-content">
+          <!-- Overview Tab -->
+          <div class="tab-content active" id="tab-overview">
+            <div style="display:flex;gap:20px;">
+              <div style="flex:1;">
+                <div class="analytics-card">
+                  <div class="ac-title">Coupon Details</div>
+                  <div class="detail-row"><div class="detail-key">Name</div><div class="detail-value">Summer Sale 2026</div></div>
+                  <div class="detail-row"><div class="detail-key">Discount Type</div><div class="detail-value">Percentage Off</div></div>
+                  <div class="detail-row"><div class="detail-key">Discount</div><div class="detail-value">20%</div></div>
+                  <div class="detail-row"><div class="detail-key">Duration</div><div class="detail-value">Once</div></div>
+                  <div class="detail-row"><div class="detail-key">Max Redemptions</div><div class="detail-value">500</div></div>
+                  <div class="detail-row"><div class="detail-key">Daily Limit</div><div class="detail-value">—</div></div>
+                  <div class="detail-row"><div class="detail-key">Category Tags</div><div class="detail-value">gaming, subscription</div></div>
+                  <div class="detail-row"><div class="detail-key">Metadata</div><div class="detail-value" style="font-family:monospace;font-size:12px;">campaign_id: spring2026</div></div>
+                  <div class="detail-row"><div class="detail-key">Created At</div><div class="detail-value">2026-03-01 09:32:15</div></div>
+                  <div class="detail-row"><div class="detail-key">Expires At</div><div class="detail-value">2026-06-30 23:59:59</div></div>
+                </div>
+              </div>
+              <div style="flex:1;">
+                <div class="analytics-card">
+                  <div class="ac-title">Discount Statistics</div>
+                  <div class="stats-row" style="margin-bottom:16px;">
+                    <div class="stat-card"><div class="stat-label">Total Discount</div><div class="stat-value" style="font-size:20px;">$6,840</div></div>
+                    <div class="stat-card"><div class="stat-label">Avg Order Value</div><div class="stat-value" style="font-size:20px;">$171</div></div>
+                  </div>
+                  <div class="chart-placeholder">📊 Redemption Trend Chart (7-day)</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Promotion Codes Tab -->
+          <div class="tab-content" id="tab-promo-codes">
+            <div style="display:flex;justify-content:space-between;margin-bottom:16px;">
+              <div style="font-size:13px;color:#888;">Promotion codes linked to this coupon</div>
+              <button class="btn btn-primary btn-sm" onclick="showPage('p5')">+ Create Promotion Code</button>
+            </div>
+            <table class="data-table">
+              <thead>
+                <tr><th>Code</th><th>Redeemed</th><th>Restrictions</th><th>Channel</th><th>Status</th><th>Expires</th><th>Action</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong style="font-family:monospace;">SUMMER20</strong></td>
+                  <td>156 / 200</td><td>First order only</td>
+                  <td><span class="tag tag-orange">Email</span></td>
+                  <td><span class="tag tag-green">Active</span></td>
+                  <td>2026-06-30</td>
+                  <td><a class="action-link">View</a> · <a class="action-link">Disable</a></td>
+                </tr>
+                <tr>
+                  <td><strong style="font-family:monospace;">VIP20</strong></td>
+                  <td>89 / ∞</td><td>—</td>
+                  <td><span class="tag tag-orange">Social</span></td>
+                  <td><span class="tag tag-green">Active</span></td>
+                  <td>2026-06-30</td>
+                  <td><a class="action-link">View</a> · <a class="action-link">Disable</a></td>
+                </tr>
+                <tr>
+                  <td><strong style="font-family:monospace;">SUMMER-K2X9P</strong></td>
+                  <td>45 / ∞</td><td>Min $30</td>
+                  <td><span class="tag tag-orange">In-App</span></td>
+                  <td><span class="tag tag-green">Active</span></td>
+                  <td>2026-06-30</td>
+                  <td><a class="action-link">View</a> · <a class="action-link">Disable</a></td>
+                </tr>
+                <tr>
+                  <td><strong style="font-family:monospace;">SUMMER-M7L3Q</strong></td>
+                  <td>52 / ∞</td><td>Min $30</td>
+                  <td><span class="tag tag-orange">In-App</span></td>
+                  <td><span class="tag tag-gray">Inactive</span></td>
+                  <td>2026-06-30</td>
+                  <td><a class="action-link">View</a> · <a class="action-link">Enable</a></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Redemption History Tab -->
+          <div class="tab-content" id="tab-history">
+            <div class="filters" style="margin-bottom:16px;">
+              <input class="filter-input" placeholder="🔍 Search by order ID or customer..." />
+              <select class="filter-select"><option>Date Range</option><option>Last 7 days</option><option>Last 30 days</option></select>
+              <button class="btn btn-default" style="margin-left:auto;">Export</button>
+            </div>
+            <table class="data-table">
+              <thead>
+                <tr><th>Order ID</th><th>Customer</th><th>Code Used</th><th>Original Amount</th><th>Discount</th><th>Final Amount</th><th>Date</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td style="font-family:monospace;font-size:12px;">ord_01HZA4B2C</td>
+                  <td>cus_gamer_001</td><td><strong style="font-family:monospace;">SUMMER20</strong></td>
+                  <td>$120.00</td><td style="color:#389e0d;">-$24.00</td><td>$96.00</td>
+                  <td>2026-03-15 14:23</td>
+                </tr>
+                <tr>
+                  <td style="font-family:monospace;font-size:12px;">ord_01HZA3X9P</td>
+                  <td>cus_player_042</td><td><strong style="font-family:monospace;">VIP20</strong></td>
+                  <td>$200.00</td><td style="color:#389e0d;">-$40.00</td><td>$160.00</td>
+                  <td>2026-03-15 11:05</td>
+                </tr>
+                <tr>
+                  <td style="font-family:monospace;font-size:12px;">ord_01HZA2M7L</td>
+                  <td>cus_user_189</td><td><strong style="font-family:monospace;">SUMMER20</strong></td>
+                  <td>$85.00</td><td style="color:#389e0d;">-$17.00</td><td>$68.00</td>
+                  <td>2026-03-14 20:47</td>
+                </tr>
+                <tr>
+                  <td style="font-family:monospace;font-size:12px;">ord_01HZA1K4R</td>
+                  <td>cus_vip_007</td><td><strong style="font-family:monospace;">VIP20</strong></td>
+                  <td>$350.00</td><td style="color:#389e0d;">-$70.00</td><td>$280.00</td>
+                  <td>2026-03-14 16:32</td>
+                </tr>
+              </tbody>
+            </table>
+            <div class="pagination">
+              <span>Total 342 items</span>
+              <span style="margin-left:16px;">‹</span>
+              <div class="page-btn active">1</div>
+              <div class="page-btn">2</div>
+              <div class="page-btn">3</div>
+              <span>...</span>
+              <div class="page-btn">35</div>
+              <span>›</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ====================================================== -->
+<!-- PAGE 4: PROMOTION CODE LIST -->
+<!-- ====================================================== -->
+<div class="page active" id="p4" style="display:none;">
+  <div class="layout">
+    <div class="sidebar">
+      <div class="logo">
+        <svg width="22" height="22" viewBox="0 0 28 28" fill="none"><rect width="28" height="28" rx="6" fill="#1a56db"/><text x="5" y="20" fill="#fff" font-size="14" font-weight="700">W</text></svg>
+        Waffo
+      </div>
+      <div class="menu-group">
+        <div class="menu-group-title">Transaction</div>
+        <div class="menu-item"><span class="icon">💳</span> Transactions</div>
+        <div class="menu-item"><span class="icon">⚡</span> Disputes</div>
+      </div>
+      <div class="menu-group">
+        <div class="menu-group-title">Subscription</div>
+        <div class="menu-item"><span class="icon">🔄</span> Subscriptions</div>
+      </div>
+      <div class="menu-group">
+        <div class="menu-group-title">Marketing</div>
+        <div class="menu-item" onclick="showPage('p1')"><span class="icon">🎫</span> Coupons</div>
+        <div class="menu-item active"><span class="icon">🏷️</span> Promotion Codes</div>
+        <div class="menu-item" onclick="showPage('p7')"><span class="icon">📈</span> Discount Analytics</div>
+      </div>
+      <div class="menu-group">
+        <div class="menu-group-title">Settlement</div>
+        <div class="menu-item"><span class="icon">🏦</span> Settlement Batch</div>
+      </div>
+      <div class="menu-group">
+        <div class="menu-group-title">Settings</div>
+        <div class="menu-item"><span class="icon">👥</span> Operators</div>
+      </div>
+    </div>
+
+    <div class="main">
+      <div class="header">
+        <div class="header-merchant">Merchant Id <select><option>1000000001 - Test TT Merchant - Active</option></select></div>
+        <div class="header-right"><span>❓ FAQ</span><span>👤 Lei Wang</span></div>
+      </div>
+      <div class="content">
+        <div class="page-header">
+          <div>
+            <div class="breadcrumb" style="margin-bottom:6px;"><a onclick="showPage('p1')">Marketing</a> / Promotion Codes</div>
+            <div class="page-title">Promotion Codes</div>
+            <div class="page-subtitle">Manage codes that customers use to redeem coupons</div>
+          </div>
+          <div style="display:flex;gap:8px;">
+            <button class="btn btn-primary" onclick="showPage('p5')">+ Create Code</button>
+            <button class="btn btn-default" onclick="showPage('p6')">Batch Create</button>
+          </div>
+        </div>
+
+        <div class="filters">
+          <input class="filter-input" placeholder="🔍 Search by code..." />
+          <select class="filter-select"><option>All Coupons</option><option>Summer Sale 2026</option><option>New User Welcome</option><option>VIP Loyalty Discount</option></select>
+          <select class="filter-select"><option>Status</option><option>Active</option><option>Inactive</option><option>Expired</option></select>
+          <select class="filter-select"><option>Channel</option><option>Email</option><option>Social</option><option>In-App</option><option>Direct</option></select>
+          <button class="btn btn-default" style="margin-left:auto;">Export</button>
+        </div>
+
+        <table class="data-table">
+          <thead>
+            <tr><th>Code</th><th>Coupon</th><th>Discount</th><th>Redeemed</th><th>Restrictions</th><th>Channel</th><th>Status</th><th>Expires</th><th>Action</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong style="font-family:monospace;">SUMMER20</strong></td>
+              <td><a class="action-link" onclick="showPage('p3')">Summer Sale 2026</a></td>
+              <td><span class="tag tag-blue">20% off</span></td>
+              <td>156 / 200</td><td>First order only</td>
+              <td><span class="tag tag-orange">Email</span></td>
+              <td><span class="tag tag-green">Active</span></td>
+              <td>2026-06-30</td>
+              <td><a class="action-link">View</a> · <a class="action-link">Disable</a></td>
+            </tr>
+            <tr>
+              <td><strong style="font-family:monospace;">VIP20</strong></td>
+              <td><a class="action-link" onclick="showPage('p3')">Summer Sale 2026</a></td>
+              <td><span class="tag tag-blue">20% off</span></td>
+              <td>89 / ∞</td><td>—</td>
+              <td><span class="tag tag-cyan">Social</span></td>
+              <td><span class="tag tag-green">Active</span></td>
+              <td>2026-06-30</td>
+              <td><a class="action-link">View</a> · <a class="action-link">Disable</a></td>
+            </tr>
+            <tr>
+              <td><strong style="font-family:monospace;">WELCOME5</strong></td>
+              <td><a class="action-link" onclick="showPage('p3')">New User Welcome</a></td>
+              <td><span class="tag tag-blue">$5.00 off</span></td>
+              <td>34 / ∞</td><td>First order · Min $20</td>
+              <td><span class="tag tag-purple">In-App</span></td>
+              <td><span class="tag tag-green">Active</span></td>
+              <td>2026-12-31</td>
+              <td><a class="action-link">View</a> · <a class="action-link">Disable</a></td>
+            </tr>
+            <tr>
+              <td><strong style="font-family:monospace;">BF-A3X9K2</strong></td>
+              <td><a class="action-link" onclick="showPage('p3')">Black Friday 2025</a></td>
+              <td><span class="tag tag-blue">30% off</span></td>
+              <td>1 / 1</td><td>Single use · Min $50</td>
+              <td><span class="tag tag-orange">Email</span></td>
+              <td><span class="tag tag-gray">Expired</span></td>
+              <td>2025-12-01</td>
+              <td><a class="action-link">View</a></td>
+            </tr>
+            <tr>
+              <td><strong style="font-family:monospace;">EARLYBIRD10</strong></td>
+              <td><a class="action-link" onclick="showPage('p3')">Early Bird SaaS</a></td>
+              <td><span class="tag tag-blue">$10.00 off</span></td>
+              <td>8 / 50</td><td>Min $50 · SG only</td>
+              <td><span class="tag tag-blue">Direct</span></td>
+              <td><span class="tag tag-green">Active</span></td>
+              <td>—</td>
+              <td><a class="action-link">View</a> · <a class="action-link">Disable</a></td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="pagination">
+          <span>Total 247 items</span>
+          <span style="margin-left:16px;">‹</span>
+          <div class="page-btn active">1</div>
+          <div class="page-btn">2</div>
+          <div class="page-btn">3</div>
+          <span>...</span>
+          <div class="page-btn">25</div>
+          <span>›</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ====================================================== -->
+<!-- PAGE 5: CREATE PROMOTION CODE -->
+<!-- ====================================================== -->
+<div class="page-full" id="p5">
+  <div class="layout">
+    <div class="sidebar">
+      <div class="logo">
+        <svg width="22" height="22" viewBox="0 0 28 28" fill="none"><rect width="28" height="28" rx="6" fill="#1a56db"/><text x="5" y="20" fill="#fff" font-size="14" font-weight="700">W</text></svg>
+        Waffo
+      </div>
+      <div class="menu-group">
+        <div class="menu-group-title">Transaction</div>
+        <div class="menu-item"><span class="icon">💳</span> Transactions</div>
+      </div>
+      <div class="menu-group">
+        <div class="menu-group-title">Subscription</div>
+        <div class="menu-item"><span class="icon">🔄</span> Subscriptions</div>
+      </div>
+      <div class="menu-group">
+        <div class="menu-group-title">Marketing</div>
+        <div class="menu-item" onclick="showPage('p1')"><span class="icon">🎫</span> Coupons</div>
+        <div class="menu-item active"><span class="icon">🏷️</span> Promotion Codes</div>
+        <div class="menu-item" onclick="showPage('p7')"><span class="icon">📈</span> Discount Analytics</div>
+      </div>
+      <div class="menu-group">
+        <div class="menu-group-title">Settings</div>
+        <div class="menu-item"><span class="icon">👥</span> Operators</div>
+      </div>
+    </div>
+
+    <div class="main">
+      <div class="header">
+        <div class="breadcrumb"><a onclick="showPage('p1')">Marketing</a> / <a onclick="showPage('p4')">Promotion Codes</a> / Create Promotion Code</div>
+        <div class="header-right"><span>❓ FAQ</span><span>👤 Lei Wang</span></div>
+      </div>
+      <div class="content">
+        <div style="margin-bottom:20px;">
+          <a class="back-link" onclick="showPage('p4')">← Back to Promotion Codes</a>
+          <div class="page-title">Create Promotion Code</div>
+        </div>
+
+        <div style="max-width:760px;">
+          <!-- Associate Coupon -->
+          <div class="form-card">
+            <div class="form-card-title">🎫 Associate Coupon</div>
+            <div class="form-row">
+              <div class="form-label"><span class="required">*</span> Coupon</div>
+              <div class="form-control">
+                <select class="form-select" onchange="updateCouponPreview(this.value)">
+                  <option value="">— Select a coupon —</option>
+                  <option value="summer">Summer Sale 2026 (20% off, Once)</option>
+                  <option value="welcome">New User Welcome ($5.00 off, Once)</option>
+                  <option value="vip">VIP Loyalty Discount (15% off, Repeating 3mo)</option>
+                  <option value="early">Early Bird SaaS ($10.00 off, Forever)</option>
+                </select>
+                <div id="coupon-preview-box" class="coupon-preview" style="display:none;">
+                  <div class="cp-name" id="cp-name">Summer Sale 2026</div>
+                  <div class="cp-row">
+                    <div>Discount: <span id="cp-discount">20% off</span></div>
+                    <div>Duration: <span id="cp-duration">Once</span></div>
+                    <div>Redeemed: <span id="cp-redeemed">342 / 500</span></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Code Config -->
+          <div class="form-card">
+            <div class="form-card-title">🏷️ Code Configuration</div>
+            <div class="form-row">
+              <div class="form-label"><span class="required">*</span> Code</div>
+              <div class="form-control">
+                <input class="form-input" placeholder="e.g. SUMMER20" oninput="this.value=this.value.toUpperCase()" style="font-family:monospace;font-size:15px;letter-spacing:1px;" />
+                <div class="form-hint">Alphanumeric characters only. Will be auto-uppercased. Must be unique.</div>
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-label">Channel</div>
+              <div class="form-control">
+                <select class="form-select">
+                  <option>— Select channel —</option>
+                  <option>Email</option>
+                  <option>Social</option>
+                  <option>In-App</option>
+                  <option>Direct</option>
+                </select>
+                <div class="form-hint">Tag this code with its distribution channel for ROI tracking.</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Restrictions -->
+          <div class="form-card">
+            <div class="form-card-title">🔒 Restrictions</div>
+
+            <div class="form-row">
+              <div class="form-label">Max Redemptions</div>
+              <div class="form-control">
+                <input class="form-input" type="number" placeholder="Leave empty for unlimited" />
+                <div class="form-hint">Max times this specific code can be redeemed (on top of coupon-level limit).</div>
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-label">Expires At</div>
+              <div class="form-control">
+                <input class="form-input" type="datetime-local" />
+                <div class="form-hint">Optional code-level expiry (cannot exceed coupon expiry).</div>
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-label">First Time Only</div>
+              <div class="form-control">
+                <div class="switch-wrap">
+                  <div class="switch" onclick="toggleSwitch(this)"><div class="knob"></div></div>
+                  <span style="font-size:13px;color:#555;">Only valid for a customer's first order</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-label">Minimum Amount</div>
+              <div class="form-control">
+                <div style="display:flex;gap:8px;align-items:center;">
+                  <select class="form-select" style="width:90px;"><option>USD</option><option>EUR</option><option>SGD</option></select>
+                  <input class="form-input" type="number" placeholder="e.g. 20.00" style="width:160px;" />
+                </div>
+                <div class="form-hint">Minimum order value required to apply this code.</div>
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-label">Allowed Regions</div>
+              <div class="form-control">
+                <div class="multi-select-tags">
+                  <div class="region-tag selected" onclick="toggleRegion(this)">SG ✓</div>
+                  <div class="region-tag selected" onclick="toggleRegion(this)">MY ✓</div>
+                  <div class="region-tag" onclick="toggleRegion(this)">TH</div>
+                  <div class="region-tag" onclick="toggleRegion(this)">PH</div>
+                  <div class="region-tag" onclick="toggleRegion(this)">ID</div>
+                  <div class="region-tag" onclick="toggleRegion(this)">VN</div>
+                  <div class="region-tag" onclick="toggleRegion(this)">US</div>
+                  <div class="region-tag" onclick="toggleRegion(this)">GB</div>
+                  <div class="region-tag" onclick="toggleRegion(this)">AU</div>
+                  <div class="region-tag" onclick="toggleRegion(this)">JP</div>
+                </div>
+                <div class="form-hint">Leave all unselected to allow all regions. Click to toggle.</div>
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-label">Customer ID</div>
+              <div class="form-control">
+                <input class="form-input" placeholder="e.g. cus_01HABC... (optional, single-use)" />
+                <div class="form-hint">Optional. Lock this code to a specific customer for single-use targeted promotions.</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Actions -->
+          <div class="form-actions">
+            <button class="btn btn-primary btn-lg" onclick="showPage('p4')">Create Promotion Code</button>
+            <button class="btn btn-default btn-lg" onclick="showPage('p4')">Cancel</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ====================================================== -->
+<!-- PAGE 6: BATCH CREATE PROMOTION CODES -->
+<!-- ====================================================== -->
+<div class="page-full" id="p6">
+  <div class="layout">
+    <div class="sidebar">
+      <div class="logo">
+        <svg width="22" height="22" viewBox="0 0 28 28" fill="none"><rect width="28" height="28" rx="6" fill="#1a56db"/><text x="5" y="20" fill="#fff" font-size="14" font-weight="700">W</text></svg>
+        Waffo
+      </div>
+      <div class="menu-group">
+        <div class="menu-group-title">Transaction</div>
+        <div class="menu-item"><span class="icon">💳</span> Transactions</div>
+      </div>
+      <div class="menu-group">
+        <div class="menu-group-title">Subscription</div>
+        <div class="menu-item"><span class="icon">🔄</span> Subscriptions</div>
+      </div>
+      <div class="menu-group">
+        <div class="menu-group-title">Marketing</div>
+        <div class="menu-item" onclick="showPage('p1')"><span class="icon">🎫</span> Coupons</div>
+        <div class="menu-item active"><span class="icon">🏷️</span> Promotion Codes</div>
+        <div class="menu-item" onclick="showPage('p7')"><span class="icon">📈</span> Discount Analytics</div>
+      </div>
+      <div class="menu-group">
+        <div class="menu-group-title">Settings</div>
+        <div class="menu-item"><span class="icon">👥</span> Operators</div>
+      </div>
+    </div>
+
+    <div class="main">
+      <div class="header">
+        <div class="breadcrumb"><a onclick="showPage('p1')">Marketing</a> / <a onclick="showPage('p4')">Promotion Codes</a> / Batch Create</div>
+        <div class="header-right"><span>❓ FAQ</span><span>👤 Lei Wang</span></div>
+      </div>
+      <div class="content">
+        <div style="margin-bottom:24px;">
+          <a class="back-link" onclick="showPage('p4')">← Back to Promotion Codes</a>
+          <div class="page-title">Batch Create Promotion Codes</div>
+          <div class="page-subtitle">Generate multiple unique codes at once for a coupon campaign</div>
+        </div>
+
+        <!-- Steps -->
+        <div class="steps">
+          <div class="step-item">
+            <div class="step-circle done" id="circle-1">✓</div>
+            <div class="step-info active" id="info-1"><div class="step-title">Select Coupon</div><div class="step-desc">Choose base coupon</div></div>
+          </div>
+          <div class="step-line done" id="line-1"></div>
+          <div class="step-item">
+            <div class="step-circle active" id="circle-2">2</div>
+            <div class="step-info active" id="info-2"><div class="step-title">Configure Codes</div><div class="step-desc">Prefix, quantity & channel</div></div>
+          </div>
+          <div class="step-line" id="line-2"></div>
+          <div class="step-item">
+            <div class="step-circle" id="circle-3">3</div>
+            <div class="step-info" id="info-3"><div class="step-title">Set Restrictions</div><div class="step-desc">Limits & eligibility</div></div>
+          </div>
+          <div class="step-line" id="line-3"></div>
+          <div class="step-item" style="flex:none;">
+            <div class="step-circle" id="circle-4">4</div>
+            <div class="step-info" id="info-4"><div class="step-title">Preview &amp; Submit</div><div class="step-desc">Confirm and generate</div></div>
+          </div>
+        </div>
+
+        <div style="max-width:760px;">
+
+          <!-- Step 1: Select Coupon -->
+          <div class="form-card step-content" id="step-1" style="display:none;">
+            <div class="form-card-title">🎫 Step 1: Select Coupon</div>
+            <div class="form-row">
+              <div class="form-label"><span class="required">*</span> Coupon</div>
+              <div class="form-control">
+                <select class="form-select">
+                  <option value="summer" selected>Summer Sale 2026 (20% off)</option>
+                  <option value="welcome">New User Welcome ($5.00 off)</option>
+                  <option value="vip">VIP Loyalty Discount (15% off)</option>
+                </select>
+                <div class="coupon-preview" style="margin-top:8px;">
+                  <div class="cp-name">Summer Sale 2026</div>
+                  <div class="cp-row"><div>Discount: <span>20% off</span></div><div>Duration: <span>Once</span></div><div>Redeemed: <span>342 / 500</span></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Step 2: Configure -->
+          <div class="form-card step-content active" id="step-2">
+            <div class="form-card-title">⚙️ Step 2: Configure Codes</div>
+            <div class="form-row">
+              <div class="form-label"><span class="required">*</span> Code Prefix</div>
+              <div class="form-control">
+                <input class="form-input" value="BF" oninput="this.value=this.value.toUpperCase()" style="font-family:monospace;font-size:15px;letter-spacing:1px;width:160px;" />
+                <div class="form-hint">Generated codes will look like: <strong style="font-family:monospace;">BF-K2X9P</strong>, <strong style="font-family:monospace;">BF-M7L3Q</strong>, ...</div>
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-label"><span class="required">*</span> Quantity</div>
+              <div class="form-control">
+                <input class="form-input" type="number" value="100" style="width:160px;" min="1" max="10000" />
+                <div class="form-hint">Number of unique codes to generate. Max 10,000 per batch.</div>
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-label">Expires At</div>
+              <div class="form-control">
+                <input class="form-input" type="datetime-local" value="2026-06-30T23:59" />
+                <div class="form-hint">Expiry for all codes in this batch (optional, cannot exceed coupon expiry).</div>
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-label">Channel</div>
+              <div class="form-control">
+                <select class="form-select">
+                  <option>— Select channel —</option>
+                  <option selected>Email</option>
+                  <option>Social</option>
+                  <option>In-App</option>
+                  <option>Direct</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <!-- Step 3: Restrictions -->
+          <div class="form-card step-content" id="step-3">
+            <div class="form-card-title">🔒 Step 3: Set Restrictions</div>
+            <div class="form-row">
+              <div class="form-label">First Time Only</div>
+              <div class="form-control">
+                <div class="switch-wrap">
+                  <div class="switch on"><div class="knob"></div></div>
+                  <span style="font-size:13px;color:#555;">Only valid for customer's first order</span>
+                </div>
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-label">Minimum Amount</div>
+              <div class="form-control">
+                <div style="display:flex;gap:8px;align-items:center;">
+                  <select class="form-select" style="width:90px;"><option>USD</option><option>EUR</option><option>SGD</option></select>
+                  <input class="form-input" type="number" placeholder="e.g. 50.00" style="width:160px;" />
+                </div>
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-label">Allowed Regions</div>
+              <div class="form-control">
+                <div class="multi-select-tags">
+                  <div class="region-tag selected" onclick="toggleRegion(this)">SG ✓</div>
+                  <div class="region-tag selected" onclick="toggleRegion(this)">MY ✓</div>
+                  <div class="region-tag" onclick="toggleRegion(this)">TH</div>
+                  <div class="region-tag" onclick="toggleRegion(this)">PH</div>
+                  <div class="region-tag" onclick="toggleRegion(this)">ID</div>
+                  <div class="region-tag" onclick="toggleRegion(this)">VN</div>
+                  <div class="region-tag" onclick="toggleRegion(this)">US</div>
+                  <div class="region-tag" onclick="toggleRegion(this)">GB</div>
+                </div>
+                <div class="form-hint">Leave all unselected to allow all regions.</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Step 4: Preview -->
+          <div class="form-card step-content" id="step-4">
+            <div class="form-card-title">✅ Step 4: Preview &amp; Confirm</div>
+
+            <div style="background:#f8faff;border:1px solid #c0d4f5;border-radius:8px;padding:20px;margin-bottom:20px;">
+              <div style="font-size:14px;font-weight:600;margin-bottom:12px;">Batch Summary</div>
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px 40px;font-size:13px;">
+                <div><span style="color:#888;">Coupon:</span> Summer Sale 2026 (20% off)</div>
+                <div><span style="color:#888;">Quantity:</span> 100 codes</div>
+                <div><span style="color:#888;">Prefix:</span> <strong style="font-family:monospace;">BF-</strong></div>
+                <div><span style="color:#888;">Channel:</span> Email</div>
+                <div><span style="color:#888;">Expires:</span> 2026-06-30 23:59</div>
+                <div><span style="color:#888;">First Order Only:</span> Yes</div>
+                <div><span style="color:#888;">Min Amount:</span> USD 50.00</div>
+                <div><span style="color:#888;">Regions:</span> SG, MY</div>
+              </div>
+            </div>
+
+            <div style="margin-bottom:16px;">
+              <div style="font-size:14px;font-weight:600;margin-bottom:8px;">Sample Codes Preview</div>
+              <div style="display:flex;flex-wrap:wrap;gap:8px;">
+                <span style="font-family:monospace;font-size:13px;background:#f5f5f5;padding:4px 10px;border-radius:4px;">BF-K2X9P</span>
+                <span style="font-family:monospace;font-size:13px;background:#f5f5f5;padding:4px 10px;border-radius:4px;">BF-M7L3Q</span>
+                <span style="font-family:monospace;font-size:13px;background:#f5f5f5;padding:4px 10px;border-radius:4px;">BF-R4N8W</span>
+                <span style="font-family:monospace;font-size:13px;background:#f5f5f5;padding:4px 10px;border-radius:4px;">BF-T5A1Z</span>
+                <span style="font-family:monospace;font-size:13px;background:#f5f5f5;padding:4px 10px;border-radius:4px;">BF-V6B2Y</span>
+                <span style="color:#888;font-size:13px;padding:4px 0;">... +95 more</span>
+              </div>
+            </div>
+
+            <div style="background:#e6f7e6;border-radius:6px;padding:10px 14px;font-size:13px;color:#389e0d;">
+              ⏱️ Estimated generation time: <strong>~3 seconds</strong> for 100 codes
+            </div>
+          </div>
+
+          <!-- Step Navigation -->
+          <div class="step-nav" id="step-nav">
+            <button class="btn btn-default btn-lg" id="btn-prev" onclick="prevStep()" style="visibility:hidden;">← Previous</button>
+            <button class="btn btn-primary btn-lg" id="btn-next" onclick="nextStep()">Next →</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ====================================================== -->
+<!-- PAGE 7: DISCOUNT ANALYTICS -->
+<!-- ====================================================== -->
+<div class="page active" id="p7" style="display:none;">
+  <div class="layout">
+    <div class="sidebar">
+      <div class="logo">
+        <svg width="22" height="22" viewBox="0 0 28 28" fill="none"><rect width="28" height="28" rx="6" fill="#1a56db"/><text x="5" y="20" fill="#fff" font-size="14" font-weight="700">W</text></svg>
+        Waffo
+      </div>
+      <div class="menu-group">
+        <div class="menu-group-title">Transaction</div>
+        <div class="menu-item"><span class="icon">💳</span> Transactions</div>
+        <div class="menu-item"><span class="icon">⚡</span> Disputes</div>
+      </div>
+      <div class="menu-group">
+        <div class="menu-group-title">Subscription</div>
+        <div class="menu-item"><span class="icon">🔄</span> Subscriptions</div>
+      </div>
+      <div class="menu-group">
+        <div class="menu-group-title">Marketing</div>
+        <div class="menu-item" onclick="showPage('p1')"><span class="icon">🎫</span> Coupons</div>
+        <div class="menu-item" onclick="showPage('p4')"><span class="icon">🏷️</span> Promotion Codes</div>
+        <div class="menu-item active"><span class="icon">📈</span> Discount Analytics</div>
+      </div>
+      <div class="menu-group">
+        <div class="menu-group-title">Settlement</div>
+        <div class="menu-item"><span class="icon">🏦</span> Settlement Batch</div>
+      </div>
+      <div class="menu-group">
+        <div class="menu-group-title">Settings</div>
+        <div class="menu-item"><span class="icon">👥</span> Operators</div>
+      </div>
+    </div>
+
+    <div class="main">
+      <div class="header">
+        <div class="header-merchant">Merchant Id <select><option>1000000001 - Test TT Merchant - Active</option></select></div>
+        <div class="header-right"><span>❓ FAQ</span><span>👤 Lei Wang</span></div>
+      </div>
+      <div class="content">
+        <div class="page-header">
+          <div>
+            <div class="breadcrumb" style="margin-bottom:6px;"><a onclick="showPage('p1')">Marketing</a> / Discount Analytics</div>
+            <div class="page-title">Discount Analytics</div>
+          </div>
+          <div style="display:flex;gap:8px;">
+            <input class="filter-input" type="date" value="2026-03-01" style="min-width:auto;width:140px;" />
+            <span style="display:flex;align-items:center;color:#888;">to</span>
+            <input class="filter-input" type="date" value="2026-03-16" style="min-width:auto;width:140px;" />
+            <select class="filter-select"><option>All Coupons</option><option>Summer Sale 2026</option><option>New User Welcome</option></select>
+            <button class="btn btn-primary">Apply</button>
+            <button class="btn btn-default">Export</button>
+          </div>
+        </div>
+
+        <!-- Overview Stats -->
+        <div class="stats-row">
+          <div class="stat-card"><div class="stat-label">Total Redemptions</div><div class="stat-value">1,847</div><div class="stat-change">↑ 23% vs last period</div></div>
+          <div class="stat-card"><div class="stat-label">Total Discount Given</div><div class="stat-value">$12,450</div><div class="stat-change">↑ 15% vs last period</div></div>
+          <div class="stat-card"><div class="stat-label">Avg Discount per Order</div><div class="stat-value">$6.74</div><div class="stat-change">↓ 3% vs last period</div></div>
+          <div class="stat-card"><div class="stat-label">Redemption Rate</div><div class="stat-value">42.3%</div><div class="stat-change">↑ 5.2% vs last period</div></div>
+        </div>
+
+        <!-- Trend Chart -->
+        <div class="analytics-card">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+            <div class="ac-title" style="margin-bottom:0;">Redemption Trend</div>
+            <div style="display:flex;gap:8px;">
+              <button class="btn btn-sm btn-default">Daily</button>
+              <button class="btn btn-sm btn-primary">Weekly</button>
+              <button class="btn btn-sm btn-default">Monthly</button>
+            </div>
+          </div>
+          <div class="chart-placeholder" style="height:260px;">
+            📈 Line Chart: Redemptions &amp; Discount Amount Over Time<br/>
+            <span style="font-size:11px;color:#ddd;margin-top:8px;display:block;">[Interactive chart would be rendered here via ECharts / Chart.js]</span>
+          </div>
+        </div>
+
+        <!-- Coupon Performance -->
+        <div class="analytics-card">
+          <div class="ac-title">Coupon Performance</div>
+          <table class="data-table">
+            <thead>
+              <tr><th>Coupon</th><th>Discount</th><th>Total Codes</th><th>Redemptions</th><th>Total Discount</th><th>Redemption Rate</th><th>Avg Order Value</th></tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><a class="action-link" onclick="showPage('p3')">Summer Sale 2026</a></td>
+                <td><span class="tag tag-blue">20% off</span></td>
+                <td>4</td><td>342</td><td>$6,840</td>
+                <td><div style="display:flex;align-items:center;gap:8px;"><div style="background:#1a56db;height:6px;border-radius:3px;width:68px;"></div>68.4%</div></td>
+                <td>$171.00</td>
+              </tr>
+              <tr>
+                <td><a class="action-link" onclick="showPage('p3')">New User Welcome</a></td>
+                <td><span class="tag tag-blue">$5.00 off</span></td>
+                <td>1</td><td>89</td><td>$445</td>
+                <td><div style="display:flex;align-items:center;gap:8px;"><div style="background:#1a56db;height:6px;border-radius:3px;width:30px;"></div>30.2%</div></td>
+                <td>$38.40</td>
+              </tr>
+              <tr>
+                <td><a class="action-link" onclick="showPage('p3')">VIP Loyalty Discount</a></td>
+                <td><span class="tag tag-blue">15% off</span></td>
+                <td>2</td><td>27</td><td>$2,430</td>
+                <td><div style="display:flex;align-items:center;gap:8px;"><div style="background:#1a56db;height:6px;border-radius:3px;width:27px;"></div>27%</div></td>
+                <td>$600.00</td>
+              </tr>
+              <tr>
+                <td><a class="action-link" onclick="showPage('p3')">Early Bird SaaS</a></td>
+                <td><span class="tag tag-blue">$10.00 off</span></td>
+                <td>1</td><td>15</td><td>$150</td>
+                <td><div style="display:flex;align-items:center;gap:8px;"><div style="background:#1a56db;height:6px;border-radius:3px;width:30px;"></div>30%</div></td>
+                <td>$87.00</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Channel ROI -->
+        <div class="analytics-card">
+          <div class="ac-title">Channel ROI</div>
+          <table class="roi-table">
+            <thead>
+              <tr><th>Channel</th><th>Codes Distributed</th><th>Redemptions</th><th>Total Discount</th><th>Total Revenue</th><th>ROI</th><th>Redemption Rate</th></tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><span class="tag tag-orange">Email</span></td>
+                <td>120</td><td>245</td><td>$4,200</td><td>$32,400</td>
+                <td style="color:#389e0d;font-weight:600;">7.7x</td>
+                <td>
+                  <div style="display:flex;align-items:center;gap:8px;">
+                    <div style="background:#389e0d;height:6px;border-radius:3px;width:60px;"></div>
+                    60.1%
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td><span class="tag tag-cyan">Social</span></td>
+                <td>80</td><td>154</td><td>$3,080</td><td>$18,900</td>
+                <td style="color:#389e0d;font-weight:600;">6.1x</td>
+                <td>
+                  <div style="display:flex;align-items:center;gap:8px;">
+                    <div style="background:#389e0d;height:6px;border-radius:3px;width:50px;"></div>
+                    50.4%
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td><span class="tag tag-purple">In-App</span></td>
+                <td>200</td><td>380</td><td>$3,800</td><td>$38,000</td>
+                <td style="color:#389e0d;font-weight:600;">10x</td>
+                <td>
+                  <div style="display:flex;align-items:center;gap:8px;">
+                    <div style="background:#389e0d;height:6px;border-radius:3px;width:76px;"></div>
+                    76.2%
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td><span class="tag tag-blue">Direct</span></td>
+                <td>30</td><td>68</td><td>$1,370</td><td>$9,600</td>
+                <td style="color:#d46b08;font-weight:600;">7x</td>
+                <td>
+                  <div style="display:flex;align-items:center;gap:8px;">
+                    <div style="background:#d46b08;height:6px;border-radius:3px;width:45px;"></div>
+                    45.2%
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ====================================================== -->
+<!-- PAGE 8: INTERNAL PORTAL - MERCHANT MARKETING CONFIG -->
+<!-- ====================================================== -->
+<div class="page active" id="p8" style="display:none;">
+  <div class="layout">
+    <!-- Internal Sidebar -->
+    <div class="sidebar-internal">
+      <div class="logo" style="padding:14px 20px;display:flex;align-items:center;gap:10px;font-size:16px;font-weight:700;color:#1a56db;border-bottom:1px solid #f0f0f0;">
+        <svg width="22" height="22" viewBox="0 0 28 28" fill="none"><rect width="28" height="28" rx="6" fill="#1a56db"/><text x="5" y="20" fill="#fff" font-size="14" font-weight="700">W</text></svg>
+        Waffo Internal
+      </div>
+      <div class="menu-group">
+        <div class="menu-group-title" style="padding:6px 20px;font-size:11px;color:#bbb;text-transform:uppercase;letter-spacing:0.5px;">Merchant</div>
+        <div class="menu-item" style="padding:9px 20px 9px 28px;cursor:pointer;color:#555;display:flex;align-items:center;gap:8px;font-size:13px;">📋 Merchant List</div>
+        <div class="menu-item active" style="padding:9px 20px 9px 28px;cursor:pointer;display:flex;align-items:center;gap:8px;font-size:13px;background:#e6f0ff;color:#1a56db;font-weight:500;border-right:3px solid #1a56db;">⚙️ Merchant Config</div>
+        <div class="menu-item" style="padding:9px 20px 9px 28px;cursor:pointer;color:#555;display:flex;align-items:center;gap:8px;font-size:13px;">📄 Contracts</div>
+      </div>
+      <div class="menu-group">
+        <div class="menu-group-title" style="padding:6px 20px;font-size:11px;color:#bbb;text-transform:uppercase;letter-spacing:0.5px;">Transaction</div>
+        <div class="menu-item" style="padding:9px 20px 9px 28px;cursor:pointer;color:#555;display:flex;align-items:center;gap:8px;font-size:13px;">💳 Payments</div>
+        <div class="menu-item" style="padding:9px 20px 9px 28px;cursor:pointer;color:#555;display:flex;align-items:center;gap:8px;font-size:13px;">↩️ Refunds</div>
+      </div>
+      <div class="menu-group">
+        <div class="menu-group-title" style="padding:6px 20px;font-size:11px;color:#bbb;text-transform:uppercase;letter-spacing:0.5px;">Promo</div>
+        <div class="menu-item active" style="padding:9px 20px 9px 28px;cursor:pointer;display:flex;align-items:center;gap:8px;font-size:13px;background:#e6f0ff;color:#1a56db;font-weight:500;border-right:3px solid #1a56db;">🎫 Coupon Config</div>
+        <div class="menu-item" style="padding:9px 20px 9px 28px;cursor:pointer;color:#555;display:flex;align-items:center;gap:8px;font-size:13px;">🏷️ Promotion Codes</div>
+      </div>
+      <div class="menu-group">
+        <div class="menu-group-title" style="padding:6px 20px;font-size:11px;color:#bbb;text-transform:uppercase;letter-spacing:0.5px;">Settlement</div>
+        <div class="menu-item" style="padding:9px 20px 9px 28px;cursor:pointer;color:#555;display:flex;align-items:center;gap:8px;font-size:13px;">🏦 Settlement</div>
+      </div>
+      <div class="menu-group">
+        <div class="menu-group-title" style="padding:6px 20px;font-size:11px;color:#bbb;text-transform:uppercase;letter-spacing:0.5px;">Risk</div>
+        <div class="menu-item" style="padding:9px 20px 9px 28px;cursor:pointer;color:#555;display:flex;align-items:center;gap:8px;font-size:13px;">🛡️ Risk Rules</div>
+      </div>
+    </div>
+
+    <div class="main">
+      <div class="header">
+        <div class="breadcrumb"><a>Merchant</a> / <a>Merchant Config</a> / Marketing Config</div>
+        <div class="header-right"><span>🔴 Internal</span><span>👤 Admin</span></div>
+      </div>
+      <div class="content">
+        <div class="page-title">Merchant Marketing Config</div>
+        <div class="page-subtitle" style="margin-bottom:20px;">Configure coupon &amp; promotion settings for the selected merchant</div>
+
+        <!-- Merchant Selector -->
+        <div class="merchant-selector">
+          <label>Merchant:</label>
+          <select>
+            <option>1000000001 - Test TT Merchant - Active</option>
+            <option>1000000023 - Lovart Games - Active</option>
+            <option>1000000045 - XTV Streaming - Active</option>
+          </select>
+          <span class="status-tag status-enabled">● Coupon Enabled</span>
+        </div>
+
+        <!-- Tabs -->
+        <div class="tabs" id="internal-tabs">
+          <div class="tab active" onclick="setTab('internal-tabs', this); showTabContent('internal-tab-content', 'int-coupon-config')">Coupon Config</div>
+          <div class="tab" onclick="setTab('internal-tabs', this); showTabContent('internal-tab-content', 'int-audit-log')">Audit Log</div>
+        </div>
+
+        <div id="internal-tab-content">
+          <!-- Coupon Config Tab -->
+          <div class="tab-content active" id="int-coupon-config">
+            <!-- Standard Config -->
+            <div class="card">
+              <div class="card-title">Standard Config <span class="badge">Required</span></div>
+
+              <div class="form-row">
+                <div class="form-label" style="width:200px;">Coupon Enabled<span class="required">*</span></div>
+                <div class="form-control">
+                  <div class="switch-wrap">
+                    <div class="switch on" onclick="toggleSwitch(this)"><div class="knob"></div></div>
+                  </div>
+                  <div class="form-hint">Enable or disable the coupon feature for this merchant</div>
+                </div>
+              </div>
+
+              <div class="form-row">
+                <div class="form-label" style="width:200px;">Coupon Scope<span class="required">*</span></div>
+                <div class="form-control">
+                  <select class="form-select">
+                    <option selected>SELF_ONLY — Coupons only apply to this merchant's own transactions</option>
+                    <option>PLATFORM_WIDE — Coupons can be used across sub-merchants</option>
+                  </select>
+                  <div class="form-hint">For platform merchants with sub-merchants, choose PLATFORM_WIDE</div>
+                </div>
+              </div>
+
+              <div class="form-row">
+                <div class="form-label" style="width:200px;">Refund Discount Policy<span class="required">*</span></div>
+                <div class="form-control">
+                  <select class="form-select">
+                    <option selected>FULL_REVERSAL — Full refund restores coupon usage (once type)</option>
+                    <option>PRO_RATA — Discount reversed proportionally on partial refund</option>
+                    <option>NO_REVERSAL — Refund processed, coupon usage not restored</option>
+                  </select>
+                  <div class="form-hint">Determines how discount usage count is handled during refunds</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Advanced Settings (Collapsible) -->
+            <div class="card">
+              <div class="card-title">Advanced Settings <span class="badge-gray">Optional</span></div>
+              <p style="font-size:13px;color:#888;margin-bottom:8px;">These settings use system defaults. Adjust only if needed for this merchant.</p>
+
+              <div class="collapse-header" onclick="toggleCollapse(this)">
+                <span class="collapse-arrow">▶</span>
+                <span>Show Advanced Settings</span>
+              </div>
+              <div class="collapse-body" style="display:none;">
+                <div class="form-row">
+                  <div class="form-label" style="width:200px;">Max Active Coupons</div>
+                  <div class="form-control">
+                    <input class="form-input" type="number" value="100" style="width:140px;" />
+                    <div class="form-hint">Maximum number of active coupons simultaneously. Default: 100</div>
+                  </div>
+                </div>
+                <div class="form-row">
+                  <div class="form-label" style="width:200px;">Anti-Fraud Level</div>
+                  <div class="form-control">
+                    <select class="form-select">
+                      <option>LOW — Basic checks only</option>
+                      <option selected>MEDIUM — Standard checks (recommended)</option>
+                      <option>HIGH — Strict checks, may increase false positives</option>
+                    </select>
+                    <div class="form-hint">Controls the strictness of coupon redemption fraud detection. Default: MEDIUM</div>
+                  </div>
+                </div>
+                <div class="form-row">
+                  <div class="form-label" style="width:200px;">Max Discount Percent</div>
+                  <div class="form-control">
+                    <div style="display:flex;align-items:center;gap:8px;">
+                      <input class="form-input" type="number" value="50" style="width:100px;" />
+                      <span>%</span>
+                    </div>
+                    <div class="form-hint">Safety cap: maximum discount percentage per single order. Default: 50%</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Action -->
+            <div style="display:flex;gap:12px;margin-top:4px;">
+              <button class="btn btn-primary">💾 Save Config</button>
+              <button class="btn btn-default">Reset to Defaults</button>
+            </div>
+          </div>
+
+          <!-- Audit Log Tab -->
+          <div class="tab-content" id="int-audit-log">
+            <div class="card">
+              <div class="card-title">Audit Log</div>
+              <div class="filters" style="margin-bottom:16px;">
+                <input class="filter-input" placeholder="🔍 Search by operator or action..." />
+                <select class="filter-select"><option>All Actions</option><option>Config Changed</option><option>Enabled</option><option>Disabled</option></select>
+                <input class="filter-input" type="date" value="2026-03-01" style="min-width:auto;width:140px;" />
+                <span style="display:flex;align-items:center;color:#888;">to</span>
+                <input class="filter-input" type="date" value="2026-03-16" style="min-width:auto;width:140px;" />
+              </div>
+              <table class="audit-table">
+                <thead>
+                  <tr><th>Time</th><th>Operator</th><th>Action</th><th>Field</th><th>Old Value</th><th>New Value</th><th>IP</th></tr>
+                </thead>
+                <tbody>
+                  <tr><td>2026-03-15 14:32</td><td>admin_ops01</td><td><span class="tag tag-blue">Config Changed</span></td><td>Anti-Fraud Level</td><td>LOW</td><td>MEDIUM</td><td>103.xxx.xxx.12</td></tr>
+                  <tr><td>2026-03-12 09:18</td><td>admin_ops02</td><td><span class="tag tag-green">Enabled</span></td><td>Coupon Enabled</td><td>false</td><td>true</td><td>103.xxx.xxx.15</td></tr>
+                  <tr><td>2026-03-10 11:45</td><td>admin_ops01</td><td><span class="tag tag-orange">Config Changed</span></td><td>Coupon Scope</td><td>PLATFORM_WIDE</td><td>SELF_ONLY</td><td>103.xxx.xxx.12</td></tr>
+                  <tr><td>2026-03-08 16:20</td><td>admin_ops03</td><td><span class="tag tag-blue">Config Changed</span></td><td>Max Active Coupons</td><td>50</td><td>100</td><td>103.xxx.xxx.9</td></tr>
+                  <tr><td>2026-03-05 10:02</td><td>admin_ops01</td><td><span class="tag tag-red">Disabled</span></td><td>Coupon Enabled</td><td>true</td><td>false</td><td>103.xxx.xxx.12</td></tr>
+                </tbody>
+              </table>
+              <div class="pagination">
+                <span>Total 18 items</span>
+                <span style="margin-left:16px;">‹</span>
+                <div class="page-btn active">1</div>
+                <div class="page-btn">2</div>
+                <span>›</span>
+              </div>
+            </div>
+          </div>
+        </div><!-- end internal-tab-content -->
+      </div><!-- end content -->
+    </div><!-- end main -->
+  </div><!-- end layout -->
+</div><!-- end p8 -->
+
+<script>
+// ===== PAGE NAVIGATION =====
+var currentPage = 'p1';
+var batchStep = 2; // current step for batch create (1-4)
+
+function showPage(pageId) {
+  // Hide all pages
+  document.querySelectorAll('.page, .page-full').forEach(function(p) {
+    p.style.display = 'none';
+    p.classList.remove('active');
+  });
+
+  // Show target page
+  var target = document.getElementById(pageId);
+  if (target) {
+    if (target.classList.contains('page-full')) {
+      target.style.display = 'block';
+    } else {
+      target.style.display = 'flex';
+    }
+    target.classList.add('active');
+  }
+
+  // Update nav buttons
+  document.querySelectorAll('.nav-btn').forEach(function(btn) {
+    btn.classList.remove('current');
+  });
+  var navBtn = document.getElementById('nav-' + pageId);
+  if (navBtn) navBtn.classList.add('current');
+
+  currentPage = pageId;
+
+  // Scroll to top
+  window.scrollTo(0, 0);
+}
+
+// ===== TABS =====
+function setTab(containerId, clickedTab) {
+  var container = document.getElementById(containerId);
+  if (!container) return;
+  container.querySelectorAll('.tab').forEach(function(t) {
+    t.classList.remove('active');
+  });
+  clickedTab.classList.add('active');
+}
+
+function showTabContent(containerId, tabId) {
+  var container = document.getElementById(containerId);
+  if (!container) return;
+  container.querySelectorAll('.tab-content').forEach(function(c) {
+    c.classList.remove('active');
+    c.style.display = 'none';
+  });
+  var target = document.getElementById(tabId);
+  if (target) {
+    target.classList.add('active');
+    target.style.display = 'block';
+  }
+}
+
+// ===== DISCOUNT TYPE TOGGLE =====
+function setDiscountType(type) {
+  var radioPct = document.getElementById('radio-percentage');
+  var radioFixed = document.getElementById('radio-fixed');
+  var fieldPct = document.getElementById('field-percentage');
+  var fieldFixed = document.getElementById('field-fixed');
+
+  if (type === 'percentage') {
+    radioPct.classList.add('selected');
+    radioFixed.classList.remove('selected');
+    fieldPct.style.display = 'flex';
+    fieldFixed.style.display = 'none';
+  } else {
+    radioPct.classList.remove('selected');
+    radioFixed.classList.add('selected');
+    fieldPct.style.display = 'none';
+    fieldFixed.style.display = 'flex';
+  }
+}
+
+// ===== DURATION CHANGE =====
+function handleDurationChange(value) {
+  var monthsField = document.getElementById('field-duration-months');
+  if (value === 'repeating') {
+    monthsField.style.display = 'flex';
+  } else {
+    monthsField.style.display = 'none';
+  }
+}
+
+// ===== TAG INPUT =====
+function handleTagInput(event) {
+  if (event.key === 'Enter') {
+    event.preventDefault();
+    var input = document.getElementById('tag-input');
+    var value = input.value.trim();
+    if (value) {
+      var tagList = document.getElementById('tag-list');
+      var tag = document.createElement('span');
+      tag.className = 'form-tag';
+      tag.innerHTML = value + ' <span class="remove" onclick="removeTag(this)">×</span>';
+      tagList.appendChild(tag);
+      input.value = '';
+    }
+  }
+}
+
+function removeTag(el) {
+  el.parentElement.remove();
+}
+
+// ===== KV ROWS =====
+function addKVRow() {
+  var container = document.getElementById('kv-container');
+  var row = document.createElement('div');
+  row.className = 'kv-row';
+  row.innerHTML = '<input class="form-input" placeholder="Key" style="flex:1;" /><input class="form-input" placeholder="Value" style="flex:2;" /><button class="btn btn-sm btn-default" onclick="this.parentElement.remove()">×</button>';
+  container.appendChild(row);
+}
+
+// ===== SWITCH TOGGLE =====
+function toggleSwitch(el) {
+  el.classList.toggle('on');
+}
+
+// ===== REGION TAG TOGGLE =====
+function toggleRegion(el) {
+  el.classList.toggle('selected');
+  if (el.classList.contains('selected')) {
+    var code = el.textContent.replace(' ✓', '').trim();
+    el.textContent = '';
+    el.textContent = code + ' ✓';
+  } else {
+    var code = el.textContent.replace(' ✓', '').trim();
+    el.textContent = code;
+  }
+}
+
+// ===== COUPON PREVIEW (Create Promo Code page) =====
+var couponData = {
+  summer: { name: 'Summer Sale 2026', discount: '20% off', duration: 'Once', redeemed: '342 / 500' },
+  welcome: { name: 'New User Welcome', discount: '$5.00 off', duration: 'Once', redeemed: '89 / ∞' },
+  vip: { name: 'VIP Loyalty Discount', discount: '15% off', duration: 'Repeating (3mo)', redeemed: '27 / 100' },
+  early: { name: 'Early Bird SaaS', discount: '$10.00 off', duration: 'Forever', redeemed: '15 / 50' }
+};
+
+function updateCouponPreview(value) {
+  var box = document.getElementById('coupon-preview-box');
+  if (!value || !couponData[value]) {
+    box.style.display = 'none';
+    return;
+  }
+  var data = couponData[value];
+  document.getElementById('cp-name').textContent = data.name;
+  document.getElementById('cp-discount').textContent = data.discount;
+  document.getElementById('cp-duration').textContent = data.duration;
+  document.getElementById('cp-redeemed').textContent = data.redeemed;
+  box.style.display = 'block';
+}
+
+// ===== COLLAPSE =====
+function toggleCollapse(header) {
+  var arrow = header.querySelector('.collapse-arrow');
+  var body = header.nextElementSibling;
+  if (body.style.display === 'none') {
+    body.style.display = 'block';
+    arrow.classList.add('open');
+    header.querySelector('span:last-child').textContent = 'Hide Advanced Settings';
+  } else {
+    body.style.display = 'none';
+    arrow.classList.remove('open');
+    header.querySelector('span:last-child').textContent = 'Show Advanced Settings';
+  }
+}
+
+// ===== BATCH CREATE STEPS =====
+var totalSteps = 4;
+
+function renderSteps() {
+  for (var i = 1; i <= totalSteps; i++) {
+    var circle = document.getElementById('circle-' + i);
+    var info = document.getElementById('info-' + i);
+    var content = document.getElementById('step-' + i);
+    var line = document.getElementById('line-' + i);
+
+    if (circle) {
+      circle.className = 'step-circle';
+      if (i < batchStep) {
+        circle.classList.add('done');
+        circle.textContent = '✓';
+      } else if (i === batchStep) {
+        circle.classList.add('active');
+        circle.textContent = i;
+      } else {
+        circle.textContent = i;
+      }
+    }
+
+    if (info) {
+      info.className = 'step-info';
+      if (i <= batchStep) info.classList.add('active');
+    }
+
+    if (content) {
+      content.className = 'form-card step-content';
+      if (i === batchStep) content.classList.add('active');
+    }
+
+    if (line && i < totalSteps) {
+      line.className = 'step-line';
+      if (i < batchStep) line.classList.add('done');
+    }
+  }
+
+  // Update nav buttons
+  var prevBtn = document.getElementById('btn-prev');
+  var nextBtn = document.getElementById('btn-next');
+  if (prevBtn) prevBtn.style.visibility = batchStep > 1 ? 'visible' : 'hidden';
+  if (nextBtn) {
+    if (batchStep === totalSteps) {
+      nextBtn.textContent = '✅ Submit & Generate';
+      nextBtn.onclick = function() { alert('✅ Batch job submitted!\n\nGenerating 100 codes with prefix BF-...\nEstimated time: ~3 seconds.\n\nYou will be redirected to Promotion Codes list.'); showPage('p4'); };
+    } else {
+      nextBtn.textContent = 'Next →';
+      nextBtn.onclick = nextStep;
+    }
+  }
+}
+
+function nextStep() {
+  if (batchStep < totalSteps) {
+    batchStep++;
+    renderSteps();
+  }
+}
+
+function prevStep() {
+  if (batchStep > 1) {
+    batchStep--;
+    renderSteps();
+  }
+}
+
+// Initialize batch steps
+renderSteps();
+
+// Initialize tab content visibility
+document.querySelectorAll('.tab-content').forEach(function(c) {
+  if (c.classList.contains('active')) {
+    c.style.display = 'block';
+  } else {
+    c.style.display = 'none';
+  }
+});
+
+// Show page p1 by default
+showPage('p1');
+</script>
+</body>
+</html>
