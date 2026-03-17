@@ -778,13 +778,12 @@
             </div>
             <table class="data-table">
               <thead>
-                <tr><th>Code</th><th>Redeemed</th><th>Restrictions</th><th>Channel</th><th>Status</th><th>Expires</th><th>Action</th></tr>
+                <tr><th>Code</th><th>Redeemed</th><th>Restrictions</th><th>Status</th><th>Expires</th><th>Action</th></tr>
               </thead>
               <tbody>
                 <tr>
                   <td><strong style="font-family:monospace;">SUMMER20</strong></td>
                   <td>156 / 200</td><td>First order only</td>
-                  <td><span class="tag tag-orange">Email</span></td>
                   <td><span class="tag tag-green">Active</span></td>
                   <td>2026-06-30</td>
                   <td><a class="action-link">View</a> · <a class="action-link">Disable</a></td>
@@ -792,7 +791,6 @@
                 <tr>
                   <td><strong style="font-family:monospace;">VIP20</strong></td>
                   <td>89 / ∞</td><td>—</td>
-                  <td><span class="tag tag-orange">Social</span></td>
                   <td><span class="tag tag-green">Active</span></td>
                   <td>2026-06-30</td>
                   <td><a class="action-link">View</a> · <a class="action-link">Disable</a></td>
@@ -800,7 +798,6 @@
                 <tr>
                   <td><strong style="font-family:monospace;">SUMMER-K2X9P</strong></td>
                   <td>45 / ∞</td><td>Min $30</td>
-                  <td><span class="tag tag-orange">In-App</span></td>
                   <td><span class="tag tag-green">Active</span></td>
                   <td>2026-06-30</td>
                   <td><a class="action-link">View</a> · <a class="action-link">Disable</a></td>
@@ -808,7 +805,6 @@
                 <tr>
                   <td><strong style="font-family:monospace;">SUMMER-M7L3Q</strong></td>
                   <td>52 / ∞</td><td>Min $30</td>
-                  <td><span class="tag tag-orange">In-App</span></td>
                   <td><span class="tag tag-gray">Inactive</span></td>
                   <td>2026-06-30</td>
                   <td><a class="action-link">View</a> · <a class="action-link">Enable</a></td>
@@ -929,13 +925,12 @@
           <input class="filter-input" placeholder="🔍 Search by code..." />
           <select class="filter-select"><option>All Coupons</option><option>Summer Sale 2026</option><option>New User Welcome</option><option>VIP Loyalty Discount</option></select>
           <select class="filter-select"><option>Status</option><option>Active</option><option>Inactive</option><option>Expired</option></select>
-          <select class="filter-select"><option>Channel</option><option>Email</option><option>Social</option><option>In-App</option><option>Direct</option></select>
           <button class="btn btn-default" style="margin-left:auto;">Export</button>
         </div>
 
         <table class="data-table">
           <thead>
-            <tr><th>Code</th><th>Coupon</th><th>Discount</th><th>Redeemed</th><th>Restrictions</th><th>Channel</th><th>Status</th><th>Expires</th><th>Action</th></tr>
+            <tr><th>Code</th><th>Coupon</th><th>Discount</th><th>Redeemed</th><th>Restrictions</th><th>Status</th><th>Expires</th><th>Action</th></tr>
           </thead>
           <tbody>
             <tr>
@@ -943,7 +938,6 @@
               <td><a class="action-link" onclick="showPage('p3')">Summer Sale 2026</a></td>
               <td><span class="tag tag-blue">20% off</span></td>
               <td>156 / 200</td><td>First order only</td>
-              <td><span class="tag tag-orange">Email</span></td>
               <td><span class="tag tag-green">Active</span></td>
               <td>2026-06-30</td>
               <td><a class="action-link">View</a> · <a class="action-link">Disable</a></td>
@@ -953,7 +947,6 @@
               <td><a class="action-link" onclick="showPage('p3')">Summer Sale 2026</a></td>
               <td><span class="tag tag-blue">20% off</span></td>
               <td>89 / ∞</td><td>—</td>
-              <td><span class="tag tag-cyan">Social</span></td>
               <td><span class="tag tag-green">Active</span></td>
               <td>2026-06-30</td>
               <td><a class="action-link">View</a> · <a class="action-link">Disable</a></td>
@@ -963,7 +956,6 @@
               <td><a class="action-link" onclick="showPage('p3')">New User Welcome</a></td>
               <td><span class="tag tag-blue">$5.00 off</span></td>
               <td>34 / ∞</td><td>First order · Min $20</td>
-              <td><span class="tag tag-purple">In-App</span></td>
               <td><span class="tag tag-green">Active</span></td>
               <td>2026-12-31</td>
               <td><a class="action-link">View</a> · <a class="action-link">Disable</a></td>
@@ -973,7 +965,6 @@
               <td><a class="action-link" onclick="showPage('p3')">Black Friday 2025</a></td>
               <td><span class="tag tag-blue">30% off</span></td>
               <td>1 / 1</td><td>Single use · Min $50</td>
-              <td><span class="tag tag-orange">Email</span></td>
               <td><span class="tag tag-gray">Expired</span></td>
               <td>2025-12-01</td>
               <td><a class="action-link">View</a></td>
@@ -983,7 +974,6 @@
               <td><a class="action-link" onclick="showPage('p3')">Early Bird SaaS</a></td>
               <td><span class="tag tag-blue">$10.00 off</span></td>
               <td>8 / 50</td><td>Min $50 · SG only</td>
-              <td><span class="tag tag-blue">Direct</span></td>
               <td><span class="tag tag-green">Active</span></td>
               <td>—</td>
               <td><a class="action-link">View</a> · <a class="action-link">Disable</a></td>
@@ -1084,18 +1074,7 @@
               </div>
             </div>
 
-            <div class="form-row">
-              <div class="form-label">Channel</div>
-              <div class="form-control">
-                <select class="form-select">
-                  <option>— Select channel —</option>
-                  <option>Email</option>
-                  <option>Social</option>
-                  <option>In-App</option>
-                  <option>Direct</option>
-                </select>
-                <div class="form-hint">Tag this code with its distribution channel for ROI tracking.</div>
-              </div>
+            
             </div>
           </div>
 
@@ -1230,7 +1209,7 @@
           <div class="step-line" id="line-1"></div>
           <div class="step-item">
             <div class="step-circle" id="circle-2">2</div>
-            <div class="step-info" id="info-2"><div class="step-title">Configure Codes</div><div class="step-desc">Prefix, quantity & channel</div></div>
+            <div class="step-info" id="info-2"><div class="step-title">Configure Codes</div><div class="step-desc">Prefix & quantity</div></div>
           </div>
           <div class="step-line" id="line-2"></div>
           <div class="step-item">
@@ -1289,18 +1268,7 @@
                 <div class="form-hint">Expiry for all codes in this batch (optional, cannot exceed coupon expiry).</div>
               </div>
             </div>
-            <div class="form-row">
-              <div class="form-label">Channel</div>
-              <div class="form-control">
-                <select class="form-select">
-                  <option>— Select channel —</option>
-                  <option selected>Email</option>
-                  <option>Social</option>
-                  <option>In-App</option>
-                  <option>Direct</option>
-                </select>
-              </div>
-            </div>
+            
           </div>
 
           <!-- Step 3: Restrictions -->
@@ -1352,7 +1320,6 @@
                 <div><span style="color:#888;">Coupon:</span> Summer Sale 2026 (20% off)</div>
                 <div><span style="color:#888;">Quantity:</span> 100 codes</div>
                 <div><span style="color:#888;">Prefix:</span> <strong style="font-family:monospace;">BF-</strong></div>
-                <div><span style="color:#888;">Channel:</span> Email</div>
                 <div><span style="color:#888;">Expires:</span> 2026-06-30 23:59</div>
                 <div><span style="color:#888;">First Order Only:</span> Yes</div>
                 <div><span style="color:#888;">Min Amount:</span> USD 50.00</div>
@@ -1503,62 +1470,6 @@
                 <td>1</td><td>15</td><td>$150</td>
                 <td><div style="display:flex;align-items:center;gap:8px;"><div style="background:#1a56db;height:6px;border-radius:3px;width:30px;"></div>30%</div></td>
                 <td>$87.00</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-
-        <!-- Channel ROI -->
-        <div class="analytics-card">
-          <div class="ac-title">Channel ROI</div>
-          <table class="roi-table">
-            <thead>
-              <tr><th>Channel</th><th>Codes Distributed</th><th>Redemptions</th><th>Total Discount</th><th>Total Revenue</th><th>ROI</th><th>Redemption Rate</th></tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td><span class="tag tag-orange">Email</span></td>
-                <td>120</td><td>245</td><td>$4,200</td><td>$32,400</td>
-                <td style="color:#389e0d;font-weight:600;">7.7x</td>
-                <td>
-                  <div style="display:flex;align-items:center;gap:8px;">
-                    <div style="background:#389e0d;height:6px;border-radius:3px;width:60px;"></div>
-                    60.1%
-                  </div>
-                </td>
-              </tr>
-              <tr>
-                <td><span class="tag tag-cyan">Social</span></td>
-                <td>80</td><td>154</td><td>$3,080</td><td>$18,900</td>
-                <td style="color:#389e0d;font-weight:600;">6.1x</td>
-                <td>
-                  <div style="display:flex;align-items:center;gap:8px;">
-                    <div style="background:#389e0d;height:6px;border-radius:3px;width:50px;"></div>
-                    50.4%
-                  </div>
-                </td>
-              </tr>
-              <tr>
-                <td><span class="tag tag-purple">In-App</span></td>
-                <td>200</td><td>380</td><td>$3,800</td><td>$38,000</td>
-                <td style="color:#389e0d;font-weight:600;">10x</td>
-                <td>
-                  <div style="display:flex;align-items:center;gap:8px;">
-                    <div style="background:#389e0d;height:6px;border-radius:3px;width:76px;"></div>
-                    76.2%
-                  </div>
-                </td>
-              </tr>
-              <tr>
-                <td><span class="tag tag-blue">Direct</span></td>
-                <td>30</td><td>68</td><td>$1,370</td><td>$9,600</td>
-                <td style="color:#d46b08;font-weight:600;">7x</td>
-                <td>
-                  <div style="display:flex;align-items:center;gap:8px;">
-                    <div style="background:#d46b08;height:6px;border-radius:3px;width:45px;"></div>
-                    45.2%
-                  </div>
-                </td>
               </tr>
             </tbody>
           </table>
