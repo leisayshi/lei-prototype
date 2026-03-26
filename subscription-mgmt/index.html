@@ -199,6 +199,35 @@
   /* ===== HIDDEN ===== */
   .hidden { display: none !important; }
 
+  /* ===== AVAILABLE VARIABLES PANEL ===== */
+  .vars-panel { margin-bottom: 10px; border: 1px solid #e0e8f8; border-radius: 6px; overflow: hidden; }
+  .vars-panel-header {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 7px 12px; background: #f7f9ff; cursor: pointer;
+    font-size: 12px; font-weight: 500; color: #555;
+    user-select: none;
+  }
+  .vars-panel-header:hover { background: #eef2ff; }
+  .vars-panel-header .vars-toggle-icon { font-size: 10px; color: #999; transition: transform 0.2s; }
+  .vars-panel-header.open .vars-toggle-icon { transform: rotate(180deg); }
+  .vars-panel-body { display: none; padding: 8px 12px 10px; background: #fff; }
+  .var-pill {
+    background: #e6f0ff; color: #1a56db; padding: 2px 10px;
+    border-radius: 12px; font-size: 12px; cursor: pointer;
+    display: inline-block; margin: 3px; font-family: monospace;
+    position: relative; transition: background 0.15s;
+  }
+  .var-pill:hover { background: #d0e3ff; }
+  .var-pill .copied-tip {
+    display: none; position: absolute; top: -22px; left: 50%; transform: translateX(-50%);
+    background: #333; color: #fff; font-size: 11px; padding: 2px 7px;
+    border-radius: 4px; white-space: nowrap; pointer-events: none;
+  }
+  .var-pill.just-copied .copied-tip { display: block; }
+
+  /* ===== PREVIEW BUTTON AREA ===== */
+  .preview-btn-row { margin-top: 12px; padding-top: 10px; border-top: 1px solid #f0f0f0; }
+
 </style>
 </head>
 <body>
@@ -548,16 +577,26 @@
           <!-- Notification: Subscription Created -->
           <div class="notif-edit-block" style="border: 1px solid #e8e8e8; border-radius: 6px; padding: 16px; margin-bottom: 16px;">
             <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:12px;">
-              <div style="font-weight:600; font-size:14px;">Subscription Created</div>
+              <div style="font-weight:600; font-size:14px;">T-01 · Subscription Created</div>
               <span class="status-tag status-enabled" style="font-size:11px;">✓ Enabled by Waffo</span>
+            </div>
+            <!-- Available Variables -->
+            <div class="vars-panel">
+              <div class="vars-panel-header" onclick="toggleVarsPanel(this)">
+                <span>📎 Available Variables</span>
+                <span class="vars-toggle-icon">▼</span>
+              </div>
+              <div class="vars-panel-body">
+                <div class="vars-common"></div>
+              </div>
             </div>
             <div class="form-row" style="margin-bottom:10px;">
               <div class="form-label-sm">Email Subject</div>
-              <div class="form-control"><input class="form-input" type="text" placeholder="Your subscription is now active" /></div>
+              <div class="form-control"><input class="form-input" type="text" placeholder="Your subscription to {{merchant_name}} is confirmed" /></div>
             </div>
             <div class="form-row" style="margin-bottom:10px;">
               <div class="form-label-sm">Email Body Preview</div>
-              <div class="form-control"><textarea class="form-input" rows="3" placeholder="Hi {{name}}, your {{plan}} subscription has been activated. Next billing date: {{next_date}}." style="resize:vertical;"></textarea></div>
+              <div class="form-control"><textarea class="form-input" rows="3" placeholder="Your subscription has been created. Plan: {{plan_amount}} {{plan_currency}} / {{period_display}}" style="resize:vertical;"></textarea></div>
             </div>
             <div class="form-row" style="margin-bottom:0;">
               <div class="form-label-sm">Include Portal Link</div>
@@ -565,22 +604,36 @@
                 <div class="switch on" onclick="toggleSwitch(this)"><div class="knob"></div></div>
                 <span style="font-size:13px; color:#666;">Add a link to the subscriber portal in the email</span>
               </div>
+            </div>
+            <div class="preview-btn-row">
+              <button class="btn btn-default" style="font-size:12px; padding:4px 14px;" onclick="previewEmail('Subscription Created')">👁 Preview</button>
             </div>
           </div>
 
           <!-- Notification: Trial Started -->
           <div class="notif-edit-block" style="border: 1px solid #e8e8e8; border-radius: 6px; padding: 16px; margin-bottom: 16px;">
             <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:12px;">
-              <div style="font-weight:600; font-size:14px;">Trial Started</div>
+              <div style="font-weight:600; font-size:14px;">T-02 · Trial Started</div>
               <span class="status-tag status-enabled" style="font-size:11px;">✓ Enabled by Waffo</span>
+            </div>
+            <!-- Available Variables -->
+            <div class="vars-panel">
+              <div class="vars-panel-header" onclick="toggleVarsPanel(this)">
+                <span>📎 Available Variables</span>
+                <span class="vars-toggle-icon">▼</span>
+              </div>
+              <div class="vars-panel-body">
+                <div class="vars-common"></div>
+                <div class="vars-extra" data-vars="trial_end_date,trial_amount,regular_amount"></div>
+              </div>
             </div>
             <div class="form-row" style="margin-bottom:10px;">
               <div class="form-label-sm">Email Subject</div>
-              <div class="form-control"><input class="form-input" type="text" placeholder="Your free trial has started" /></div>
+              <div class="form-control"><input class="form-input" type="text" placeholder="Your free trial with {{merchant_name}} has started" /></div>
             </div>
             <div class="form-row" style="margin-bottom:10px;">
               <div class="form-label-sm">Email Body Preview</div>
-              <div class="form-control"><textarea class="form-input" rows="3" placeholder="Hi {{name}}, your free trial of {{plan}} has started. Your trial ends on {{trial_end_date}}." style="resize:vertical;"></textarea></div>
+              <div class="form-control"><textarea class="form-input" rows="3" placeholder="Your trial ends on {{trial_end_date}}. After that, you'll be charged {{regular_amount}} {{plan_currency}}." style="resize:vertical;"></textarea></div>
             </div>
             <div class="form-row" style="margin-bottom:0;">
               <div class="form-label-sm">Include Portal Link</div>
@@ -588,22 +641,36 @@
                 <div class="switch on" onclick="toggleSwitch(this)"><div class="knob"></div></div>
                 <span style="font-size:13px; color:#666;">Add a link to the subscriber portal in the email</span>
               </div>
+            </div>
+            <div class="preview-btn-row">
+              <button class="btn btn-default" style="font-size:12px; padding:4px 14px;" onclick="previewEmail('Trial Started')">👁 Preview</button>
             </div>
           </div>
 
           <!-- Notification: Trial Ending Soon -->
           <div class="notif-edit-block" style="border: 1px solid #e8e8e8; border-radius: 6px; padding: 16px; margin-bottom: 16px;">
             <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:12px;">
-              <div style="font-weight:600; font-size:14px;">Trial Ending Soon</div>
+              <div style="font-weight:600; font-size:14px;">T-03 · Trial Ending Soon</div>
               <span class="status-tag status-enabled" style="font-size:11px;">✓ Enabled by Waffo</span>
+            </div>
+            <!-- Available Variables -->
+            <div class="vars-panel">
+              <div class="vars-panel-header" onclick="toggleVarsPanel(this)">
+                <span>📎 Available Variables</span>
+                <span class="vars-toggle-icon">▼</span>
+              </div>
+              <div class="vars-panel-body">
+                <div class="vars-common"></div>
+                <div class="vars-extra" data-vars="trial_end_date,trial_amount,regular_amount"></div>
+              </div>
             </div>
             <div class="form-row" style="margin-bottom:10px;">
               <div class="form-label-sm">Email Subject</div>
-              <div class="form-control"><input class="form-input" type="text" placeholder="Your trial ends in 3 days" /></div>
+              <div class="form-control"><input class="form-input" type="text" placeholder="Your {{merchant_name}} trial ends soon" /></div>
             </div>
             <div class="form-row" style="margin-bottom:10px;">
               <div class="form-label-sm">Email Body Preview</div>
-              <div class="form-control"><textarea class="form-input" rows="3" placeholder="Hi {{name}}, your free trial ends on {{trial_end_date}}. Add a payment method to continue." style="resize:vertical;"></textarea></div>
+              <div class="form-control"><textarea class="form-input" rows="3" placeholder="Your trial ends on {{trial_end_date}}. You'll be automatically charged {{regular_amount}} {{plan_currency}}." style="resize:vertical;"></textarea></div>
             </div>
             <div class="form-row" style="margin-bottom:0;">
               <div class="form-label-sm">Include Portal Link</div>
@@ -611,22 +678,36 @@
                 <div class="switch on" onclick="toggleSwitch(this)"><div class="knob"></div></div>
                 <span style="font-size:13px; color:#666;">Add a link to the subscriber portal in the email</span>
               </div>
+            </div>
+            <div class="preview-btn-row">
+              <button class="btn btn-default" style="font-size:12px; padding:4px 14px;" onclick="previewEmail('Trial Ending Soon')">👁 Preview</button>
             </div>
           </div>
 
           <!-- Notification: Upcoming Payment -->
           <div class="notif-edit-block" style="border: 1px solid #e8e8e8; border-radius: 6px; padding: 16px; margin-bottom: 16px;">
             <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:12px;">
-              <div style="font-weight:600; font-size:14px;">Upcoming Payment</div>
+              <div style="font-weight:600; font-size:14px;">T-04 · Upcoming Payment</div>
               <span class="status-tag status-enabled" style="font-size:11px;">✓ Enabled by Waffo</span>
+            </div>
+            <!-- Available Variables -->
+            <div class="vars-panel">
+              <div class="vars-panel-header" onclick="toggleVarsPanel(this)">
+                <span>📎 Available Variables</span>
+                <span class="vars-toggle-icon">▼</span>
+              </div>
+              <div class="vars-panel-body">
+                <div class="vars-common"></div>
+                <div class="vars-extra" data-vars="next_payment_date,next_payment_amount"></div>
+              </div>
             </div>
             <div class="form-row" style="margin-bottom:10px;">
               <div class="form-label-sm">Email Subject</div>
-              <div class="form-control"><input class="form-input" type="text" placeholder="Upcoming payment reminder — {{amount}} on {{date}}" /></div>
+              <div class="form-control"><input class="form-input" type="text" placeholder="Upcoming payment for your {{merchant_name}} subscription" /></div>
             </div>
             <div class="form-row" style="margin-bottom:10px;">
               <div class="form-label-sm">Email Body Preview</div>
-              <div class="form-control"><textarea class="form-input" rows="3" placeholder="Hi {{name}}, a payment of {{amount}} will be charged on {{next_date}} for your {{plan}} subscription." style="resize:vertical;"></textarea></div>
+              <div class="form-control"><textarea class="form-input" rows="3" placeholder="Your next payment of {{next_payment_amount}} {{plan_currency}} will be charged on {{next_payment_date}}." style="resize:vertical;"></textarea></div>
             </div>
             <div class="form-row" style="margin-bottom:0;">
               <div class="form-label-sm">Include Portal Link</div>
@@ -634,22 +715,36 @@
                 <div class="switch on" onclick="toggleSwitch(this)"><div class="knob"></div></div>
                 <span style="font-size:13px; color:#666;">Add a link to the subscriber portal in the email</span>
               </div>
+            </div>
+            <div class="preview-btn-row">
+              <button class="btn btn-default" style="font-size:12px; padding:4px 14px;" onclick="previewEmail('Upcoming Payment')">👁 Preview</button>
             </div>
           </div>
 
           <!-- Notification: Payment Failed -->
           <div class="notif-edit-block" style="border: 1px solid #e8e8e8; border-radius: 6px; padding: 16px; margin-bottom: 16px;">
             <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:12px;">
-              <div style="font-weight:600; font-size:14px;">Payment Failed</div>
+              <div style="font-weight:600; font-size:14px;">T-05 · Payment Failed</div>
               <span class="status-tag status-enabled" style="font-size:11px;">✓ Enabled by Waffo</span>
+            </div>
+            <!-- Available Variables -->
+            <div class="vars-panel">
+              <div class="vars-panel-header" onclick="toggleVarsPanel(this)">
+                <span>📎 Available Variables</span>
+                <span class="vars-toggle-icon">▼</span>
+              </div>
+              <div class="vars-panel-body">
+                <div class="vars-common"></div>
+                <div class="vars-extra" data-vars="next_payment_date,next_payment_amount,payment_failure_reason,retry_count"></div>
+              </div>
             </div>
             <div class="form-row" style="margin-bottom:10px;">
               <div class="form-label-sm">Email Subject</div>
-              <div class="form-control"><input class="form-input" type="text" placeholder="Payment failed — action required" /></div>
+              <div class="form-control"><input class="form-input" type="text" placeholder="Payment failed for your {{merchant_name}} subscription" /></div>
             </div>
             <div class="form-row" style="margin-bottom:10px;">
               <div class="form-label-sm">Email Body Preview</div>
-              <div class="form-control"><textarea class="form-input" rows="3" placeholder="Hi {{name}}, we were unable to charge {{amount}} for your {{plan}} subscription. Please update your payment method." style="resize:vertical;"></textarea></div>
+              <div class="form-control"><textarea class="form-input" rows="3" placeholder="Your payment of {{next_payment_amount}} {{plan_currency}} could not be processed. Reason: {{payment_failure_reason}}." style="resize:vertical;"></textarea></div>
             </div>
             <div class="form-row" style="margin-bottom:0;">
               <div class="form-label-sm">Include Portal Link</div>
@@ -657,22 +752,36 @@
                 <div class="switch on" onclick="toggleSwitch(this)"><div class="knob"></div></div>
                 <span style="font-size:13px; color:#666;">Add a link to the subscriber portal in the email</span>
               </div>
+            </div>
+            <div class="preview-btn-row">
+              <button class="btn btn-default" style="font-size:12px; padding:4px 14px;" onclick="previewEmail('Payment Failed')">👁 Preview</button>
             </div>
           </div>
 
           <!-- Notification: Subscription Cancelled -->
           <div class="notif-edit-block" style="border: 1px solid #e8e8e8; border-radius: 6px; padding: 16px; margin-bottom: 16px;">
             <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:12px;">
-              <div style="font-weight:600; font-size:14px;">Subscription Cancelled</div>
+              <div style="font-weight:600; font-size:14px;">T-06 · Subscription Cancelled</div>
               <span class="status-tag status-enabled" style="font-size:11px;">✓ Enabled by Waffo</span>
+            </div>
+            <!-- Available Variables -->
+            <div class="vars-panel">
+              <div class="vars-panel-header" onclick="toggleVarsPanel(this)">
+                <span>📎 Available Variables</span>
+                <span class="vars-toggle-icon">▼</span>
+              </div>
+              <div class="vars-panel-body">
+                <div class="vars-common"></div>
+                <div class="vars-extra" data-vars="cancel_source,cancel_date"></div>
+              </div>
             </div>
             <div class="form-row" style="margin-bottom:10px;">
               <div class="form-label-sm">Email Subject</div>
-              <div class="form-control"><input class="form-input" type="text" placeholder="Your subscription has been cancelled" /></div>
+              <div class="form-control"><input class="form-input" type="text" placeholder="Your {{merchant_name}} subscription has been cancelled" /></div>
             </div>
             <div class="form-row" style="margin-bottom:10px;">
               <div class="form-label-sm">Email Body Preview</div>
-              <div class="form-control"><textarea class="form-input" rows="3" placeholder="Hi {{name}}, your {{plan}} subscription has been cancelled. Access continues until {{end_date}}." style="resize:vertical;"></textarea></div>
+              <div class="form-control"><textarea class="form-input" rows="3" placeholder="Your subscription has been cancelled by {{cancel_source}} on {{cancel_date}}." style="resize:vertical;"></textarea></div>
             </div>
             <div class="form-row" style="margin-bottom:0;">
               <div class="form-label-sm">Include Portal Link</div>
@@ -680,22 +789,36 @@
                 <div class="switch on" onclick="toggleSwitch(this)"><div class="knob"></div></div>
                 <span style="font-size:13px; color:#666;">Add a link to the subscriber portal in the email</span>
               </div>
+            </div>
+            <div class="preview-btn-row">
+              <button class="btn btn-default" style="font-size:12px; padding:4px 14px;" onclick="previewEmail('Subscription Cancelled')">👁 Preview</button>
             </div>
           </div>
 
           <!-- Notification: Subscription Changed -->
           <div class="notif-edit-block" style="border: 1px solid #e8e8e8; border-radius: 6px; padding: 16px; margin-bottom: 0;">
             <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:12px;">
-              <div style="font-weight:600; font-size:14px;">Subscription Changed</div>
+              <div style="font-weight:600; font-size:14px;">T-07 · Subscription Changed</div>
               <span class="status-tag status-enabled" style="font-size:11px;">✓ Enabled by Waffo</span>
+            </div>
+            <!-- Available Variables -->
+            <div class="vars-panel">
+              <div class="vars-panel-header" onclick="toggleVarsPanel(this)">
+                <span>📎 Available Variables</span>
+                <span class="vars-toggle-icon">▼</span>
+              </div>
+              <div class="vars-panel-body">
+                <div class="vars-common"></div>
+                <div class="vars-extra" data-vars="old_plan_amount,new_plan_amount,change_type"></div>
+              </div>
             </div>
             <div class="form-row" style="margin-bottom:10px;">
               <div class="form-label-sm">Email Subject</div>
-              <div class="form-control"><input class="form-input" type="text" placeholder="Your subscription plan has been updated" /></div>
+              <div class="form-control"><input class="form-input" type="text" placeholder="Your {{merchant_name}} subscription plan has changed" /></div>
             </div>
             <div class="form-row" style="margin-bottom:10px;">
               <div class="form-label-sm">Email Body Preview</div>
-              <div class="form-control"><textarea class="form-input" rows="3" placeholder="Hi {{name}}, your subscription has been updated from {{old_plan}} to {{new_plan}}. New billing starts on {{next_date}}." style="resize:vertical;"></textarea></div>
+              <div class="form-control"><textarea class="form-input" rows="3" placeholder="Your plan has been changed from {{old_plan_amount}} to {{new_plan_amount}} {{plan_currency}} ({{change_type}})." style="resize:vertical;"></textarea></div>
             </div>
             <div class="form-row" style="margin-bottom:0;">
               <div class="form-label-sm">Include Portal Link</div>
@@ -703,6 +826,9 @@
                 <div class="switch on" onclick="toggleSwitch(this)"><div class="knob"></div></div>
                 <span style="font-size:13px; color:#666;">Add a link to the subscriber portal in the email</span>
               </div>
+            </div>
+            <div class="preview-btn-row">
+              <button class="btn btn-default" style="font-size:12px; padding:4px 14px;" onclick="previewEmail('Subscription Changed')">👁 Preview</button>
             </div>
           </div>
 
@@ -738,6 +864,55 @@
     el.classList.toggle('on');
   }
 
+  // ---- Variable Pills: common vars ----
+  const COMMON_VARS = [
+    'merchant_name', 'subscriber_email', 'subscription_id',
+    'plan_amount', 'plan_currency', 'period_display',
+    'portal_link', 'support_email'
+  ];
+
+  function makePill(varName) {
+    const pill = document.createElement('span');
+    pill.className = 'var-pill';
+    pill.innerHTML = '{{' + varName + '}}<span class="copied-tip">Copied!</span>';
+    pill.onclick = function() {
+      navigator.clipboard.writeText('{{' + varName + '}}').catch(() => {});
+      pill.classList.add('just-copied');
+      setTimeout(() => pill.classList.remove('just-copied'), 1400);
+    };
+    return pill;
+  }
+
+  function initVarPanels() {
+    // Fill common vars placeholders
+    document.querySelectorAll('.vars-common').forEach(container => {
+      COMMON_VARS.forEach(v => container.appendChild(makePill(v)));
+    });
+    // Fill extra vars
+    document.querySelectorAll('.vars-extra').forEach(container => {
+      const vars = container.dataset.vars.split(',').map(s => s.trim());
+      if (vars.length) {
+        const sep = document.createElement('span');
+        sep.style.cssText = 'display:inline-block;width:100%;height:4px;';
+        container.appendChild(sep);
+      }
+      vars.forEach(v => container.appendChild(makePill(v)));
+    });
+  }
+
+  // ---- Toggle vars panel ----
+  function toggleVarsPanel(headerEl) {
+    const body = headerEl.nextElementSibling;
+    const isOpen = body.style.display === 'block';
+    body.style.display = isOpen ? 'none' : 'block';
+    headerEl.classList.toggle('open', !isOpen);
+  }
+
+  // ---- Preview email ----
+  function previewEmail(type) {
+    alert('👁 Preview feature coming soon\n\nNotification: ' + type);
+  }
+
   // ---- Add Retry Row ----
   function addRetryRow() {
     const tbody = document.querySelector('.config-table tbody');
@@ -764,6 +939,9 @@
     `;
     tbody.appendChild(tr);
   }
+
+  // ---- Init on load ----
+  document.addEventListener('DOMContentLoaded', initVarPanels);
 </script>
 </body>
 </html>
