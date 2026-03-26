@@ -287,6 +287,72 @@
           </div>
         </div>
 
+        <!-- Email Collection & Notification Triggers Card -->
+        <div class="card">
+          <div class="card-title">📧 Email Collection &amp; Notification Triggers</div>
+
+          <!-- Email Collection toggle -->
+          <div class="switch-row" style="margin-bottom: 6px;">
+            <div class="switch on" onclick="toggleSwitch(this)"><div class="knob"></div></div>
+            <div>
+              <div class="switch-label">Email Collection</div>
+              <div class="form-hint" style="margin-top:2px;">When enabled, subscriber email is required during checkout and API subscription creation.</div>
+            </div>
+          </div>
+
+          <!-- Divider -->
+          <div style="border-top: 1px solid #f0f0f0; margin: 16px 0;"></div>
+
+          <!-- Notification Triggers -->
+          <div style="font-size:14px; font-weight:600; margin-bottom:12px;">Notification Triggers</div>
+          <table class="notif-table">
+            <thead>
+              <tr>
+                <th style="width:220px;">Notification</th>
+                <th>Trigger Timing</th>
+                <th style="width:80px; text-align:center;">Enabled</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td style="font-weight:500;">Subscription Created</td>
+                <td style="color:#666;">When subscription becomes ACTIVE</td>
+                <td style="text-align:center;"><div class="switch on" style="margin:auto;" onclick="toggleSwitch(this)"><div class="knob"></div></div></td>
+              </tr>
+              <tr>
+                <td style="font-weight:500;">Trial Started</td>
+                <td style="color:#666;">When free trial begins</td>
+                <td style="text-align:center;"><div class="switch on" style="margin:auto;" onclick="toggleSwitch(this)"><div class="knob"></div></div></td>
+              </tr>
+              <tr>
+                <td style="font-weight:500;">Trial Ending Soon</td>
+                <td style="color:#666;">3 days before trial ends</td>
+                <td style="text-align:center;"><div class="switch on" style="margin:auto;" onclick="toggleSwitch(this)"><div class="knob"></div></div></td>
+              </tr>
+              <tr>
+                <td style="font-weight:500;">Upcoming Payment</td>
+                <td style="color:#666;">3 days before next charge</td>
+                <td style="text-align:center;"><div class="switch on" style="margin:auto;" onclick="toggleSwitch(this)"><div class="knob"></div></div></td>
+              </tr>
+              <tr>
+                <td style="font-weight:500;">Payment Failed</td>
+                <td style="color:#666;">When a charge fails</td>
+                <td style="text-align:center;"><div class="switch on" style="margin:auto;" onclick="toggleSwitch(this)"><div class="knob"></div></div></td>
+              </tr>
+              <tr>
+                <td style="font-weight:500;">Subscription Cancelled</td>
+                <td style="color:#666;">When subscription is cancelled</td>
+                <td style="text-align:center;"><div class="switch on" style="margin:auto;" onclick="toggleSwitch(this)"><div class="knob"></div></div></td>
+              </tr>
+              <tr>
+                <td style="font-weight:500;">Subscription Changed</td>
+                <td style="color:#666;">When plan is upgraded/downgraded</td>
+                <td style="text-align:center;"><div class="switch" style="margin:auto;" onclick="toggleSwitch(this)"><div class="knob"></div></div></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
         <!-- Merchant Info Card -->
         <div class="card">
           <div class="card-title">Merchant Info</div>
@@ -541,52 +607,173 @@
           <!-- Notification Types -->
           <div class="card">
             <div class="card-title">Notification Types</div>
-            <table class="notif-table">
-              <thead>
-                <tr>
-                  <th style="width:220px;">Notification</th>
-                  <th>Trigger</th>
-                  <th style="width:80px; text-align:center;">Status</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td style="font-weight:500;">Subscription Created</td>
-                  <td style="color:#666;">When a new subscription starts</td>
-                  <td style="text-align:center;"><div class="switch on" style="margin:auto;" onclick="toggleSwitch(this)"><div class="knob"></div></div></td>
-                </tr>
-                <tr>
-                  <td style="font-weight:500;">Trial Started</td>
-                  <td style="color:#666;">When a free trial begins</td>
-                  <td style="text-align:center;"><div class="switch on" style="margin:auto;" onclick="toggleSwitch(this)"><div class="knob"></div></div></td>
-                </tr>
-                <tr>
-                  <td style="font-weight:500;">Trial Ending Soon</td>
-                  <td style="color:#666;">3 days before trial ends</td>
-                  <td style="text-align:center;"><div class="switch on" style="margin:auto;" onclick="toggleSwitch(this)"><div class="knob"></div></div></td>
-                </tr>
-                <tr>
-                  <td style="font-weight:500;">Upcoming Payment</td>
-                  <td style="color:#666;">3 days before next charge</td>
-                  <td style="text-align:center;"><div class="switch on" style="margin:auto;" onclick="toggleSwitch(this)"><div class="knob"></div></div></td>
-                </tr>
-                <tr>
-                  <td style="font-weight:500;">Payment Failed</td>
-                  <td style="color:#666;">When a charge fails</td>
-                  <td style="text-align:center;"><div class="switch on" style="margin:auto;" onclick="toggleSwitch(this)"><div class="knob"></div></div></td>
-                </tr>
-                <tr>
-                  <td style="font-weight:500;">Subscription Cancelled</td>
-                  <td style="color:#666;">When subscription is cancelled</td>
-                  <td style="text-align:center;"><div class="switch on" style="margin:auto;" onclick="toggleSwitch(this)"><div class="knob"></div></div></td>
-                </tr>
-                <tr>
-                  <td style="font-weight:500;">Subscription Changed</td>
-                  <td style="color:#666;">When plan is upgraded/downgraded</td>
-                  <td style="text-align:center;"><div class="switch on" style="margin:auto;" onclick="toggleSwitch(this)"><div class="knob"></div></div></td>
-                </tr>
-              </tbody>
-            </table>
+
+            <!-- Info banner -->
+            <div style="background:#f0f5ff; border: 1px solid #c0d4f5; border-radius: 6px; padding: 10px 14px; margin-bottom: 20px; font-size: 13px; color: #444; line-height: 1.5;">
+              ℹ️ Notification types are managed by Waffo. You can customize the email content below. If not customized, system defaults will be used.
+            </div>
+
+            <!-- Notification: Subscription Created -->
+            <div class="notif-edit-block" style="border: 1px solid #e8e8e8; border-radius: 6px; padding: 16px; margin-bottom: 16px;">
+              <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:12px;">
+                <div style="font-weight:600; font-size:14px;">Subscription Created</div>
+                <span class="status-tag status-enabled" style="font-size:11px;">✓ Enabled by Waffo</span>
+              </div>
+              <div class="form-row" style="margin-bottom:10px;">
+                <div class="form-label-sm">Email Subject</div>
+                <div class="form-control"><input class="form-input" type="text" placeholder="Your subscription is now active" /></div>
+              </div>
+              <div class="form-row" style="margin-bottom:10px;">
+                <div class="form-label-sm">Email Body Preview</div>
+                <div class="form-control"><textarea class="form-input" rows="3" placeholder="Hi {{name}}, your {{plan}} subscription has been activated. Next billing date: {{next_date}}." style="resize:vertical;"></textarea></div>
+              </div>
+              <div class="form-row" style="margin-bottom:0;">
+                <div class="form-label-sm">Include Portal Link</div>
+                <div class="form-control" style="display:flex; align-items:center; gap:10px; padding-top:4px;">
+                  <div class="switch on" onclick="toggleSwitch(this)"><div class="knob"></div></div>
+                  <span style="font-size:13px; color:#666;">Add a link to the subscriber portal in the email</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Notification: Trial Started -->
+            <div class="notif-edit-block" style="border: 1px solid #e8e8e8; border-radius: 6px; padding: 16px; margin-bottom: 16px;">
+              <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:12px;">
+                <div style="font-weight:600; font-size:14px;">Trial Started</div>
+                <span class="status-tag status-enabled" style="font-size:11px;">✓ Enabled by Waffo</span>
+              </div>
+              <div class="form-row" style="margin-bottom:10px;">
+                <div class="form-label-sm">Email Subject</div>
+                <div class="form-control"><input class="form-input" type="text" placeholder="Your free trial has started" /></div>
+              </div>
+              <div class="form-row" style="margin-bottom:10px;">
+                <div class="form-label-sm">Email Body Preview</div>
+                <div class="form-control"><textarea class="form-input" rows="3" placeholder="Hi {{name}}, your free trial of {{plan}} has started. Your trial ends on {{trial_end_date}}." style="resize:vertical;"></textarea></div>
+              </div>
+              <div class="form-row" style="margin-bottom:0;">
+                <div class="form-label-sm">Include Portal Link</div>
+                <div class="form-control" style="display:flex; align-items:center; gap:10px; padding-top:4px;">
+                  <div class="switch on" onclick="toggleSwitch(this)"><div class="knob"></div></div>
+                  <span style="font-size:13px; color:#666;">Add a link to the subscriber portal in the email</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Notification: Trial Ending Soon -->
+            <div class="notif-edit-block" style="border: 1px solid #e8e8e8; border-radius: 6px; padding: 16px; margin-bottom: 16px;">
+              <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:12px;">
+                <div style="font-weight:600; font-size:14px;">Trial Ending Soon</div>
+                <span class="status-tag status-enabled" style="font-size:11px;">✓ Enabled by Waffo</span>
+              </div>
+              <div class="form-row" style="margin-bottom:10px;">
+                <div class="form-label-sm">Email Subject</div>
+                <div class="form-control"><input class="form-input" type="text" placeholder="Your trial ends in 3 days" /></div>
+              </div>
+              <div class="form-row" style="margin-bottom:10px;">
+                <div class="form-label-sm">Email Body Preview</div>
+                <div class="form-control"><textarea class="form-input" rows="3" placeholder="Hi {{name}}, your free trial ends on {{trial_end_date}}. Add a payment method to continue." style="resize:vertical;"></textarea></div>
+              </div>
+              <div class="form-row" style="margin-bottom:0;">
+                <div class="form-label-sm">Include Portal Link</div>
+                <div class="form-control" style="display:flex; align-items:center; gap:10px; padding-top:4px;">
+                  <div class="switch on" onclick="toggleSwitch(this)"><div class="knob"></div></div>
+                  <span style="font-size:13px; color:#666;">Add a link to the subscriber portal in the email</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Notification: Upcoming Payment -->
+            <div class="notif-edit-block" style="border: 1px solid #e8e8e8; border-radius: 6px; padding: 16px; margin-bottom: 16px;">
+              <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:12px;">
+                <div style="font-weight:600; font-size:14px;">Upcoming Payment</div>
+                <span class="status-tag status-enabled" style="font-size:11px;">✓ Enabled by Waffo</span>
+              </div>
+              <div class="form-row" style="margin-bottom:10px;">
+                <div class="form-label-sm">Email Subject</div>
+                <div class="form-control"><input class="form-input" type="text" placeholder="Upcoming payment reminder — {{amount}} on {{date}}" /></div>
+              </div>
+              <div class="form-row" style="margin-bottom:10px;">
+                <div class="form-label-sm">Email Body Preview</div>
+                <div class="form-control"><textarea class="form-input" rows="3" placeholder="Hi {{name}}, a payment of {{amount}} will be charged on {{next_date}} for your {{plan}} subscription." style="resize:vertical;"></textarea></div>
+              </div>
+              <div class="form-row" style="margin-bottom:0;">
+                <div class="form-label-sm">Include Portal Link</div>
+                <div class="form-control" style="display:flex; align-items:center; gap:10px; padding-top:4px;">
+                  <div class="switch on" onclick="toggleSwitch(this)"><div class="knob"></div></div>
+                  <span style="font-size:13px; color:#666;">Add a link to the subscriber portal in the email</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Notification: Payment Failed -->
+            <div class="notif-edit-block" style="border: 1px solid #e8e8e8; border-radius: 6px; padding: 16px; margin-bottom: 16px;">
+              <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:12px;">
+                <div style="font-weight:600; font-size:14px;">Payment Failed</div>
+                <span class="status-tag status-enabled" style="font-size:11px;">✓ Enabled by Waffo</span>
+              </div>
+              <div class="form-row" style="margin-bottom:10px;">
+                <div class="form-label-sm">Email Subject</div>
+                <div class="form-control"><input class="form-input" type="text" placeholder="Payment failed — action required" /></div>
+              </div>
+              <div class="form-row" style="margin-bottom:10px;">
+                <div class="form-label-sm">Email Body Preview</div>
+                <div class="form-control"><textarea class="form-input" rows="3" placeholder="Hi {{name}}, we were unable to charge {{amount}} for your {{plan}} subscription. Please update your payment method." style="resize:vertical;"></textarea></div>
+              </div>
+              <div class="form-row" style="margin-bottom:0;">
+                <div class="form-label-sm">Include Portal Link</div>
+                <div class="form-control" style="display:flex; align-items:center; gap:10px; padding-top:4px;">
+                  <div class="switch on" onclick="toggleSwitch(this)"><div class="knob"></div></div>
+                  <span style="font-size:13px; color:#666;">Add a link to the subscriber portal in the email</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Notification: Subscription Cancelled -->
+            <div class="notif-edit-block" style="border: 1px solid #e8e8e8; border-radius: 6px; padding: 16px; margin-bottom: 16px;">
+              <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:12px;">
+                <div style="font-weight:600; font-size:14px;">Subscription Cancelled</div>
+                <span class="status-tag status-enabled" style="font-size:11px;">✓ Enabled by Waffo</span>
+              </div>
+              <div class="form-row" style="margin-bottom:10px;">
+                <div class="form-label-sm">Email Subject</div>
+                <div class="form-control"><input class="form-input" type="text" placeholder="Your subscription has been cancelled" /></div>
+              </div>
+              <div class="form-row" style="margin-bottom:10px;">
+                <div class="form-label-sm">Email Body Preview</div>
+                <div class="form-control"><textarea class="form-input" rows="3" placeholder="Hi {{name}}, your {{plan}} subscription has been cancelled. Access continues until {{end_date}}." style="resize:vertical;"></textarea></div>
+              </div>
+              <div class="form-row" style="margin-bottom:0;">
+                <div class="form-label-sm">Include Portal Link</div>
+                <div class="form-control" style="display:flex; align-items:center; gap:10px; padding-top:4px;">
+                  <div class="switch on" onclick="toggleSwitch(this)"><div class="knob"></div></div>
+                  <span style="font-size:13px; color:#666;">Add a link to the subscriber portal in the email</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Notification: Subscription Changed -->
+            <div class="notif-edit-block" style="border: 1px solid #e8e8e8; border-radius: 6px; padding: 16px; margin-bottom: 0;">
+              <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:12px;">
+                <div style="font-weight:600; font-size:14px;">Subscription Changed</div>
+                <span class="status-tag status-enabled" style="font-size:11px;">✓ Enabled by Waffo</span>
+              </div>
+              <div class="form-row" style="margin-bottom:10px;">
+                <div class="form-label-sm">Email Subject</div>
+                <div class="form-control"><input class="form-input" type="text" placeholder="Your subscription plan has been updated" /></div>
+              </div>
+              <div class="form-row" style="margin-bottom:10px;">
+                <div class="form-label-sm">Email Body Preview</div>
+                <div class="form-control"><textarea class="form-input" rows="3" placeholder="Hi {{name}}, your subscription has been updated from {{old_plan}} to {{new_plan}}. New billing starts on {{next_date}}." style="resize:vertical;"></textarea></div>
+              </div>
+              <div class="form-row" style="margin-bottom:0;">
+                <div class="form-label-sm">Include Portal Link</div>
+                <div class="form-control" style="display:flex; align-items:center; gap:10px; padding-top:4px;">
+                  <div class="switch on" onclick="toggleSwitch(this)"><div class="knob"></div></div>
+                  <span style="font-size:13px; color:#666;">Add a link to the subscriber portal in the email</span>
+                </div>
+              </div>
+            </div>
+
             <div class="btn-group">
               <button class="btn btn-primary">Save Changes</button>
               <button class="btn btn-default">Cancel</button>
