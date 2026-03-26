@@ -80,7 +80,7 @@
   .card-title { font-size: 16px; font-weight: 600; margin-bottom: 16px; display: flex; align-items: center; gap: 8px; }
 
   /* ===== FORM ===== */
-  .form-row { display: flex; align-items: flex-start; margin-bottom: 20px; }
+  .form-row { display: flex; align-items: flex-start; margin-bottom: 16px; }
   .form-label { width: 180px; padding-top: 6px; font-weight: 500; color: #333; flex-shrink: 0; font-size: 14px; }
   .form-label-sm { width: 160px; padding-top: 6px; font-weight: 500; color: #333; flex-shrink: 0; font-size: 13px; }
   .form-control { flex: 1; max-width: 480px; }
@@ -110,12 +110,6 @@
   .status-disabled { background: #f5f5f5; color: #999; }
   .status-active { background: #e6f7e6; color: #389e0d; }
 
-  /* ===== TABS ===== */
-  .tabs { display: flex; gap: 0; border-bottom: 1px solid #e8e8e8; margin-bottom: 20px; }
-  .tab { padding: 10px 20px; cursor: pointer; color: #666; border-bottom: 2px solid transparent; transition: all 0.2s; font-size: 14px; }
-  .tab:hover { color: #1a56db; }
-  .tab.active { color: #1a56db; border-bottom-color: #1a56db; font-weight: 500; }
-
   /* ===== BUTTONS ===== */
   .btn { padding: 6px 20px; border-radius: 4px; cursor: pointer; font-size: 14px; border: none; transition: all 0.2s; }
   .btn-primary { background: #1a56db; color: #fff; }
@@ -125,8 +119,8 @@
   .btn-group { display: flex; gap: 12px; margin-top: 24px; padding-top: 20px; border-top: 1px solid #f0f0f0; }
 
   /* ===== RADIO ===== */
-  .radio-group { display: flex; gap: 20px; }
-  .radio-item { display: flex; align-items: center; gap: 6px; cursor: pointer; }
+  .radio-group { display: flex; gap: 20px; flex-wrap: wrap; }
+  .radio-item { display: flex; align-items: center; gap: 6px; cursor: default; }
   .radio-dot { width: 16px; height: 16px; border: 2px solid #d9d9d9; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
   .radio-dot.selected { border-color: #1a56db; }
   .radio-dot.selected::after { content: ''; width: 8px; height: 8px; background: #1a56db; border-radius: 50%; display: block; }
@@ -137,66 +131,70 @@
   .notif-table td { padding: 10px 12px; border-bottom: 1px solid #f5f5f5; font-size: 13px; vertical-align: middle; }
   .notif-table tr:last-child td { border-bottom: none; }
 
-  /* ===== SUB OPTIONS (indented) ===== */
-  .sub-options { margin-left: 56px; margin-top: 4px; padding: 12px 16px; background: #f8faff; border-left: 2px solid #c0d4f5; border-radius: 0 4px 4px 0; }
-  .sub-option-row { display: flex; align-items: center; margin-bottom: 12px; gap: 12px; }
-  .sub-option-row:last-child { margin-bottom: 0; }
-  .sub-option-label { font-size: 13px; color: #555; min-width: 160px; }
+  /* ===== CONFIG TABLE (retry strategy style) ===== */
+  .config-table { width: 100%; border-collapse: collapse; background: #fff; border: 1px solid #e8e8e8; border-radius: 6px; overflow: hidden; }
+  .config-table th { text-align: left; padding: 10px 12px; background: #fafafa; border-bottom: 1px solid #e8e8e8; color: #666; font-weight: 500; font-size: 13px; }
+  .config-table td { padding: 10px 12px; border-bottom: 1px solid #f0f0f0; font-size: 13px; vertical-align: middle; }
+  .config-table tr:last-child td { border-bottom: none; }
+  .config-table select, .config-table input[type="number"] {
+    padding: 4px 8px; border: 1px solid #d9d9d9; border-radius: 4px;
+    font-size: 13px; font-family: inherit;
+  }
+  .config-table input[type="number"] { width: 60px; }
 
-  /* ===== REASON LIST ===== */
-  .reason-list { list-style: none; padding: 0; margin-top: 8px; }
-  .reason-item { display: flex; align-items: center; gap: 8px; padding: 4px 0; }
-  .reason-item input { flex: 1; padding: 4px 8px; border: 1px solid #d9d9d9; border-radius: 4px; font-size: 13px; max-width: 260px; }
-  .reason-item .remove-btn { color: #bbb; cursor: pointer; font-size: 16px; line-height: 1; }
-  .reason-item .remove-btn:hover { color: #ff4d4f; }
-  .add-reason-btn { margin-top: 6px; font-size: 13px; color: #1a56db; cursor: pointer; }
+  /* ===== BLUE READONLY BLOCK ===== */
+  .readonly-block {
+    background: #f0f5ff;
+    border-left: 3px solid #1a56db;
+    padding: 20px;
+    border-radius: 4px;
+    margin-bottom: 20px;
+  }
+  .readonly-block .readonly-row {
+    display: flex;
+    align-items: center;
+    margin-bottom: 14px;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+  .readonly-block .readonly-row:last-child { margin-bottom: 0; }
+  .readonly-block .readonly-label {
+    font-size: 13px;
+    font-weight: 500;
+    color: #333;
+    min-width: 240px;
+  }
 
-  /* ===== COLOR PREVIEW ===== */
-  .color-input-row { display: flex; align-items: center; gap: 8px; }
-  .color-swatch { width: 28px; height: 28px; border-radius: 4px; border: 1px solid #d9d9d9; flex-shrink: 0; }
+  /* ===== ADD CONFIG BUTTON ===== */
+  .add-config-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px dashed #d9d9d9;
+    border-radius: 4px;
+    padding: 10px;
+    margin-top: 10px;
+    color: #1a56db;
+    cursor: pointer;
+    font-size: 13px;
+    transition: all 0.2s;
+  }
+  .add-config-btn:hover { border-color: #1a56db; background: #f0f5ff; }
 
-  /* ===== DISABLED HINT ===== */
-  .disabled-hint { font-size: 12px; color: #bbb; margin-top: 6px; font-style: italic; }
-
-  /* =========================================
-     PAGE 3: SUBSCRIBER PORTAL
-     ========================================= */
-  .subscriber-page { min-height: calc(100vh - 40px); background: #f0f4f8; display: flex; flex-direction: column; }
-  .subscriber-header { background: #fff; padding: 16px 24px; display: flex; align-items: center; gap: 16px; border-bottom: 1px solid #e8e8e8; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
-  .subscriber-header .brand-logo { width: 40px; height: 40px; background: #4A90E2; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: #fff; font-weight: 700; font-size: 18px; flex-shrink: 0; }
-  .subscriber-header .brand-name { font-size: 18px; font-weight: 700; color: #333; }
-
-  .subscriber-body { flex: 1; display: flex; align-items: flex-start; justify-content: center; padding: 40px 24px; }
-  .subscriber-card { background: #fff; border-radius: 12px; padding: 32px; max-width: 480px; width: 100%; box-shadow: 0 2px 12px rgba(0,0,0,0.08); }
-  .subscriber-card-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px; border-bottom: 1px solid #f0f0f0; padding-bottom: 20px; }
-  .subscriber-card-header h2 { font-size: 20px; font-weight: 600; color: #333; }
-
-  .sub-info-section { margin-bottom: 24px; }
-  .sub-info-section-title { font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px; color: #999; margin-bottom: 12px; font-weight: 500; }
-  .sub-info-rows { display: flex; flex-direction: column; gap: 10px; }
-  .sub-info-row { display: flex; justify-content: space-between; font-size: 14px; }
-  .sub-info-row .key { color: #888; }
-  .sub-info-row .value { color: #333; font-weight: 500; }
-
-  .payment-method-box { background: #f8faff; border: 1px solid #dce8ff; border-radius: 8px; padding: 14px 16px; display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
-  .payment-method-box .pm-left { display: flex; align-items: center; gap: 10px; }
-  .payment-method-box .pm-icon { font-size: 20px; }
-  .payment-method-box .pm-info { font-size: 13px; }
-  .payment-method-box .pm-info .pm-main { font-weight: 500; color: #333; }
-  .payment-method-box .pm-info .pm-sub { color: #888; font-size: 12px; margin-top: 2px; }
-  .default-tag { font-size: 11px; background: #e6f0ff; color: #1a56db; padding: 2px 8px; border-radius: 10px; }
-
-  .btn-brand { background: #4A90E2; color: #fff; border: none; padding: 8px 18px; border-radius: 6px; font-size: 13px; cursor: pointer; font-family: inherit; transition: background 0.2s; }
-  .btn-brand:hover { background: #3a7ecc; }
-  .btn-cancel-sub { background: #fff; color: #cf1322; border: 1.5px solid #cf1322; padding: 10px 20px; border-radius: 6px; font-size: 14px; cursor: pointer; font-family: inherit; width: 100%; transition: all 0.2s; margin-top: 8px; font-weight: 500; }
-  .btn-cancel-sub:hover { background: #fff1f0; }
-
-  .subscriber-footer { text-align: center; padding: 20px 24px 32px; }
-  .subscriber-footer .help-text { font-size: 13px; color: #888; margin-bottom: 8px; }
-  .subscriber-footer .help-text a { color: #4A90E2; text-decoration: none; }
-  .subscriber-footer .policy-links { font-size: 12px; color: #aaa; margin-bottom: 8px; }
-  .subscriber-footer .policy-links a { color: #4A90E2; text-decoration: none; margin: 0 4px; }
-  .subscriber-footer .powered-by { font-size: 12px; color: #ccc; }
+  /* ===== SECTION DIVIDER ===== */
+  .section-divider {
+    border: none;
+    border-top: 1px solid #e8e8e8;
+    margin: 24px 0;
+  }
+  .section-title {
+    font-size: 16px;
+    font-weight: 600;
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
 
   /* ===== HIDDEN ===== */
   .hidden { display: none !important; }
@@ -208,14 +206,13 @@
 <!-- ===== TOP NAV (Page Switcher) ===== -->
 <div class="top-nav">
   <div class="nav-brand">MOCKUP</div>
-  <div class="top-nav-tab active" onclick="switchPage('internal')">🔧 Internal Portal</div>
-  <div class="top-nav-tab" onclick="switchPage('merchant')">🏪 Merchant Portal</div>
-  <div class="top-nav-tab" onclick="switchPage('subscriber')">👤 Subscriber Portal</div>
+  <div class="top-nav-tab active" onclick="switchPage('internal', this)">🔧 Internal Portal</div>
+  <div class="top-nav-tab" onclick="switchPage('merchant', this)">🏪 Merchant Portal</div>
 </div>
 
 
 <!-- ================================================================
-     PAGE 1: INTERNAL PORTAL — Subscription Management Switch
+     PAGE 1: INTERNAL PORTAL — Subscriptions Configuration
      ================================================================ -->
 <div id="page-internal" class="page-wrapper">
   <div class="layout">
@@ -261,7 +258,7 @@
 
       <div class="content">
         <div class="page-title">Subscription Portal Config</div>
-        <div class="page-subtitle">Enable and configure subscription management portal for the selected merchant</div>
+        <div class="page-subtitle">Enable and configure subscription management for the selected merchant</div>
 
         <!-- Merchant Selector -->
         <div class="merchant-selector">
@@ -274,113 +271,195 @@
           <span class="status-tag status-enabled">● Portal Enabled</span>
         </div>
 
-        <!-- Portal Config Card -->
+        <!-- Main Config Card -->
         <div class="card">
-          <div class="card-title">Portal Switch</div>
+          <div class="card-title">Subscriptions Configuration</div>
 
-          <div class="switch-row">
-            <div class="switch on" onclick="toggleSwitch(this)"><div class="knob"></div></div>
-            <div>
-              <div class="switch-label">Portal Enabled</div>
-              <div class="form-hint" style="margin-top:2px;">When enabled, the merchant can configure portal branding and features in their Merchant Portal.</div>
+          <!-- == Upper section: Existing config (read-only display) == -->
+          <div class="readonly-block">
+            <!-- Close Retry Order On Cancel -->
+            <div class="readonly-row">
+              <div class="readonly-label">Close Retry Order On Cancel:</div>
+              <div class="radio-group">
+                <label class="radio-item">
+                  <div class="radio-dot selected"></div>
+                  <span style="font-size:13px;">Yes</span>
+                </label>
+                <label class="radio-item">
+                  <div class="radio-dot"></div>
+                  <span style="font-size:13px;">No</span>
+                </label>
+              </div>
+            </div>
+
+            <!-- Service Mode -->
+            <div class="readonly-row">
+              <div class="readonly-label">Service Mode:</div>
+              <div class="radio-group">
+                <label class="radio-item">
+                  <div class="radio-dot"></div>
+                  <span style="font-size:13px;">Payment First</span>
+                </label>
+                <label class="radio-item">
+                  <div class="radio-dot selected"></div>
+                  <span style="font-size:13px;">Service First</span>
+                </label>
+                <label class="radio-item">
+                  <div class="radio-dot"></div>
+                  <span style="font-size:13px;">Customize</span>
+                </label>
+              </div>
+            </div>
+
+            <!-- Reset Billing Time After Payment -->
+            <div class="readonly-row">
+              <div class="readonly-label">Reset Billing Time After Payment:</div>
+              <div class="radio-group">
+                <label class="radio-item">
+                  <div class="radio-dot"></div>
+                  <span style="font-size:13px;">Yes</span>
+                </label>
+                <label class="radio-item">
+                  <div class="radio-dot selected"></div>
+                  <span style="font-size:13px;">No</span>
+                </label>
+              </div>
+            </div>
+
+            <!-- Trigger Next After Interrupted -->
+            <div class="readonly-row">
+              <div class="readonly-label">Trigger Next After Interrupted:</div>
+              <div class="radio-group">
+                <label class="radio-item">
+                  <div class="radio-dot selected"></div>
+                  <span style="font-size:13px;">Yes</span>
+                </label>
+                <label class="radio-item">
+                  <div class="radio-dot"></div>
+                  <span style="font-size:13px;">No</span>
+                </label>
+              </div>
             </div>
           </div>
-        </div>
 
-        <!-- Email Collection & Notification Triggers Card -->
-        <div class="card">
-          <div class="card-title">📧 Email Collection &amp; Notification Triggers</div>
-
-          <!-- Email Collection toggle -->
-          <div class="switch-row" style="margin-bottom: 6px;">
-            <div class="switch on" onclick="toggleSwitch(this)"><div class="knob"></div></div>
-            <div>
-              <div class="switch-label">Email Collection</div>
-              <div class="form-hint" style="margin-top:2px;">When enabled, subscriber email is required during checkout and API subscription creation.</div>
-            </div>
-          </div>
-
-          <!-- Divider -->
-          <div style="border-top: 1px solid #f0f0f0; margin: 16px 0;"></div>
-
-          <!-- Notification Triggers -->
-          <div style="font-size:14px; font-weight:600; margin-bottom:12px;">Notification Triggers</div>
-          <table class="notif-table">
+          <!-- Retry Strategy Table -->
+          <div style="font-size: 13px; font-weight: 600; color: #555; margin-bottom: 10px;">Retry Strategy</div>
+          <table class="config-table">
             <thead>
               <tr>
-                <th style="width:220px;">Notification</th>
-                <th>Trigger Timing</th>
-                <th style="width:80px; text-align:center;">Enabled</th>
+                <th>Strategy Name</th>
+                <th>Retry Max Count</th>
+                <th>Retry Interval</th>
+                <th>Retry Interval Unit</th>
+                <th style="width: 80px;"></th>
               </tr>
             </thead>
             <tbody>
               <tr>
-                <td style="font-weight:500;">Subscription Created</td>
-                <td style="color:#666;">When subscription becomes ACTIVE</td>
-                <td style="text-align:center;"><div class="switch on" style="margin:auto;" onclick="toggleSwitch(this)"><div class="knob"></div></div></td>
-              </tr>
-              <tr>
-                <td style="font-weight:500;">Trial Started</td>
-                <td style="color:#666;">When free trial begins</td>
-                <td style="text-align:center;"><div class="switch on" style="margin:auto;" onclick="toggleSwitch(this)"><div class="knob"></div></div></td>
-              </tr>
-              <tr>
-                <td style="font-weight:500;">Trial Ending Soon</td>
-                <td style="color:#666;">3 days before trial ends</td>
-                <td style="text-align:center;"><div class="switch on" style="margin:auto;" onclick="toggleSwitch(this)"><div class="knob"></div></div></td>
-              </tr>
-              <tr>
-                <td style="font-weight:500;">Upcoming Payment</td>
-                <td style="color:#666;">3 days before next charge</td>
-                <td style="text-align:center;"><div class="switch on" style="margin:auto;" onclick="toggleSwitch(this)"><div class="knob"></div></div></td>
-              </tr>
-              <tr>
-                <td style="font-weight:500;">Payment Failed</td>
-                <td style="color:#666;">When a charge fails</td>
-                <td style="text-align:center;"><div class="switch on" style="margin:auto;" onclick="toggleSwitch(this)"><div class="knob"></div></div></td>
-              </tr>
-              <tr>
-                <td style="font-weight:500;">Subscription Cancelled</td>
-                <td style="color:#666;">When subscription is cancelled</td>
-                <td style="text-align:center;"><div class="switch on" style="margin:auto;" onclick="toggleSwitch(this)"><div class="knob"></div></div></td>
-              </tr>
-              <tr>
-                <td style="font-weight:500;">Subscription Changed</td>
-                <td style="color:#666;">When plan is upgraded/downgraded</td>
-                <td style="text-align:center;"><div class="switch" style="margin:auto;" onclick="toggleSwitch(this)"><div class="knob"></div></div></td>
+                <td>
+                  <select>
+                    <option selected>Default</option>
+                    <option>Custom</option>
+                  </select>
+                </td>
+                <td><input type="number" value="1" min="1" /></td>
+                <td><input type="number" value="1" min="1" /></td>
+                <td>
+                  <select>
+                    <option selected>Day</option>
+                    <option>Hour</option>
+                    <option>Week</option>
+                  </select>
+                </td>
+                <td>
+                  <span style="color: #ff4d4f; cursor: pointer; font-size: 13px;" onclick="this.closest('tr').remove()">Delete</span>
+                </td>
               </tr>
             </tbody>
           </table>
-        </div>
+          <div class="add-config-btn" onclick="addRetryRow()">+ Add Configuration</div>
 
-        <!-- Merchant Info Card -->
-        <div class="card">
-          <div class="card-title">Merchant Info</div>
-          <div class="info-grid">
-            <div class="info-item">
-              <div class="info-key">Merchant ID</div>
-              <div class="info-val" style="font-family:monospace;">1000000001</div>
-            </div>
-            <div class="info-item">
-              <div class="info-key">Merchant Name</div>
-              <div class="info-val">Test TT Merchant</div>
-            </div>
-            <div class="info-item">
-              <div class="info-key">Subscription Count</div>
-              <div class="info-val">156 active</div>
-            </div>
-            <div class="info-item">
-              <div class="info-key">Portal Status</div>
-              <div class="info-val"><span class="status-tag status-enabled">● Enabled</span></div>
+          <!-- == Divider before Email section == -->
+          <hr class="section-divider" />
+
+          <!-- == Lower section: Email Notification Settings == -->
+          <div class="section-title">📧 Email Notification Settings</div>
+
+          <!-- Email Notification Enabled -->
+          <div class="switch-row">
+            <div class="switch on" onclick="toggleSwitch(this)"><div class="knob"></div></div>
+            <div>
+              <div class="switch-label">Email Notification Enabled</div>
+              <div class="form-hint" style="margin-top:2px;">Enable email notifications for this merchant's subscribers</div>
             </div>
           </div>
-        </div>
 
-        <!-- Buttons -->
-        <div class="btn-group">
-          <button class="btn btn-primary">💾 Save Config</button>
-          <button class="btn btn-default">Reset</button>
+          <!-- Collect Subscriber Email -->
+          <div class="switch-row">
+            <div class="switch on" onclick="toggleSwitch(this)"><div class="knob"></div></div>
+            <div>
+              <div class="switch-label">Collect Subscriber Email</div>
+              <div class="form-hint" style="margin-top:2px;">When enabled, subscriber email is required during checkout and API</div>
+            </div>
+          </div>
+
+          <!-- Notification Triggers Table -->
+          <div style="font-size: 13px; font-weight: 600; color: #555; margin-bottom: 10px; margin-top: 4px;">Notification Triggers</div>
+          <table class="config-table">
+            <thead>
+              <tr>
+                <th style="width: 220px;">Notification Type</th>
+                <th>Trigger Condition</th>
+                <th style="width: 80px; text-align: center;">Enabled</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td style="font-weight: 500;">Subscription Created</td>
+                <td style="color: #666;">Subscription becomes ACTIVE</td>
+                <td style="text-align: center;"><div class="switch on" style="margin: auto;" onclick="toggleSwitch(this)"><div class="knob"></div></div></td>
+              </tr>
+              <tr>
+                <td style="font-weight: 500;">Trial Started</td>
+                <td style="color: #666;">Free trial begins</td>
+                <td style="text-align: center;"><div class="switch on" style="margin: auto;" onclick="toggleSwitch(this)"><div class="knob"></div></div></td>
+              </tr>
+              <tr>
+                <td style="font-weight: 500;">Trial Ending Soon</td>
+                <td style="color: #666;">3 days before trial ends</td>
+                <td style="text-align: center;"><div class="switch on" style="margin: auto;" onclick="toggleSwitch(this)"><div class="knob"></div></div></td>
+              </tr>
+              <tr>
+                <td style="font-weight: 500;">Upcoming Payment</td>
+                <td style="color: #666;">3 days before next charge</td>
+                <td style="text-align: center;"><div class="switch on" style="margin: auto;" onclick="toggleSwitch(this)"><div class="knob"></div></div></td>
+              </tr>
+              <tr>
+                <td style="font-weight: 500;">Payment Failed</td>
+                <td style="color: #666;">Charge fails</td>
+                <td style="text-align: center;"><div class="switch on" style="margin: auto;" onclick="toggleSwitch(this)"><div class="knob"></div></div></td>
+              </tr>
+              <tr>
+                <td style="font-weight: 500;">Subscription Cancelled</td>
+                <td style="color: #666;">Subscription cancelled</td>
+                <td style="text-align: center;"><div class="switch on" style="margin: auto;" onclick="toggleSwitch(this)"><div class="knob"></div></div></td>
+              </tr>
+              <tr>
+                <td style="font-weight: 500;">Subscription Changed</td>
+                <td style="color: #666;">Plan upgraded/downgraded</td>
+                <td style="text-align: center;"><div class="switch" style="margin: auto;" onclick="toggleSwitch(this)"><div class="knob"></div></div></td>
+              </tr>
+            </tbody>
+          </table>
+
+          <!-- Save buttons -->
+          <div class="btn-group">
+            <button class="btn btn-primary">💾 Save Config</button>
+            <button class="btn btn-default">Reset</button>
+          </div>
+
         </div>
+        <!-- end card -->
 
       </div>
     </div>
@@ -389,7 +468,7 @@
 
 
 <!-- ================================================================
-     PAGE 2: MERCHANT PORTAL — Subscription Settings
+     PAGE 2: MERCHANT PORTAL — Email Notification Content
      ================================================================ -->
 <div id="page-merchant" class="page-wrapper hidden">
   <div class="layout">
@@ -437,446 +516,204 @@
       </div>
 
       <div class="content">
-        <div class="page-title">Subscription Portal Settings</div>
-        <div class="page-subtitle">Configure how your subscription portal looks and behaves for your customers</div>
+        <div class="page-title">Email Notification Content</div>
+        <div class="page-subtitle">Customize the content of notification emails. Notification types and triggers are managed by Waffo.</div>
 
-        <!-- Sub-tabs: Branding / Features / Notifications -->
-        <div class="tabs">
-          <div class="tab active" onclick="switchSubTab(this, 'tab-branding')">Branding</div>
-          <div class="tab" onclick="switchSubTab(this, 'tab-features')">Features</div>
-          <div class="tab" onclick="switchSubTab(this, 'tab-notifications')">Notifications</div>
+        <!-- Email Sender Settings -->
+        <div class="card">
+          <div class="card-title">Email Sender Settings</div>
+          <div class="form-row">
+            <div class="form-label">Sender Name</div>
+            <div class="form-control">
+              <input class="form-input" type="text" value="Acme Team" />
+            </div>
+          </div>
+          <div class="form-row" style="margin-bottom: 0;">
+            <div class="form-label">Reply-to Email</div>
+            <div class="form-control">
+              <input class="form-input" type="email" placeholder="support@acme.com" />
+            </div>
+          </div>
         </div>
 
-        <!-- ---- TAB: BRANDING ---- -->
-        <div id="tab-branding">
-          <div class="card">
-            <div class="card-title">Brand Customization</div>
+        <!-- Notification Content -->
+        <div class="card">
+          <div class="card-title">Notification Email Content</div>
 
-            <div class="form-row">
-              <div class="form-label">Company Name</div>
-              <div class="form-control">
-                <input class="form-input" type="text" value="Acme SaaS" />
-              </div>
+          <!-- Info banner -->
+          <div style="background:#f0f5ff; border: 1px solid #c0d4f5; border-radius: 6px; padding: 10px 14px; margin-bottom: 20px; font-size: 13px; color: #444; line-height: 1.5;">
+            ℹ️ Notification types are managed by Waffo. You can customize the email content below. If not customized, system defaults will be used.
+          </div>
+
+          <!-- Notification: Subscription Created -->
+          <div class="notif-edit-block" style="border: 1px solid #e8e8e8; border-radius: 6px; padding: 16px; margin-bottom: 16px;">
+            <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:12px;">
+              <div style="font-weight:600; font-size:14px;">Subscription Created</div>
+              <span class="status-tag status-enabled" style="font-size:11px;">✓ Enabled by Waffo</span>
             </div>
-            <div class="form-row">
-              <div class="form-label">Logo URL</div>
-              <div class="form-control">
-                <input class="form-input" type="text" placeholder="https://cdn.example.com/logo.png" />
-                <div class="form-hint">Recommended size: 200×60px. PNG or SVG preferred.</div>
-              </div>
+            <div class="form-row" style="margin-bottom:10px;">
+              <div class="form-label-sm">Email Subject</div>
+              <div class="form-control"><input class="form-input" type="text" placeholder="Your subscription is now active" /></div>
             </div>
-            <div class="form-row">
-              <div class="form-label">Brand Color</div>
-              <div class="form-control">
-                <div class="color-input-row">
-                  <input class="form-input" type="text" value="#4A90E2" id="brand-color-input" oninput="updateColorSwatch()" style="max-width:160px;" />
-                  <div class="color-swatch" id="color-swatch" style="background:#4A90E2;"></div>
-                </div>
-                <div class="form-hint">Used for buttons and highlights in the subscriber portal.</div>
-              </div>
-            </div>
-            <div class="form-row">
-              <div class="form-label">Support Email</div>
-              <div class="form-control">
-                <input class="form-input" type="email" value="support@acme.com" />
-              </div>
-            </div>
-            <div class="form-row">
-              <div class="form-label">Support URL</div>
-              <div class="form-control">
-                <input class="form-input" type="url" placeholder="https://support.acme.com" />
-              </div>
-            </div>
-            <div class="form-row">
-              <div class="form-label">Privacy Policy URL</div>
-              <div class="form-control">
-                <input class="form-input" type="url" placeholder="https://acme.com/privacy" />
-              </div>
+            <div class="form-row" style="margin-bottom:10px;">
+              <div class="form-label-sm">Email Body Preview</div>
+              <div class="form-control"><textarea class="form-input" rows="3" placeholder="Hi {{name}}, your {{plan}} subscription has been activated. Next billing date: {{next_date}}." style="resize:vertical;"></textarea></div>
             </div>
             <div class="form-row" style="margin-bottom:0;">
-              <div class="form-label">Terms of Service URL</div>
-              <div class="form-control">
-                <input class="form-input" type="url" placeholder="https://acme.com/terms" />
-              </div>
-            </div>
-
-            <div class="btn-group">
-              <button class="btn btn-primary">Save Changes</button>
-              <button class="btn btn-default">Cancel</button>
-            </div>
-          </div>
-        </div>
-
-        <!-- ---- TAB: FEATURES ---- -->
-        <div id="tab-features" class="hidden">
-          <div class="card">
-            <div class="card-title">Feature Toggles</div>
-
-            <!-- Allow Cancellation -->
-            <div style="margin-bottom: 16px;">
-              <div class="switch-row">
-                <div class="switch on" id="sw-cancellation" onclick="toggleSwitch(this); toggleSubOptions('sub-cancellation', this)"><div class="knob"></div></div>
-                <div class="switch-label">Allow Cancellation</div>
-              </div>
-              <div id="sub-cancellation" class="sub-options">
-                <!-- Cancellation Timing -->
-                <div class="sub-option-row" style="flex-wrap:wrap; gap:8px;">
-                  <div class="sub-option-label">Cancellation Timing</div>
-                  <div class="radio-group">
-                    <label class="radio-item">
-                      <div class="radio-dot selected"></div>
-                      <span style="font-size:13px;">At end of period</span>
-                    </label>
-                    <label class="radio-item">
-                      <div class="radio-dot"></div>
-                      <span style="font-size:13px;">Immediately</span>
-                    </label>
-                  </div>
-                </div>
-                <!-- Collect Reason -->
-                <div class="sub-option-row">
-                  <div class="switch on" onclick="toggleSwitch(this); toggleSubOptions('sub-reasons', this)" id="sw-collect-reason"><div class="knob"></div></div>
-                  <div class="sub-option-label">Collect Cancellation Reason</div>
-                </div>
-                <!-- Cancellation Reasons list -->
-                <div id="sub-reasons" style="margin-top: 4px; margin-left: 56px;">
-                  <div style="font-size:12px; color:#888; margin-bottom:6px;">Cancellation Reasons</div>
-                  <ul class="reason-list" id="reason-list">
-                    <li class="reason-item"><input type="text" value="too_expensive" /><span class="remove-btn" onclick="removeReason(this)">×</span></li>
-                    <li class="reason-item"><input type="text" value="missing_features" /><span class="remove-btn" onclick="removeReason(this)">×</span></li>
-                    <li class="reason-item"><input type="text" value="not_using" /><span class="remove-btn" onclick="removeReason(this)">×</span></li>
-                    <li class="reason-item"><input type="text" value="found_alternative" /><span class="remove-btn" onclick="removeReason(this)">×</span></li>
-                    <li class="reason-item"><input type="text" value="technical_issues" /><span class="remove-btn" onclick="removeReason(this)">×</span></li>
-                    <li class="reason-item"><input type="text" value="other" /><span class="remove-btn" onclick="removeReason(this)">×</span></li>
-                  </ul>
-                  <div class="add-reason-btn" onclick="addReason()">+ Add reason</div>
-                </div>
-              </div>
-            </div>
-
-            <!-- Divider -->
-            <div style="border-top: 1px solid #f0f0f0; margin: 8px 0 16px;"></div>
-
-            <!-- Allow Plan Changes -->
-            <div style="margin-bottom: 16px;">
-              <div class="switch-row">
-                <div class="switch" onclick="toggleSwitch(this)"><div class="knob"></div></div>
-                <div class="switch-label">Allow Plan Changes</div>
-              </div>
-              <div class="disabled-hint" style="margin-left: 56px;">Requires plan change feature to be enabled for this merchant</div>
-            </div>
-
-            <!-- Divider -->
-            <div style="border-top: 1px solid #f0f0f0; margin: 8px 0 16px;"></div>
-
-            <!-- Allow Payment Method Updates -->
-            <div>
-              <div class="switch-row">
+              <div class="form-label-sm">Include Portal Link</div>
+              <div class="form-control" style="display:flex; align-items:center; gap:10px; padding-top:4px;">
                 <div class="switch on" onclick="toggleSwitch(this)"><div class="knob"></div></div>
-                <div class="switch-label">Allow Payment Method Updates</div>
-              </div>
-            </div>
-
-            <div class="btn-group">
-              <button class="btn btn-primary">Save Changes</button>
-              <button class="btn btn-default">Cancel</button>
-            </div>
-          </div>
-        </div>
-
-        <!-- ---- TAB: NOTIFICATIONS ---- -->
-        <div id="tab-notifications" class="hidden">
-
-          <!-- Email Sender Settings -->
-          <div class="card">
-            <div class="card-title">Email Sender Settings</div>
-            <div class="form-row">
-              <div class="form-label">Sender Name</div>
-              <div class="form-control">
-                <input class="form-input" type="text" value="Acme Team" />
-              </div>
-            </div>
-            <div class="form-row" style="margin-bottom: 0;">
-              <div class="form-label">Reply-to Email</div>
-              <div class="form-control">
-                <input class="form-input" type="email" placeholder="support@acme.com" />
+                <span style="font-size:13px; color:#666;">Add a link to the subscriber portal in the email</span>
               </div>
             </div>
           </div>
 
-          <!-- Notification Types -->
-          <div class="card">
-            <div class="card-title">Notification Types</div>
-
-            <!-- Info banner -->
-            <div style="background:#f0f5ff; border: 1px solid #c0d4f5; border-radius: 6px; padding: 10px 14px; margin-bottom: 20px; font-size: 13px; color: #444; line-height: 1.5;">
-              ℹ️ Notification types are managed by Waffo. You can customize the email content below. If not customized, system defaults will be used.
+          <!-- Notification: Trial Started -->
+          <div class="notif-edit-block" style="border: 1px solid #e8e8e8; border-radius: 6px; padding: 16px; margin-bottom: 16px;">
+            <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:12px;">
+              <div style="font-weight:600; font-size:14px;">Trial Started</div>
+              <span class="status-tag status-enabled" style="font-size:11px;">✓ Enabled by Waffo</span>
             </div>
-
-            <!-- Notification: Subscription Created -->
-            <div class="notif-edit-block" style="border: 1px solid #e8e8e8; border-radius: 6px; padding: 16px; margin-bottom: 16px;">
-              <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:12px;">
-                <div style="font-weight:600; font-size:14px;">Subscription Created</div>
-                <span class="status-tag status-enabled" style="font-size:11px;">✓ Enabled by Waffo</span>
-              </div>
-              <div class="form-row" style="margin-bottom:10px;">
-                <div class="form-label-sm">Email Subject</div>
-                <div class="form-control"><input class="form-input" type="text" placeholder="Your subscription is now active" /></div>
-              </div>
-              <div class="form-row" style="margin-bottom:10px;">
-                <div class="form-label-sm">Email Body Preview</div>
-                <div class="form-control"><textarea class="form-input" rows="3" placeholder="Hi {{name}}, your {{plan}} subscription has been activated. Next billing date: {{next_date}}." style="resize:vertical;"></textarea></div>
-              </div>
-              <div class="form-row" style="margin-bottom:0;">
-                <div class="form-label-sm">Include Portal Link</div>
-                <div class="form-control" style="display:flex; align-items:center; gap:10px; padding-top:4px;">
-                  <div class="switch on" onclick="toggleSwitch(this)"><div class="knob"></div></div>
-                  <span style="font-size:13px; color:#666;">Add a link to the subscriber portal in the email</span>
-                </div>
-              </div>
+            <div class="form-row" style="margin-bottom:10px;">
+              <div class="form-label-sm">Email Subject</div>
+              <div class="form-control"><input class="form-input" type="text" placeholder="Your free trial has started" /></div>
             </div>
-
-            <!-- Notification: Trial Started -->
-            <div class="notif-edit-block" style="border: 1px solid #e8e8e8; border-radius: 6px; padding: 16px; margin-bottom: 16px;">
-              <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:12px;">
-                <div style="font-weight:600; font-size:14px;">Trial Started</div>
-                <span class="status-tag status-enabled" style="font-size:11px;">✓ Enabled by Waffo</span>
-              </div>
-              <div class="form-row" style="margin-bottom:10px;">
-                <div class="form-label-sm">Email Subject</div>
-                <div class="form-control"><input class="form-input" type="text" placeholder="Your free trial has started" /></div>
-              </div>
-              <div class="form-row" style="margin-bottom:10px;">
-                <div class="form-label-sm">Email Body Preview</div>
-                <div class="form-control"><textarea class="form-input" rows="3" placeholder="Hi {{name}}, your free trial of {{plan}} has started. Your trial ends on {{trial_end_date}}." style="resize:vertical;"></textarea></div>
-              </div>
-              <div class="form-row" style="margin-bottom:0;">
-                <div class="form-label-sm">Include Portal Link</div>
-                <div class="form-control" style="display:flex; align-items:center; gap:10px; padding-top:4px;">
-                  <div class="switch on" onclick="toggleSwitch(this)"><div class="knob"></div></div>
-                  <span style="font-size:13px; color:#666;">Add a link to the subscriber portal in the email</span>
-                </div>
-              </div>
+            <div class="form-row" style="margin-bottom:10px;">
+              <div class="form-label-sm">Email Body Preview</div>
+              <div class="form-control"><textarea class="form-input" rows="3" placeholder="Hi {{name}}, your free trial of {{plan}} has started. Your trial ends on {{trial_end_date}}." style="resize:vertical;"></textarea></div>
             </div>
-
-            <!-- Notification: Trial Ending Soon -->
-            <div class="notif-edit-block" style="border: 1px solid #e8e8e8; border-radius: 6px; padding: 16px; margin-bottom: 16px;">
-              <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:12px;">
-                <div style="font-weight:600; font-size:14px;">Trial Ending Soon</div>
-                <span class="status-tag status-enabled" style="font-size:11px;">✓ Enabled by Waffo</span>
+            <div class="form-row" style="margin-bottom:0;">
+              <div class="form-label-sm">Include Portal Link</div>
+              <div class="form-control" style="display:flex; align-items:center; gap:10px; padding-top:4px;">
+                <div class="switch on" onclick="toggleSwitch(this)"><div class="knob"></div></div>
+                <span style="font-size:13px; color:#666;">Add a link to the subscriber portal in the email</span>
               </div>
-              <div class="form-row" style="margin-bottom:10px;">
-                <div class="form-label-sm">Email Subject</div>
-                <div class="form-control"><input class="form-input" type="text" placeholder="Your trial ends in 3 days" /></div>
-              </div>
-              <div class="form-row" style="margin-bottom:10px;">
-                <div class="form-label-sm">Email Body Preview</div>
-                <div class="form-control"><textarea class="form-input" rows="3" placeholder="Hi {{name}}, your free trial ends on {{trial_end_date}}. Add a payment method to continue." style="resize:vertical;"></textarea></div>
-              </div>
-              <div class="form-row" style="margin-bottom:0;">
-                <div class="form-label-sm">Include Portal Link</div>
-                <div class="form-control" style="display:flex; align-items:center; gap:10px; padding-top:4px;">
-                  <div class="switch on" onclick="toggleSwitch(this)"><div class="knob"></div></div>
-                  <span style="font-size:13px; color:#666;">Add a link to the subscriber portal in the email</span>
-                </div>
-              </div>
-            </div>
-
-            <!-- Notification: Upcoming Payment -->
-            <div class="notif-edit-block" style="border: 1px solid #e8e8e8; border-radius: 6px; padding: 16px; margin-bottom: 16px;">
-              <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:12px;">
-                <div style="font-weight:600; font-size:14px;">Upcoming Payment</div>
-                <span class="status-tag status-enabled" style="font-size:11px;">✓ Enabled by Waffo</span>
-              </div>
-              <div class="form-row" style="margin-bottom:10px;">
-                <div class="form-label-sm">Email Subject</div>
-                <div class="form-control"><input class="form-input" type="text" placeholder="Upcoming payment reminder — {{amount}} on {{date}}" /></div>
-              </div>
-              <div class="form-row" style="margin-bottom:10px;">
-                <div class="form-label-sm">Email Body Preview</div>
-                <div class="form-control"><textarea class="form-input" rows="3" placeholder="Hi {{name}}, a payment of {{amount}} will be charged on {{next_date}} for your {{plan}} subscription." style="resize:vertical;"></textarea></div>
-              </div>
-              <div class="form-row" style="margin-bottom:0;">
-                <div class="form-label-sm">Include Portal Link</div>
-                <div class="form-control" style="display:flex; align-items:center; gap:10px; padding-top:4px;">
-                  <div class="switch on" onclick="toggleSwitch(this)"><div class="knob"></div></div>
-                  <span style="font-size:13px; color:#666;">Add a link to the subscriber portal in the email</span>
-                </div>
-              </div>
-            </div>
-
-            <!-- Notification: Payment Failed -->
-            <div class="notif-edit-block" style="border: 1px solid #e8e8e8; border-radius: 6px; padding: 16px; margin-bottom: 16px;">
-              <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:12px;">
-                <div style="font-weight:600; font-size:14px;">Payment Failed</div>
-                <span class="status-tag status-enabled" style="font-size:11px;">✓ Enabled by Waffo</span>
-              </div>
-              <div class="form-row" style="margin-bottom:10px;">
-                <div class="form-label-sm">Email Subject</div>
-                <div class="form-control"><input class="form-input" type="text" placeholder="Payment failed — action required" /></div>
-              </div>
-              <div class="form-row" style="margin-bottom:10px;">
-                <div class="form-label-sm">Email Body Preview</div>
-                <div class="form-control"><textarea class="form-input" rows="3" placeholder="Hi {{name}}, we were unable to charge {{amount}} for your {{plan}} subscription. Please update your payment method." style="resize:vertical;"></textarea></div>
-              </div>
-              <div class="form-row" style="margin-bottom:0;">
-                <div class="form-label-sm">Include Portal Link</div>
-                <div class="form-control" style="display:flex; align-items:center; gap:10px; padding-top:4px;">
-                  <div class="switch on" onclick="toggleSwitch(this)"><div class="knob"></div></div>
-                  <span style="font-size:13px; color:#666;">Add a link to the subscriber portal in the email</span>
-                </div>
-              </div>
-            </div>
-
-            <!-- Notification: Subscription Cancelled -->
-            <div class="notif-edit-block" style="border: 1px solid #e8e8e8; border-radius: 6px; padding: 16px; margin-bottom: 16px;">
-              <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:12px;">
-                <div style="font-weight:600; font-size:14px;">Subscription Cancelled</div>
-                <span class="status-tag status-enabled" style="font-size:11px;">✓ Enabled by Waffo</span>
-              </div>
-              <div class="form-row" style="margin-bottom:10px;">
-                <div class="form-label-sm">Email Subject</div>
-                <div class="form-control"><input class="form-input" type="text" placeholder="Your subscription has been cancelled" /></div>
-              </div>
-              <div class="form-row" style="margin-bottom:10px;">
-                <div class="form-label-sm">Email Body Preview</div>
-                <div class="form-control"><textarea class="form-input" rows="3" placeholder="Hi {{name}}, your {{plan}} subscription has been cancelled. Access continues until {{end_date}}." style="resize:vertical;"></textarea></div>
-              </div>
-              <div class="form-row" style="margin-bottom:0;">
-                <div class="form-label-sm">Include Portal Link</div>
-                <div class="form-control" style="display:flex; align-items:center; gap:10px; padding-top:4px;">
-                  <div class="switch on" onclick="toggleSwitch(this)"><div class="knob"></div></div>
-                  <span style="font-size:13px; color:#666;">Add a link to the subscriber portal in the email</span>
-                </div>
-              </div>
-            </div>
-
-            <!-- Notification: Subscription Changed -->
-            <div class="notif-edit-block" style="border: 1px solid #e8e8e8; border-radius: 6px; padding: 16px; margin-bottom: 0;">
-              <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:12px;">
-                <div style="font-weight:600; font-size:14px;">Subscription Changed</div>
-                <span class="status-tag status-enabled" style="font-size:11px;">✓ Enabled by Waffo</span>
-              </div>
-              <div class="form-row" style="margin-bottom:10px;">
-                <div class="form-label-sm">Email Subject</div>
-                <div class="form-control"><input class="form-input" type="text" placeholder="Your subscription plan has been updated" /></div>
-              </div>
-              <div class="form-row" style="margin-bottom:10px;">
-                <div class="form-label-sm">Email Body Preview</div>
-                <div class="form-control"><textarea class="form-input" rows="3" placeholder="Hi {{name}}, your subscription has been updated from {{old_plan}} to {{new_plan}}. New billing starts on {{next_date}}." style="resize:vertical;"></textarea></div>
-              </div>
-              <div class="form-row" style="margin-bottom:0;">
-                <div class="form-label-sm">Include Portal Link</div>
-                <div class="form-control" style="display:flex; align-items:center; gap:10px; padding-top:4px;">
-                  <div class="switch on" onclick="toggleSwitch(this)"><div class="knob"></div></div>
-                  <span style="font-size:13px; color:#666;">Add a link to the subscriber portal in the email</span>
-                </div>
-              </div>
-            </div>
-
-            <div class="btn-group">
-              <button class="btn btn-primary">Save Changes</button>
-              <button class="btn btn-default">Cancel</button>
             </div>
           </div>
 
-        </div>
-        <!-- end tabs content -->
-
-      </div>
-    </div>
-  </div>
-</div>
-
-
-<!-- ================================================================
-     PAGE 3: SUBSCRIBER PORTAL (End-User View)
-     ================================================================ -->
-<div id="page-subscriber" class="page-wrapper hidden">
-  <div class="subscriber-page">
-
-    <!-- Top Header: Brand -->
-    <div class="subscriber-header">
-      <div class="brand-logo">A</div>
-      <div class="brand-name">Acme SaaS</div>
-    </div>
-
-    <!-- Body -->
-    <div class="subscriber-body">
-      <div class="subscriber-card">
-        <!-- Title + Status -->
-        <div class="subscriber-card-header">
-          <h2>Your Subscription</h2>
-          <span class="status-tag status-active" style="font-size:13px; padding: 4px 12px;">● Active</span>
-        </div>
-
-        <!-- Plan Info -->
-        <div class="sub-info-section">
-          <div class="sub-info-section-title">Plan Details</div>
-          <div class="sub-info-rows">
-            <div class="sub-info-row">
-              <span class="key">Plan</span>
-              <span class="value">Pro Plan</span>
+          <!-- Notification: Trial Ending Soon -->
+          <div class="notif-edit-block" style="border: 1px solid #e8e8e8; border-radius: 6px; padding: 16px; margin-bottom: 16px;">
+            <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:12px;">
+              <div style="font-weight:600; font-size:14px;">Trial Ending Soon</div>
+              <span class="status-tag status-enabled" style="font-size:11px;">✓ Enabled by Waffo</span>
             </div>
-            <div class="sub-info-row">
-              <span class="key">Amount</span>
-              <span class="value" style="color:#4A90E2; font-weight:600;">$19.99 / month</span>
+            <div class="form-row" style="margin-bottom:10px;">
+              <div class="form-label-sm">Email Subject</div>
+              <div class="form-control"><input class="form-input" type="text" placeholder="Your trial ends in 3 days" /></div>
             </div>
-            <div class="sub-info-row">
-              <span class="key">Next Payment</span>
-              <span class="value">April 1, 2026</span>
+            <div class="form-row" style="margin-bottom:10px;">
+              <div class="form-label-sm">Email Body Preview</div>
+              <div class="form-control"><textarea class="form-input" rows="3" placeholder="Hi {{name}}, your free trial ends on {{trial_end_date}}. Add a payment method to continue." style="resize:vertical;"></textarea></div>
             </div>
-            <div class="sub-info-row">
-              <span class="key">Started</span>
-              <span class="value">January 1, 2026</span>
-            </div>
-            <div class="sub-info-row">
-              <span class="key">Email</span>
-              <span class="value">user@example.com</span>
-            </div>
-          </div>
-        </div>
-
-        <!-- Divider -->
-        <div style="border-top: 1px solid #f0f0f0; margin-bottom: 20px;"></div>
-
-        <!-- Payment Method -->
-        <div class="sub-info-section">
-          <div class="sub-info-section-title">Payment Method</div>
-          <div class="payment-method-box">
-            <div class="pm-left">
-              <div class="pm-icon">💳</div>
-              <div class="pm-info">
-                <div class="pm-main">Visa ending in 4242</div>
-                <div class="pm-sub">Exp 12/28</div>
+            <div class="form-row" style="margin-bottom:0;">
+              <div class="form-label-sm">Include Portal Link</div>
+              <div class="form-control" style="display:flex; align-items:center; gap:10px; padding-top:4px;">
+                <div class="switch on" onclick="toggleSwitch(this)"><div class="knob"></div></div>
+                <span style="font-size:13px; color:#666;">Add a link to the subscriber portal in the email</span>
               </div>
             </div>
-            <span class="default-tag">Default</span>
           </div>
-          <button class="btn-brand">Update Payment Method</button>
-        </div>
 
-        <!-- Divider -->
-        <div style="border-top: 1px solid #f0f0f0; margin: 20px 0;"></div>
+          <!-- Notification: Upcoming Payment -->
+          <div class="notif-edit-block" style="border: 1px solid #e8e8e8; border-radius: 6px; padding: 16px; margin-bottom: 16px;">
+            <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:12px;">
+              <div style="font-weight:600; font-size:14px;">Upcoming Payment</div>
+              <span class="status-tag status-enabled" style="font-size:11px;">✓ Enabled by Waffo</span>
+            </div>
+            <div class="form-row" style="margin-bottom:10px;">
+              <div class="form-label-sm">Email Subject</div>
+              <div class="form-control"><input class="form-input" type="text" placeholder="Upcoming payment reminder — {{amount}} on {{date}}" /></div>
+            </div>
+            <div class="form-row" style="margin-bottom:10px;">
+              <div class="form-label-sm">Email Body Preview</div>
+              <div class="form-control"><textarea class="form-input" rows="3" placeholder="Hi {{name}}, a payment of {{amount}} will be charged on {{next_date}} for your {{plan}} subscription." style="resize:vertical;"></textarea></div>
+            </div>
+            <div class="form-row" style="margin-bottom:0;">
+              <div class="form-label-sm">Include Portal Link</div>
+              <div class="form-control" style="display:flex; align-items:center; gap:10px; padding-top:4px;">
+                <div class="switch on" onclick="toggleSwitch(this)"><div class="knob"></div></div>
+                <span style="font-size:13px; color:#666;">Add a link to the subscriber portal in the email</span>
+              </div>
+            </div>
+          </div>
 
-        <!-- Actions -->
-        <div class="sub-info-section" style="margin-bottom: 0;">
-          <div class="sub-info-section-title">Actions</div>
-          <button class="btn-cancel-sub">Cancel Subscription</button>
+          <!-- Notification: Payment Failed -->
+          <div class="notif-edit-block" style="border: 1px solid #e8e8e8; border-radius: 6px; padding: 16px; margin-bottom: 16px;">
+            <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:12px;">
+              <div style="font-weight:600; font-size:14px;">Payment Failed</div>
+              <span class="status-tag status-enabled" style="font-size:11px;">✓ Enabled by Waffo</span>
+            </div>
+            <div class="form-row" style="margin-bottom:10px;">
+              <div class="form-label-sm">Email Subject</div>
+              <div class="form-control"><input class="form-input" type="text" placeholder="Payment failed — action required" /></div>
+            </div>
+            <div class="form-row" style="margin-bottom:10px;">
+              <div class="form-label-sm">Email Body Preview</div>
+              <div class="form-control"><textarea class="form-input" rows="3" placeholder="Hi {{name}}, we were unable to charge {{amount}} for your {{plan}} subscription. Please update your payment method." style="resize:vertical;"></textarea></div>
+            </div>
+            <div class="form-row" style="margin-bottom:0;">
+              <div class="form-label-sm">Include Portal Link</div>
+              <div class="form-control" style="display:flex; align-items:center; gap:10px; padding-top:4px;">
+                <div class="switch on" onclick="toggleSwitch(this)"><div class="knob"></div></div>
+                <span style="font-size:13px; color:#666;">Add a link to the subscriber portal in the email</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Notification: Subscription Cancelled -->
+          <div class="notif-edit-block" style="border: 1px solid #e8e8e8; border-radius: 6px; padding: 16px; margin-bottom: 16px;">
+            <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:12px;">
+              <div style="font-weight:600; font-size:14px;">Subscription Cancelled</div>
+              <span class="status-tag status-enabled" style="font-size:11px;">✓ Enabled by Waffo</span>
+            </div>
+            <div class="form-row" style="margin-bottom:10px;">
+              <div class="form-label-sm">Email Subject</div>
+              <div class="form-control"><input class="form-input" type="text" placeholder="Your subscription has been cancelled" /></div>
+            </div>
+            <div class="form-row" style="margin-bottom:10px;">
+              <div class="form-label-sm">Email Body Preview</div>
+              <div class="form-control"><textarea class="form-input" rows="3" placeholder="Hi {{name}}, your {{plan}} subscription has been cancelled. Access continues until {{end_date}}." style="resize:vertical;"></textarea></div>
+            </div>
+            <div class="form-row" style="margin-bottom:0;">
+              <div class="form-label-sm">Include Portal Link</div>
+              <div class="form-control" style="display:flex; align-items:center; gap:10px; padding-top:4px;">
+                <div class="switch on" onclick="toggleSwitch(this)"><div class="knob"></div></div>
+                <span style="font-size:13px; color:#666;">Add a link to the subscriber portal in the email</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Notification: Subscription Changed -->
+          <div class="notif-edit-block" style="border: 1px solid #e8e8e8; border-radius: 6px; padding: 16px; margin-bottom: 0;">
+            <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:12px;">
+              <div style="font-weight:600; font-size:14px;">Subscription Changed</div>
+              <span class="status-tag status-enabled" style="font-size:11px;">✓ Enabled by Waffo</span>
+            </div>
+            <div class="form-row" style="margin-bottom:10px;">
+              <div class="form-label-sm">Email Subject</div>
+              <div class="form-control"><input class="form-input" type="text" placeholder="Your subscription plan has been updated" /></div>
+            </div>
+            <div class="form-row" style="margin-bottom:10px;">
+              <div class="form-label-sm">Email Body Preview</div>
+              <div class="form-control"><textarea class="form-input" rows="3" placeholder="Hi {{name}}, your subscription has been updated from {{old_plan}} to {{new_plan}}. New billing starts on {{next_date}}." style="resize:vertical;"></textarea></div>
+            </div>
+            <div class="form-row" style="margin-bottom:0;">
+              <div class="form-label-sm">Include Portal Link</div>
+              <div class="form-control" style="display:flex; align-items:center; gap:10px; padding-top:4px;">
+                <div class="switch on" onclick="toggleSwitch(this)"><div class="knob"></div></div>
+                <span style="font-size:13px; color:#666;">Add a link to the subscriber portal in the email</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="btn-group">
+            <button class="btn btn-primary">Save Changes</button>
+            <button class="btn btn-default">Cancel</button>
+          </div>
         </div>
 
       </div>
     </div>
-
-    <!-- Footer -->
-    <div class="subscriber-footer">
-      <div class="help-text">Need help? Contact <a href="#">support@acme.com</a></div>
-      <div class="policy-links">
-        <a href="#">Privacy Policy</a> | <a href="#">Terms of Service</a>
-      </div>
-      <div class="powered-by">Powered by Waffo</div>
-    </div>
-
   </div>
 </div>
 
@@ -886,27 +723,14 @@
      ================================================================ -->
 <script>
   // ---- Page switcher ----
-  function switchPage(name) {
-    ['internal', 'merchant', 'subscriber'].forEach(p => {
+  function switchPage(name, tabEl) {
+    ['internal', 'merchant'].forEach(p => {
       document.getElementById('page-' + p).classList.add('hidden');
     });
     document.getElementById('page-' + name).classList.remove('hidden');
 
     document.querySelectorAll('.top-nav-tab').forEach(t => t.classList.remove('active'));
-    event.currentTarget.classList.add('active');
-  }
-
-  // ---- Sub-tab switcher (Merchant Portal) ----
-  function switchSubTab(tabEl, targetId) {
-    // Deactivate all tabs
-    tabEl.closest('.tabs').querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
     tabEl.classList.add('active');
-
-    // Hide all tab content
-    ['tab-branding', 'tab-features', 'tab-notifications'].forEach(id => {
-      document.getElementById(id).classList.add('hidden');
-    });
-    document.getElementById(targetId).classList.remove('hidden');
   }
 
   // ---- Switch toggle ----
@@ -914,35 +738,31 @@
     el.classList.toggle('on');
   }
 
-  // ---- Switch + show/hide sub-options ----
-  function toggleSubOptions(subId, switchEl) {
-    const subEl = document.getElementById(subId);
-    if (!subEl) return;
-    if (switchEl.classList.contains('on')) {
-      subEl.classList.remove('hidden');
-    } else {
-      subEl.classList.add('hidden');
-    }
-  }
-
-  // ---- Reason list ----
-  function removeReason(btn) {
-    btn.closest('li').remove();
-  }
-
-  function addReason() {
-    const list = document.getElementById('reason-list');
-    const li = document.createElement('li');
-    li.className = 'reason-item';
-    li.innerHTML = '<input type="text" placeholder="new_reason" /><span class="remove-btn" onclick="removeReason(this)">×</span>';
-    list.appendChild(li);
-    li.querySelector('input').focus();
-  }
-
-  // ---- Color swatch preview ----
-  function updateColorSwatch() {
-    const val = document.getElementById('brand-color-input').value.trim();
-    document.getElementById('color-swatch').style.background = val;
+  // ---- Add Retry Row ----
+  function addRetryRow() {
+    const tbody = document.querySelector('.config-table tbody');
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td>
+        <select>
+          <option>Default</option>
+          <option>Custom</option>
+        </select>
+      </td>
+      <td><input type="number" value="1" min="1" /></td>
+      <td><input type="number" value="1" min="1" /></td>
+      <td>
+        <select>
+          <option>Day</option>
+          <option>Hour</option>
+          <option>Week</option>
+        </select>
+      </td>
+      <td>
+        <span style="color: #ff4d4f; cursor: pointer; font-size: 13px;" onclick="this.closest('tr').remove()">Delete</span>
+      </td>
+    `;
+    tbody.appendChild(tr);
   }
 </script>
 </body>
